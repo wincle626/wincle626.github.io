@@ -23,25 +23,25 @@ repository               : "wincle626/wincle626.github.io"
 author:
   # Biographic information
   avatar           : "profile.png"
-  name             : "Your Sidebar Name"
+  name             : "Dr Yun Wu"
   pronouns         : "He/Him" # example: "she/her"  
-  bio              : "Short biography for the left-hand sidebar"
-  location         : "Earth"
-  employer         : "Red Brick University"
-  uri              : # URL
-  email            : "none@example.org" 
+  bio              : "Lecturer at Queen’s University Belfast. Research interests: Embedded Systems, Approximate Computing, Computer Architecture, Reconfigurable Accelerators, Computer Vision, Machine Learning, and Autonomous Systems."
+  location         : "Belfast, UK"
+  employer         : "Queen's University Belfast"
+  uri              : "https://pure.qub.ac.uk/en/persons/yun-wu-2"
+  email            : "yun.wu@qub.ac.uk" 
 
   # Academic websites
-  academia         : # URL
-  arxiv            : # URL - Update with the correct link to your profile
+  academia         : 
+  arxiv            : 
   googlescholar    : "https://scholar.google.com/citations?hl=en&user=E232JgIAAAAJ"
-  inspire-hep      : # URL
-  impactstory      : # URL
+  inspire-hep      : 
+  impactstory      : 
   orcid            : "https://orcid.org/0000-0001-9332-2858"
-  semantic         : # URL
-  pubmed           : # URL
-  researchgate     : # URL
-  scopus           : # URL
+  semantic         : 
+  pubmed           : 
+  researchgate     : "https://www.researchgate.net/profile/Yun-Wu-39"
+  scopus           : 
 
   # Repositories and software development
   bitbucket        : # Username - Update with your username on the site
