@@ -6,7 +6,7 @@ permalink: /publication/2025-06-27-axra
 excerpt: 'This paper proposes AxRA, an approximate Rowhammer attack methodology tailored for modern DRAM systems, addressing reliability and security implications.'
 date: 2025-06-27
 venue: 'IEEE International Symposium on Circuits and Systems (ISCAS) 2025'
-paperurl: 'https://ieeexplore.ieee.org/document/XXXXXXX'  # replace XXXXXXX with actual IEEE link if available
+paperurl: 'https://ieeexplore.ieee.org/abstract/document/11043302'  # replace XXXXXXX with actual IEEE link if available
 slidesurl: ''
 bibtexurl: ''
 citation: 'Hao, Y., Wu, Y., Ni, Z., Miskelly, J., O\'Neill, M. &amp; Gu, C. (2025). &quot;AxRA: approximate Rowhammer attack for modern DRAM systems.&quot; <i>IEEE International Symposium on Circuits and Systems (ISCAS) 2025: Proceedings</i>. IEEE.'
