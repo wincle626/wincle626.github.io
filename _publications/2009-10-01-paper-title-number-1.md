@@ -1,14 +1,14 @@
 ---
-title: "Paper Title Number 1"
+title: "AxRA: approximate Rowhammer attack for modern DRAM systems"
 collection: publications
 category: manuscripts
 permalink: /publication/2009-10-01-paper-title-number-1
-excerpt: 'This paper is about the number 1. The number 2 is left for future work.'
-date: 2009-10-01
-venue: 'Journal 1'
+excerpt: 'This paper proposes AxRA, an approximate Rowhammer attack methodology tailored for modern DRAM systems, addressing reliability and security implications.'
+date: 2025-06-27
+venue: 'IEEE International Symposium on Circuits and Systems (ISCAS) 2025'
 slidesurl: 'http://academicpages.github.io/files/slides1.pdf'
-paperurl: 'http://academicpages.github.io/files/paper1.pdf'
-bibtexurl: 'http://academicpages.github.io/files/bibtex1.bib'
-citation: 'Your Name, You. (2009). &quot;Paper Title Number 1.&quot; <i>Journal 1</i>. 1(1).'
+paperurl: 'https://pureadmin.qub.ac.uk/ws/portalfiles/portal/627598156/Approx_enhanced_RowHammer.pdf'
+bibtexurl: 'http://wincle626.github.io/files/bibtex01.bib'
+citation: 'Hao, Y., Wu, Y., Ni, Z., Miskelly, J., O\'Neill, M. &amp; Gu, C. (2025). &quot;AxRA: approximate Rowhammer attack for modern DRAM systems.&quot; <i>IEEE International Symposium on Circuits and Systems (ISCAS) 2025: Proceedings</i>. IEEE.'
 ---
-The contents above will be part of a list of publications, if the user clicks the link for the publication than the contents of section will be rendered as a full page, allowing you to provide more information about the paper for the reader. When publications are displayed as a single page, the contents of the above "citation" field will automatically be included below this section in a smaller font.
+AxRA introduces a novel approximate Rowhammer attack framework designed for modern DRAM architectures. The work explores approximation strategies to exploit memory cell vulnerabilities while reducing attack overhead, enabling new insights into hardware security threats in next-generation systems. The paper further discusses countermeasures and validation on real DRAM platforms. 
