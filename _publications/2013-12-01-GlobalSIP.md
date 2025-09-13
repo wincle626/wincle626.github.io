@@ -2,7 +2,7 @@
 title: "High Performance Real-Time Pre-Processing for Fixed-Complexity Sphere Decoder"
 collection: publications
 category: conferences
-permalink: /publication/2013-12-01-fsd-preprocessing
+permalink: /publication/2013-12-01-GlobalSIP
 excerpt: 'This paper addresses the challenge of real-time pre-processing in Fixed-Complexity Sphere Decoders for MIMO systems, proposing an FPGA-based architecture that reduces resource cost by 50% while maintaining real-time performance.'
 date: 2013-12-01
 venue: '2013 IEEE Global Conference on Signal and Information Processing (GlobalSIP), pp. 1250–1253'
