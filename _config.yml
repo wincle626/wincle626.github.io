@@ -22,7 +22,7 @@ repository               : "wincle626/wincle626.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
+  avatar           : "1523050575848.webp"
   name             : "Dr Yun Wu"
   pronouns         : "He/Him" # example: "she/her"  
   bio              : "Lecturer at Queen’s University Belfast. Research interests: Embedded Systems, Approximate Computing, Computer Architecture, Reconfigurable Accelerators, Computer Vision, Machine Learning, and Autonomous Systems."
