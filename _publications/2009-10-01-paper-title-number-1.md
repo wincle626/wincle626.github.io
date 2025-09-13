@@ -1,5 +1,5 @@
 ---
-title: "Paper Title Number 1"
+title: "AxRA: approximate Rowhammer attack for modern DRAM systems"
 collection: publications
 category: manuscripts
 permalink: /publication/2010-10-01-paper-title-number-1
