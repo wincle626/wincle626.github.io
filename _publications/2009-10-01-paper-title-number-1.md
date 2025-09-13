@@ -1,15 +1,14 @@
 ---
-title: "AxRA: approximate Rowhammer attack for modern DRAM systems"
+title: "Paper Title Number 1"
 collection: publications
 category: manuscripts
-permalink: /publication/2025-06-27-axra
-excerpt: 'This paper proposes AxRA, an approximate Rowhammer attack methodology tailored for modern DRAM systems, addressing reliability and security implications.'
-date: 2025-06-27
-venue: 'IEEE International Symposium on Circuits and Systems (ISCAS) 2025'
-paperurl: 'https://ieeexplore.ieee.org/abstract/document/11043302'  # replace XXXXXXX with actual IEEE link if available
-slidesurl: ''
-bibtexurl: ''
-citation: 'Hao, Y., Wu, Y., Ni, Z., Miskelly, J., O\'Neill, M. &amp; Gu, C. (2025). &quot;AxRA: approximate Rowhammer attack for modern DRAM systems.&quot; <i>IEEE International Symposium on Circuits and Systems (ISCAS) 2025: Proceedings</i>. IEEE.'
+permalink: /publication/2010-10-01-paper-title-number-1
+excerpt: 'This paper is about the number 2. The number 3 is left for future work.'
+date: 2010-10-01
+venue: 'Journal 1'
+slidesurl: 'http://academicpages.github.io/files/slides1.pdf'
+paperurl: 'http://academicpages.github.io/files/paper1.pdf'
+citation: 'Your Name, You. (2010). &quot;Paper Title Number 2.&quot; <i>Journal 1</i>. 1(2).'
 ---
 
-AxRA introduces a novel approximate Rowhammer attack framework designed for modern DRAM architectures. The work explores approximation strategies to exploit memory cell vulnerabilities while reducing attack overhead, enabling new insights into hardware security threats in next-generation systems. The paper further discusses countermeasures and validation on real DRAM platforms. 
+The contents above will be part of a list of publications, if the user clicks the link for the publication than the contents of section will be rendered as a full page, allowing you to provide more information about the paper for the reader. When publications are displayed as a single page, the contents of the above "citation" field will automatically be included below this section in a smaller font.
