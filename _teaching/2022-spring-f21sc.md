@@ -1,5 +1,5 @@
 ---
-title: "Industrial Programming"
+title: "Industrial Programming (2022 spring)"
 collection: teaching
 type: "Postgraduate course"
 permalink: /teaching/2022-spring-f21sc
