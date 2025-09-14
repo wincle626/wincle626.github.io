@@ -2,7 +2,7 @@
 title: "Reconfigurable Approximate Computing in Autonomous Systems"
 collection: talks
 type: "Talk"
-permalink: /talks/2023-09-27-cranfield-approx-computing
+permalink: /talks/2023-09-27-Cranfield
 venue: "Cranfield University"
 date: 2023-09-27
 location: "Cranfield, UK"
@@ -10,7 +10,6 @@ location: "Cranfield, UK"
 
 This invited talk explored **Reconfigurable Approximate Computing in Autonomous Systems**, focusing on the balance between *energy efficiency* and *trustworthiness*.  
 Key themes included:
-
 - Approximate Linear Algebra and FPGA-based reconfigurability  
 - Approximate accelerator generation and automation  
 - Algorithmic and hardware resilience under approximation  
