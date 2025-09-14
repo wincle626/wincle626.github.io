@@ -65,6 +65,19 @@ Education
 * **B.Sc. in Electronic & Information Engineering**  
   Dalian Minzu University, China (1999–2003)
 
+Awards and Recognition
+======
+* Associate Fellowship, Higher Education Academy (2025)  
+* EPS Innovation in Teaching Funding (2023)
+* NVIDIA Academic Grant Program (2020/2021)
+
+Service and leadership
+======
+* Member, Institute of Electrical and Electronics Engineers 
+* Member, EPSRC Peer Review College  
+* Reviewer, IEEE Transactions on Computers  
+* Reviewer, IEEE Nanotechnology Magazine 
+* EPS (QUB) Summer Internship Supervisor
   
 Skills
 ======
@@ -90,18 +103,4 @@ Teaching
   <ul>{% for post in site.teaching reversed %}
     {% include archive-single-cv.html %}
   {% endfor %}</ul>
-
-Awards and Recognition
-======
-* Associate Fellowship, Higher Education Academy (2025)  
-* EPS Innovation in Teaching Funding (2023)
-* NVIDIA Academic Grant Program (2020/2021)
-
-Service and leadership
-======
-* Member, Institute of Electrical and Electronics Engineers 
-* Member, EPSRC Peer Review College  
-* Reviewer, IEEE Transactions on Computers  
-* Reviewer, IEEE Nanotechnology Magazine 
-* EPS (QUB) Summer Internship Supervisor
 
