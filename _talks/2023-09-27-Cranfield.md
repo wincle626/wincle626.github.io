@@ -19,7 +19,7 @@ Key themes included:
 - Approximate model predictive control and PID controller benchmarks  
 - Power scaling in fine-grained approximation
 
-![Alt text](https://github.com/wincle626/wincle626.github.io/blob/master/_files/Picture001.png "a title")
-![Alt text](https://github.com/wincle626/wincle626.github.io/blob/master/_files/Picture002.png "a title")
+![Alt text](/images/talkimg/Picture001.png "a title")
+![Alt text](/images/talkimg/Picture002.png "a title")
 
 The talk highlighted both the **opportunities and challenges** of deploying approximation in autonomous systems under low-SWaP (Size, Weight, and Power) constraints, emphasizing reliability, scalability, and security.
