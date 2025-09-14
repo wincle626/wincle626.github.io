@@ -1,5 +1,5 @@
 ---
-title: "Parallel and Distributed Technology"
+title: "Parallel and Distributed Technology (2022 spring)"
 collection: teaching
 type: "Postgraduate course"
 permalink: /teaching/2022-spring-f21dp
