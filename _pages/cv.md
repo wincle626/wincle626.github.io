@@ -9,37 +9,60 @@ redirect_from:
 
 {% include base_path %}
 
-Education
+Research Interests
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+* Approximate Computing  
+* Embedded Systems & FPGA Acceleration  
+* Computer Vision & Machine Learning  
+* Autonomous Vehicles & Sensor Fusion  
+* Hardware Security (Rowhammer, DVFS-based vulnerabilities)  
+* Reconfigurable Architectures  
+* Energy-Efficient System Design
 
 Work experience
 ======
-* Spring 2024: Academic Pages Collaborator
-  * GitHub University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
+* **Lecturer (Assistant Professor)**  
+  Queen’s University Belfast, UK (Jun 2023 – Present)  
+  Teaching and research in embedded systems, computer vision, and hardware security
 
-* Fall 2015: Research Assistant
-  * GitHub University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+* **Assistant Professor**  
+  University of Essex, UK (Jan 2023 – May 2023)  
+  Lecturer in computer vision and embedded systems
 
-* Summer 2015: Research Assistant
-  * GitHub University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
+* **Assistant Professor (Part-time)**  
+  Heriot-Watt University, UK (Jan 2022 – Jan 2023)  
+  Teaching: Parallel & Distributed Programming, Software Engineering, Industrial Programming
+
+* **Research Associate**  
+  Heriot-Watt University, UK (May 2019 – Jan 2023)  
+  Research on approximate co-processors for mathematical optimization, FPGA-based accelerators, and embedded DSP for Lidar
+  
+* **Research Fellow**  
+  Cranfield University, UK (Mar 2018 – May 2019)  
+  Embedded systems for autonomous vehicle infrastructure and sensor fusion (Lidar, Radar, GPS)
+
+* **Research Fellow**  
+  Queen’s University Belfast, UK  
+  - Dec 2016 – Feb 2018: Soft-core processor IP design on FPGA (Zedzynq 7020), 5G receiver prototyping  
+  - Jan 2014 – Nov 2016: Power-proportional computing on hybrid ARM/FPGA SoC (Zynq 7000)
+
+* **Wireless Algorithm Engineer**  
+  ZTE Corporation, China (Dec 2008 – Aug 2010)  
+  System-level optimization for TD-SCDMA/TDD-LTE, parallel computing, and dynamic simulation
+
+Education
+======
+* Ph.D. in Electronic Engineering  
+  Queen’s University Belfast, UK (2010–2013)  
+  Research: System-level design methodology for soft-core streaming processors on FPGA and MIMO receiver algorithm design
   
 Skills
 ======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
+* Programming: C/C++, Python, MATLAB, VHDL/Verilog, Java, OpenCL/OpenMP/OpenMPI
+* Tools: Vitis/Vivado, Git, Docker, LaTeX  
+* Platforms: FPGA, ARM, CUDA
+* Research: Numerical Analysis, System Optimization, Design Automation, Signal Processing
+
 
 Publications
 ======
@@ -58,7 +81,18 @@ Teaching
   <ul>{% for post in site.teaching reversed %}
     {% include archive-single-cv.html %}
   {% endfor %}</ul>
-  
+
+Awards and Recognition
+======
+* Associate Fellowship, Higher Education Academy (2025)  
+* EPS Innovation in Teaching Funding (2023)
+* NVIDIA Academic Grant Program (2020/2021)
+
 Service and leadership
 ======
-* Currently signed in to 43 different slack teams
+* Member, Institute of Electrical and Electronics Engineers 
+* Member, EPSRC Peer Review College  
+* Reviewer, IEEE Transactions on Computers  
+* Reviewer, IEEE Nanotechnology Magazine 
+* EPS (QUB) Summer Internship Supervisor
+
