@@ -52,9 +52,19 @@ Work experience
 
 Education
 ======
-* Ph.D. in Electronic Engineering  
+* **Ph.D. in Electronic, Electrical & Information Engineering**  
   Queen’s University Belfast, UK (2010–2013)  
   Research: System-level design methodology for soft-core streaming processors on FPGA and MIMO receiver algorithm design
+
+* **M.Sc. in Radio Frequency Communication Systems**  
+  University of Southampton, UK (2007–2008)
+
+* **M.Eng. in Circuit & System**  
+  Hunan University, China (2004–2007)  
+
+* **B.Sc. in Electronic & Information Engineering**  
+  Dalian Minzu University, China (1999–2003)
+
   
 Skills
 ======
@@ -62,7 +72,6 @@ Skills
 * Tools: Vitis/Vivado, Git, Docker, LaTeX  
 * Platforms: FPGA, ARM, CUDA
 * Research: Numerical Analysis, System Optimization, Design Automation, Signal Processing
-
 
 Publications
 ======
