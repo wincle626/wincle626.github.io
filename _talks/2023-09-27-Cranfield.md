@@ -1,7 +1,7 @@
 ---
 title: "Reconfigurable Approximate Computing in Autonomous Systems"
-collection: tutorials
-type: "Talk"
+collection: talks
+type: "Tutorial"
 permalink: /talks/2023-09-27-Cranfield
 venue: "Cranfield University"
 date: 2023-09-27
