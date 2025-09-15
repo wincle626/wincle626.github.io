@@ -1,6 +1,6 @@
 ---
 layout: archive
-title: "About Me"
+title: "Dr. Yun Wu"
 permalink: /cv/
 author_profile: true
 redirect_from:
