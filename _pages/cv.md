@@ -12,12 +12,11 @@ redirect_from:
 Research Interests
 ======
 * Approximate Computing  
-* Embedded Systems & FPGA Acceleration  
+* Embedded Systems & Reconfigurable Architectures
+* Energy-Efficient System Design
 * Computer Vision & Machine Learning  
 * Autonomous Vehicles & Sensor Fusion  
-* Hardware Security (Rowhammer, DVFS-based vulnerabilities)  
-* Reconfigurable Architectures  
-* Energy-Efficient System Design
+* Hardware Security
 
 Work experience
 ======
