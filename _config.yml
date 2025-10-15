@@ -9,7 +9,7 @@
 # Basic Site Settings
 locale                   : "en-UK"
 site_theme               : "default" # Currently available options are "default", "air"
-title                    : "Dr Yun Wu"
+title                    : "Yun Wu"
 title_separator          : "-"
 name                     : &name "Yun Wu"
 description              : &description "personal description"
