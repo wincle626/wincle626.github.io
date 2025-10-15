@@ -22,7 +22,9 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 
 # Openning Positions
 
-Accepting PhD student all year round, please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac.uk) or search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at QUB with my name. 
+Accepting PhD student all year round in reconfigurable architecture and design automations.  
+
+Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac.uk) or search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at QUB with my name. 
 
 # Selcted Publications
 
