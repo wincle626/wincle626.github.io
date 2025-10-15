@@ -13,12 +13,12 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 
 # Selcted Publications
 
-[AxRA: approximate Rowhammer attack for modern DRAM systems](https://wincle626.github.io/publication/2025-06-27-AxRA)
+1. [AxRA: approximate Rowhammer attack for modern DRAM systems](https://wincle626.github.io/publication/2025-06-27-AxRA)
 
-[Sharper Bounds for Proximal Gradient Algorithms with Errors](https://wincle626.github.io/publication/2024-01-19-SIAM)
+2. [Sharper Bounds for Proximal Gradient Algorithms with Errors](https://wincle626.github.io/publication/2024-01-19-SIAM)
 
-[Joint Undervolting and Overclocking Power Scaling Approximation on FPGAs](https://wincle626.github.io/publication/2022-09-23-SSPD2)
+3. [Joint Undervolting and Overclocking Power Scaling Approximation on FPGAs](https://wincle626.github.io/publication/2022-09-23-SSPD2)
 
-[Mixed Precision ℓ₁ Solver for Compressive Depth Reconstruction: An ADMM Case Study](https://wincle626.github.io/publication/2021-11-11-SiPS2)
+4. [Mixed Precision ℓ₁ Solver for Compressive Depth Reconstruction: An ADMM Case Study](https://wincle626.github.io/publication/2021-11-11-SiPS2)
 
-[Approximate LASSO Model Predictive Control for Resource-Constrained Systems](https://wincle626.github.io/publication/2020-11-30-SSPD)
+5. [Approximate LASSO Model Predictive Control for Resource-Constrained Systems](https://wincle626.github.io/publication/2020-11-30-SSPD)
