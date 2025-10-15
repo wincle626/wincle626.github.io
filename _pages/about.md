@@ -32,4 +32,4 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 
 # Openning Positions
 
-N/A
+Accepting PhD student all year round, please search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at QUB with my name. 
