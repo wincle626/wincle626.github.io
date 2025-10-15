@@ -1,7 +1,15 @@
+---
+title: 'Ubuntu rootfs for aarch64 on x86 Host
+'
+date: 2021-01-29
+permalink: /posts/2021/01/aarch64-rootfs/
+tags:
+  - cool posts
+  - category1
+  - category2
+---
 
-
-
-# Prepare Ubuntu Rootfs for Aarch64 on x86 Host
+# This post will introduce how to prepare Ubuntu rootfs for aarch64 on x86 Host
 
 ## 1. Install pre-required packages on x86 host
 
