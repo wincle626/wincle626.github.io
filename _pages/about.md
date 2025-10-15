@@ -11,6 +11,13 @@ I am an Lecturer (Associate Professor) at Queen's University Belfast. My current
 
 I received MSc degrees in Electronic Engineering from Hunan University in 2007 and University of Southampton in 2008, and the Ph.D. degree in Electronic & Computer Science from Queen's University Belfast in 2014. I previously worked at University of Cranfield, Cranfield, Heriot-Watt University, Edingburgh, and ZTE R&D Shanghai Plaza, China.
 
+# Research Directions
+
+* Approximate Computing
+* Reconfigurable Accelerators and Security
+* Low Size, Weight and Power - Cost (SWaP-C) Embedded Systems
+* Artificial intelligence (AI) & Autonomous Systems (AS)
+
 # Selcted Publications
 
 1. [AxRA: approximate Rowhammer attack for modern DRAM systems](https://wincle626.github.io/publication/2025-06-27-AxRA)
@@ -22,3 +29,6 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 4. [Mixed Precision ℓ₁ Solver for Compressive Depth Reconstruction: An ADMM Case Study](https://wincle626.github.io/publication/2021-11-11-SiPS2)
 
 5. [Approximate LASSO Model Predictive Control for Resource-Constrained Systems](https://wincle626.github.io/publication/2020-11-30-SSPD)
+
+# Openning Positions
+
