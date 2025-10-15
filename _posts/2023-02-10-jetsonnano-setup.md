@@ -10,7 +10,7 @@ tags:
 
 
 <p align="center">
-<img src="https://github.com/wincle626/JetsonNano_Setup/blob/main/pics/JetsonNano-DevKit_Front-Top_Right_trimmed.jpg" width="400" height="320">
+<img src="https://github.com/wincle626/JetsonNano_Setup/blob/main/pics/JetsonNano-DevKit_Front-Top_Right_trimmed.jpg?raw=true" width="400" height="320">
 </p>
 
 # This repository has different setups for [Jetson Nano](https://elinux.org/Jetson_Nano)
