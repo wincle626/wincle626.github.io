@@ -10,3 +10,15 @@ redirect_from:
 I am an Lecturer (Associate Professor) at Queen's University Belfast. My current research efforts concentrates on advance design methods and architecture for MPSoC and FPGA accelerators. I am interested in both software and hardware development for embedded systems.
 
 I received MSc degrees in Electronic Engineering from Hunan University in 2007 and University of Southampton in 2008, and the Ph.D. degree in Electronic & Computer Science from Queen's University Belfast in 2014. I previously worked at University of Cranfield, Cranfield, Heriot-Watt University, Edingburgh, and ZTE R&D Shanghai Plaza, China.
+
+# Selcted Publications
+
+[AxRA: approximate Rowhammer attack for modern DRAM systems](https://wincle626.github.io/publication/2025-06-27-AxRA)
+
+[Sharper Bounds for Proximal Gradient Algorithms with Errors](https://wincle626.github.io/publication/2024-01-19-SIAM)
+
+[Joint Undervolting and Overclocking Power Scaling Approximation on FPGAs](https://wincle626.github.io/publication/2022-09-23-SSPD2)
+
+[Mixed Precision ℓ₁ Solver for Compressive Depth Reconstruction: An ADMM Case Study](https://wincle626.github.io/publication/2021-11-11-SiPS2)
+
+[Approximate LASSO Model Predictive Control for Resource-Constrained Systems](https://wincle626.github.io/publication/2020-11-30-SSPD)
