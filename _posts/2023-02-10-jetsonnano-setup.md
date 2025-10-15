@@ -1,5 +1,5 @@
 ---
-title: 'ZCU102 SD Card Setup'
+title: 'Jetson Nano setup and deploy Opencv, ROS'
 date: 2023-02-10
 permalink: /posts/2023/02/jetsonnano-setup/
 tags:
@@ -8,6 +8,7 @@ tags:
   - category2
 ---
 
+# This post will introduce how to setup Jetson Nano and deply OpenCV and ROS
 
 <p align="center">
 <img src="https://github.com/wincle626/JetsonNano_Setup/blob/main/pics/JetsonNano-DevKit_Front-Top_Right_trimmed.jpg?raw=true" width="400" height="320">
