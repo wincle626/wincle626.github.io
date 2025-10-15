@@ -20,6 +20,10 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 
 ![research](https://github.com/wincle626/wincle626.github.io/blob/master/images/image_2025-10-15_225921013.png?raw=true)
 
+# Openning Positions
+
+Accepting PhD student all year round, please contact me through yun.wu@qub.ac.uk or search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at QUB with my name. 
+
 # Selcted Publications
 
 1. [AxRA: approximate Rowhammer attack for modern DRAM systems](https://wincle626.github.io/publication/2025-06-27-AxRA)
@@ -31,7 +35,3 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 4. [Mixed Precision ℓ₁ Solver for Compressive Depth Reconstruction: An ADMM Case Study](https://wincle626.github.io/publication/2021-11-11-SiPS2)
 
 5. [Approximate LASSO Model Predictive Control for Resource-Constrained Systems](https://wincle626.github.io/publication/2020-11-30-SSPD)
-
-# Openning Positions
-
-Accepting PhD student all year round, please search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at QUB with my name. 
