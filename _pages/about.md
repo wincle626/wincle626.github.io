@@ -18,6 +18,8 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 * Low Size, Weight and Power - Cost (SWaP-C) Embedded Systems
 * Artificial intelligence (AI) & Autonomous Systems (AS)
 
+[!text](https://github.com/wincle626/wincle626.github.io/blob/master/images/image_2025-10-15_225921013.png?raw=true)
+
 # Selcted Publications
 
 1. [AxRA: approximate Rowhammer attack for modern DRAM systems](https://wincle626.github.io/publication/2025-06-27-AxRA)
