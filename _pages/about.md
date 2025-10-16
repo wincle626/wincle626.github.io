@@ -26,6 +26,8 @@ Accepting PhD student all year round in reconfigurable architecture and design a
 
 Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac.uk) or search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at QUB with my name. 
 
+<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="20"/>
+
 # Selcted Publications
 
 1. [AxRA: approximate Rowhammer attack for modern DRAM systems](https://wincle626.github.io/publication/2025-06-27-AxRA)
