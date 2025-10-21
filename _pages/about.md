@@ -1,4 +1,4 @@
-⁷---
+---
 permalink: /
 title: "Bio "
 author_profile: true
