@@ -29,7 +29,7 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> **Two PhD project topics for October 2026 entry:**
 * ✨ [**Efficient Reconfigurable Accelerator for Autonomous Systems**](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities/efficient-reconfigurable-accelerator-for-autonomous-systems.html)✨
   
-  <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/Screenshot_20251025_104607_Chrome.jpg" alt="project1" width="200">
+  <img src="https://raw.githubusercontent.com/wincle626/wincle626.github.io/refs/heads/master/images/Screenshot_20251025_104607_Chrome.jpg" alt="project1" width="200">
   
 * ✨ [**AI-Assisted Accelerator Design for FPGA technologies**](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities/aiassisted-accelerator-design-for-fpga-technologies.html)✨
   
