@@ -27,7 +27,7 @@ Accepting PhD student all year round in reconfigurable architecture and design a
 Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac.uk) for more details or search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at [QUB](https://www.qub.ac.uk) with my name. 
 
 <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> **Two PhD project topics for October 2026 entry:**
-* ✨ **[Efficient Reconfigurable Accelerator for Autonomous Systems](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities/efficient-reconfigurable-accelerator-for-autonomous-systems.html)**✨ 
+* ✨ [**Efficient Reconfigurable Accelerator for Autonomous Systems**](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities/efficient-reconfigurable-accelerator-for-autonomous-systems.html)✨ 
 * ✨ **AI-Assisted Accelerator Design for FPGA technologies**✨ 
 
 **Application Timeline:**
