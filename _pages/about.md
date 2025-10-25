@@ -33,7 +33,7 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
   
 * ✨ [**AI-Assisted Accelerator Design for FPGA technologies**](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities/aiassisted-accelerator-design-for-fpga-technologies.html)✨
   
-  <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/Screenshot_20251025_104720_Chrome.jpg" alt="project2" width="200">
+  <img src="https://raw.githubusercontent.com/wincle626/wincle626.github.io/refs/heads/master/images/Screenshot_20251025_104720_Chrome.jpg" alt="project2" width="200">
   
 
 **Application Timeline:**
