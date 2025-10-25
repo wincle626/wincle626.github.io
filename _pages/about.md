@@ -18,7 +18,7 @@ I received MSc degrees in Electronic Engineering from Hunan University in 2007 a
 * Low Size, Weight and Power - Cost (SWaP-C) Embedded Systems
 * Efficient & Trustworthy Artificial intelligence (AI)/Autonomous Systems (AS)
 
-![research](https://github.com/wincle626/wincle626.github.io/blob/master/images/image_2025-10-15_225921013.png?raw=true)
+<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/image_2025-10-15_225921013.png?raw=true" alt="research" width="300">
 
 # Openning Positions
 
