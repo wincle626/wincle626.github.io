@@ -7,7 +7,7 @@ redirect_from:
   - /about.html
 ---
 
-
+<pre>
  __   __                   __        __  
  
  \ \ / /  _   _   _ __     \ \      / /  _   _ 
@@ -17,7 +17,7 @@ redirect_from:
    | |   | |_| | | | | |     \ V  V /   | |_| |
    
    |_|    \__,_| |_| |_|      \_/\_/     \__,_|
-                                               
+</pre>   
 
 I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methods and architecture for MPSoC and FPGA accelerators. I am interested in both software and hardware development for embedded systems.
 
