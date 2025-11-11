@@ -8,18 +8,18 @@ redirect_from:
 ---
 
 <pre>
-                                     /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\ 
-                                    ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
-                                     > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ < 
-                                     /\_/\    __   __            __        __         /\_/\ 
-                                    ( o.o )   \ \ / /   _ _ __   \ \      / /   _    ( o.o )
-                                     > ^ <     \ V / | | | '_ \   \ \ /\ / / | | |    > ^ < 
-                                     /\_/\      | || |_| | | | |   \ V  V /| |_| |    /\_/\ 
-                                    ( o.o )     |_| \__,_|_| |_|    \_/\_/  \__,_|   ( o.o )
-                                     > ^ <                                            > ^ < 
-                                     /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\ 
-                                    ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
-                                     > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ < 
+                     /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\ 
+                    ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+                     > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ < 
+                     /\_/\    __   __            __        __         /\_/\ 
+                    ( o.o )   \ \ / /   _ _ __   \ \      / /   _    ( o.o )
+                     > ^ <     \ V / | | | '_ \   \ \ /\ / / | | |    > ^ < 
+                     /\_/\      | || |_| | | | |   \ V  V /| |_| |    /\_/\ 
+                    ( o.o )     |_| \__,_|_| |_|    \_/\_/  \__,_|   ( o.o )
+                     > ^ <                                            > ^ < 
+                     /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\ 
+                    ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+                     > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ < 
 </pre>   
 
 I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methods and architecture for MPSoC and FPGA accelerators. I am interested in both software and hardware development for embedded systems.
