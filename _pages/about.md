@@ -73,6 +73,6 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 
 5. [Approximate LASSO Model Predictive Control for Resource-Constrained Systems](https://wincle626.github.io/publication/2020-11-30-SSPD)
 
-6. [Architectural Synthesis of Multi-SIMD Dataflow Accelerators for FPGA](https://wincle626.github.io/blob/master/_publications/2018-01-01-TPDS)
+6. [Architectural Synthesis of Multi-SIMD Dataflow Accelerators for FPGA](https://wincle626.github.io/publication/2018-01-01-TPDS)
 
-7. [Runtime Support for Adaptive Power Capping on Heterogeneous SoCs](https://wincle626.github.io/blob/master/_publications/2017-01-19-SAMOS)
+7. [Runtime Support for Adaptive Power Capping on Heterogeneous SoCs](https://wincle626.github.io/publication/2017-01-19-SAMOS)
