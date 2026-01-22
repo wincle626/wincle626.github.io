@@ -229,6 +229,10 @@ collections:
   talks:
     output: true
     permalink: /:collection/:path/
+  news:
+    output: true              # publish files in _news as individual pages
+    permalink: /:collection/:path/   # URL structure for each news item
+
 
 
 # These settings control how pages and collections are included in the site
