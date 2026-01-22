@@ -270,10 +270,6 @@ defaults:
       type: news
     values:
       layout: news
-      author_profile: true
-      read_time: true
-      share: true
-      related: true
   # _publications
   - scope:
       path: ""
