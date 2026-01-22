@@ -9,7 +9,7 @@
 
 main:     
   - title: "News"
-    url: /portfolio/
+    url: /news/
     
   - title: "Publications"
     url: /publications/
