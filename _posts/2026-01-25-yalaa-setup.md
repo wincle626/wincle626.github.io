@@ -8,7 +8,7 @@ tags:
   - category2
 ---
 
-# YALAA Library Configurations (refer to GitHub repository: [YALAA_Configurations](https://github.com/wincle626/YALAA_Configurations). )
+# YALAA Library Configurations 
 
 ## Notice that only one of the interval arithmetic library is required for yalaa. Hence only build and use one between Filib++, cxsc, or Profil. The examples in this repo are all based on cxsc only for yalaa. 
 
@@ -158,4 +158,4 @@ build the "demo" solution which builds the "yalaa" solution at the same time.
 
 ![alt text](/images/posts/image006.png)
 
-# Please refer to paper "Yun Wu; Yun Zhang; Anis Hamadouche; João F. C. Mota; Andrew M. Wallace. [Automatic Approximation for 1-Dimensional Feedback-Loop Computations: a PID Benchmark](https://doi.org/10.1109/SSPD54131.2022.9896191). IEEE Sensor Signal Processing for Defence Conference (SSPD) 2022" for more details about the computation validation of PID controller. 
+# Please refer to paper "Yun Wu; Yun Zhang; Anis Hamadouche; João F. C. Mota; Andrew M. Wallace. [Automatic Approximation for 1-Dimensional Feedback-Loop Computations: a PID Benchmark](https://doi.org/10.1109/SSPD54131.2022.9896191). IEEE Sensor Signal Processing for Defence Conference (SSPD) 2022" for more details about the computation validation of PID controller. (Go to to GitHub repository: [YALAA_Configurations](https://github.com/wincle626/YALAA_Configurations) for more detials. )
