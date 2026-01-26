@@ -58,7 +58,7 @@ Education
 * **M.Sc. in Radio Frequency Communication Systems**  
   University of Southampton, UK (2007–2008)
 
-* **M.Eng. in Circuit & System**  
+* **M.Sc. in Circuit & System**  
   Hunan University, China (2004–2007)  
 
 * **B.Sc. in Electronic & Information Engineering**  
