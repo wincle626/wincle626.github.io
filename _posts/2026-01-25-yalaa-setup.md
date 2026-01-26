@@ -122,15 +122,15 @@ use the vs2026 to open the project file "cxsc.sln" in the unzipped root folder.
 
 make sure the following folder is included in the project property "C/C++ --> General --> Additional Include Directories".
 
-![alt text](/images/image002.png)
+![alt text](/images/posts/image002.png)
 
 make sure the project property "C/C++ --> Code Generation --> Runtime Library" is set to "Multi-Threaded (/MT)" for building and using static library. 
 
-![alt text](/images/image001.png)
+![alt text](/images/posts/image001.png)
 
 build cxsc project in vs2026
 
-![alt text](/images/image007.png)
+![alt text](/images/posts/image007.png)
 
 ## 3. Build yalaa library from source
 
@@ -140,22 +140,22 @@ use the vs2026 to open the project file "trunk.sln" in the unzipped root folder.
 
 make sure the following folder is included in the project property "C/C++ --> General --> Additional Include Directories" for both "yalaa" and "demo" solution.
 
-![alt text](/images/image003.png)
+![alt text](/images/posts/image003.png)
 
 make sure the project property "C/C++ --> Code Generation --> Runtime Library" is set to "Multi-Threaded (/MT)" for building and using static library for both "yalaa" and "demo" solution. 
 
-![alt text](/images/image001.png)
+![alt text](/images/posts/image001.png)
 
 make sure the following two folders is added to "yalaa" project property "Librarian --> General --> Addtional Library Directories" and "demo" project property "Linker -- > General --> Additional Library Directories"
 
-![alt text](/images/image005.png)
+![alt text](/images/posts/image005.png)
 
 make sure the following folder is added to "demo" project property "Linker -- > Input --> Additional Dependencies"
 
-![alt text](/images/image004.png)
+![alt text](/images/posts/image004.png)
 
 build the "demo" solution which builds the "yalaa" solution at the same time. 
 
-![alt text](/images/image006.png)
+![alt text](/images/posts/image006.png)
 
 # Please refer to paper "Yun Wu; Yun Zhang; Anis Hamadouche; João F. C. Mota; Andrew M. Wallace. [Automatic Approximation for 1-Dimensional Feedback-Loop Computations: a PID Benchmark](https://doi.org/10.1109/SSPD54131.2022.9896191). IEEE Sensor Signal Processing for Defence Conference (SSPD) 2022" for more details about the computation validation of PID controller. 
