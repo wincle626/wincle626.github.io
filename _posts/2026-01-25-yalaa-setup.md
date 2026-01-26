@@ -8,7 +8,7 @@ tags:
   - category2
 ---
 
-# YALAA Library Configurations 
+# This post introduces the configuration/compilation of yalaa library on both Ubuntu 18.04 and Windows 11. 
 
 ## Notice that only one of the interval arithmetic library is required for yalaa. Hence only build and use one between Filib++, cxsc, or Profil. The examples in this repo are all based on cxsc only for yalaa. 
 
