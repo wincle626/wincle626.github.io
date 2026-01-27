@@ -20,7 +20,8 @@ or
 
 `pip install git+https://github.com/ultralytics/ultralytics.git@main`
 
-![yolo](https://github.com/wincle626/Yolo11_Simple_Example/blob/main/performance-comparison.png)
+![alt text](/images/posts/image005.png)
+![yolo](/images/posts/performance-comparison.png)
 
 ## Run it
 `python train.py`
@@ -28,7 +29,7 @@ or
 ## Result
 
 Original Image: 
-![Original](https://github.com/wincle626/Yolo11_Simple_Example/blob/main/bus.jpg)
+![Original](/images/posts/bus.jpg)
 
 Detected Image: 
-![Detect](https://github.com/wincle626/Yolo11_Simple_Example/blob/main/runs/detect/predict/bus.jpg)
+![Detect](/images/posts/bus_detected.jpg)
