@@ -16,20 +16,19 @@
     await mermaid.run({querySelector:'code.language-mermaid'});
 </script>
 
+
 {% if page.url == '/' %}
   <div style="margin-top:0.5rem; font-size:0.95rem;">
     <strong>Visits:</strong> <span id="visit-count">…</span>
   </div>
   <script>
     (function () {
-      // Derive a stable namespace from your site host (e.g., yourusername.github.io)
+      // Build a stable namespace from your site host
       var host = '{{ site.url | replace: "https://", "" | replace: "http://", "" | split: "/" | first }}';
       if (!host) { host = '{{ site.github.owner_name }}.github.io'; } // GitHub Pages fallback
 
-      // Use a single global key for the home page.
       var namespace = host;
-      var key = 'global-home';
-
+      var key = 'global-home'; // one global counter for the homepage
       var url = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
 
       fetch(url)
@@ -45,5 +44,5 @@
     })();
   </script>
 {% endif %}
-``
+
 <!-- end custom footer snippets -->
