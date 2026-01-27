@@ -82,7 +82,8 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
     // Use your own namespace, e.g., your GitHub Pages domain without protocol
     const namespace = 'wincle626.github.io';
     // Use path-specific key so each page can be counted separately if you reuse this snippet
-    const key = encodeURIComponent(location.pathname || '/');
+    // const key = encodeURIComponent(location.pathname || '/');
+    const key = 'home';
 
     const url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
 
