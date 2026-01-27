@@ -20,13 +20,6 @@
     {% if author.bio %}<p class="author__bio">{{ author.bio }}</p>{% endif %}
   </div>
 
-  <div class="author__stats">
-    <span><i class="fas fa-eye" aria-hidden="true"></i> Visitors</span>
-      <a href="https://hits.sh/wincle626.github.io/">
-        <img alt="Visits" src="https://hits.sh/wincle626.github.io.svg?style=for-the-badge&label=visits">
-      </a>
-  </div>
-
   <div class="author__urls-wrapper">
     <button class="btn btn--inverse">Follow</button>
     <ul class="author__urls social-icons">   
@@ -176,3 +169,16 @@
     </ul>
   </div>
 </div>
+
+<div class="author__stats">
+  <span><i class="fas fa-eye" aria-hidden="true"></i> Visitors</span>
+  <a href="https://hits.sh/wincle626.github.io/" aria-label="Visitor counter">
+    <img
+      alt="Visits"
+      src="https://hits.sh/wincle626.github.io.svg?style=for-the-badge&label=visits"
+      loading="lazy"
+      decoding="async"
+    >
+  </a>
+</div>
+
