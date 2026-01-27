@@ -20,7 +20,6 @@ or
 
 `pip install git+https://github.com/ultralytics/ultralytics.git@main`
 
-![alt text](/images/posts/image005.png)
 ![yolo](/images/posts/performance-comparison.png)
 
 ## Run it
