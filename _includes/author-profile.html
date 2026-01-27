@@ -23,6 +23,20 @@
   <div class="author__urls-wrapper">
     <button class="btn btn--inverse">Follow</button>
     <ul class="author__urls social-icons">
+      
+      <li>
+        <i class="fas fa-fw fa-eye" aria-hidden="true"></i>
+        <span class="label">Visitors Count</span>
+        <!-- In-place visitor counter (CounterAPI) -->
+        <div
+          class="counterapi"
+          data-key="site-visits"
+          data-behavior="view"
+          data-readonly="false"
+          style="display:inline-block; min-height:1em; margin-left:.35rem;"
+        ></div>
+      </li>
+
       <!-- Font Awesome icons / Biographic information  -->
       {% if author.location %}
         <li class="author__desktop"><i class="fas fa-fw fa-location-dot icon-pad-right" aria-hidden="true"></i>{{ author.location }}</li>
