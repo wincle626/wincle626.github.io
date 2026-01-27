@@ -18,7 +18,6 @@
 
 <!-- end custom footer snippets -->
 
-
 <!-- start homepage visitor counter -->
 {% if site.counter.enabled and page.url == "/" %}
   <div class="site-visitor-counter" style="margin-top:0.75rem; display:flex; justify-content:center;">
@@ -26,10 +25,12 @@
        rel="noopener"
        aria-label="Visitor counter (click to view history)">
       <img
-          alt="{{ site.counter.label }}"
-          src="https://hitscounter.dev/api/hits?url=https://{{ site.counter.slug }}&label={{ site.counter.label | uri_escape }}"
-          loading="eager" />
+        alt="{{ site.counter.label }}"
+        src="https://hits.sh/{{ site.counter.slug }}.svg?style={{ site.counter.style }}&label={{ site.counter.label | uri_escape }}&color={{ site.counter.color }}"
+        referrerpolicy="no-referrer-when-downgrade"
+        loading="eager" />
     </a>
   </div>
 {% endif %}
 <!-- end homepage visitor counter -->
+
