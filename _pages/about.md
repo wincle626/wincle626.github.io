@@ -76,6 +76,7 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 
 7. [Runtime Support for Adaptive Power Capping on Heterogeneous SoCs](https://wincle626.github.io/publication/2017-01-19-SAMOS)
 
+<!-- Your existing About content goes here (leave a blank line above/below the block HTML). -->
 
 <p><strong>Visits:</strong> <span id="visit-count">…</span></p>
 
@@ -113,4 +114,5 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
   })();
 </script>
 
-
+<!-- Continue with the rest of your About content below -->
+``
