@@ -20,17 +20,6 @@
 
 <!-- start homepage visitor counter -->
 {% if site.counter.enabled and page.url == "/" %}
-  <style>
-    .site-visitor-counter {
-      position: fixed;
-      top: 0.75rem;
-      right: 0.75rem;
-      z-index: 1000; /* above header/nav */
-    }
-    @media (max-width: 640px) {
-      .site-visitor-counter { top: 0.5rem; right: 0.5rem; transform: scale(0.95); }
-    }
-  </style>
   
 <div class="site-visitor-counter" style="margin-top:0.75rem; display:flex; justify-content:center;">
     <a href="https://hits.sh/{{ site.counter.slug }}/"
