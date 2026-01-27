@@ -25,40 +25,6 @@ kramdown:
          > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ < 
 </pre>   
 
-
-<p><strong>Visits:</strong> <span id="visit-count">…</span></p>
-
-<script>
-  (function () {
-    try {
-      var host = '{{ site.url | replace: "https://", "" | replace: "http://", "" | split: "/" | first }}';
-      if (!host || host === '') { host = '{{ site.github.owner_name }}.github.io'; }
-      var namespace = host;
-      var key = 'global-home';
-      var url = 'https://api.countapi.xyz/hit/' +
-                encodeURIComponent(namespace) + '/' +
-                encodeURIComponent(key);
-      fetch(url, { cache: 'no-store' })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-          var el = document.getElementById('visit-count');
-          if (el && d && typeof d.value === 'number') {
-            el.textContent = d.value.toLocaleString();
-          }
-        })
-        .catch(function () {
-          var el = document.getElementById('visit-count');
-          if (el) el.textContent = '—';
-        });
-    } catch (e) {
-      var el = document.getElementById('visit-count');
-      if (el) el.textContent = '—';
-    }
-  })();
-</script>
-
-
-
 I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methods and architecture for MPSoC and FPGA accelerators. I am interested in both software and hardware development for embedded systems.
 
 # Research Directions
