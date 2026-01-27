@@ -20,19 +20,31 @@
     {% if author.bio %}<p class="author__bio">{{ author.bio }}</p>{% endif %}
   </div>
 
+  <div class="author__stats">
+    <span><i class="fas fa-eye" aria-hidden="true"></i> Visitors</span>
+    <span
+      class="counterapi"
+      data-key="site-visits"
+      data-behavior="view"
+      style="display:inline-block; min-height:1em; margin-left:.35rem;"
+    ></span>
+  </div>
+
   <div class="author__urls-wrapper">
     <button class="btn btn--inverse">Follow</button>
     <ul class="author__urls social-icons">
       
       <li>
         <i class="fas fa-fw fa-eye" aria-hidden="true"></i>
-        <span class="label">Visitors</span>        
-        <img
-          alt="Visitors"
-          src="https://hitscounter.dev/count/tag.svg?url=https%3A%2F%2Fwincle626.github.io&title=Visitors&edge_flat=true"
-        />
+        <span class="label">Visitors</span>
+        <div
+          class="counterapi"
+          data-key="site-visits"
+          data-behavior="view"
+          data-readonly="false"
+          style="display:inline-block; min-height:1em; margin-left:.35rem;"
+        ></div>
       </li>
-
 
       <!-- Font Awesome icons / Biographic information  -->
       {% if author.location %}
