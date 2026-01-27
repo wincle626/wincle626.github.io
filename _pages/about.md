@@ -1,6 +1,7 @@
 ---
 permalink: /
 title: "Bio "
+layout: single
 author_profile: true
 redirect_from: 
   - /about/
@@ -75,31 +76,41 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 
 7. [Runtime Support for Adaptive Power Capping on Heterogeneous SoCs](https://wincle626.github.io/publication/2017-01-19-SAMOS)
 
-<p><strong>Visits:</strong> <span id="visit-count">…</span></p>
-
 
 <p><strong>Visits:</strong> <span id="visit-count">…</span></p>
 
 <script>
   (function () {
-    // Try to infer your GH Pages host. Works both locally and on GH Pages.
-    var host = '{{ site.url | replace: "https://", "" | replace: "http://", "" | split: "/" | first }}';
-    if (!host) { host = '{{ site.github.owner_name }}.github.io'; }
+    try {
+      // Derive a stable namespace from your site host (works with or without a custom domain)
+      var host = '{{ site.url | replace: "https://", "" | replace: "http://", "" | split: "/" | first }}';
+      if (!host || host === '') { host = '{{ site.github.owner_name }}.github.io'; } // GitHub Pages fallback
 
-    // Per-page key: good if you reuse this on multiple pages.
-    var namespace = host;
-    var key = 'global-home';
+      // For the homepage, use a single global key. (Change this if you want per-page counts—see note below.)
+      var namespace = host;
+      var key = 'global-home';
 
-    var url = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + key;
+      var url = 'https://api.countapi.xyz/hit/' +
+                encodeURIComponent(namespace) + '/' +
+                encodeURIComponent(key);
 
-    fetch(url)
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        document.getElementById('visit-count').textContent = Number(d.value).toLocaleString();
-      })
-      .catch(function () {
-        document.getElementById('visit-count').textContent = '—';
-      });
+      fetch(url, { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var el = document.getElementById('visit-count');
+          if (el && d && typeof d.value === 'number') {
+            el.textContent = d.value.toLocaleString();
+          }
+        })
+        .catch(function () {
+          var el = document.getElementById('visit-count');
+          if (el) el.textContent = '—';
+        });
+    } catch (e) {
+      var el = document.getElementById('visit-count');
+      if (el) el.textContent = '—';
+    }
   })();
 </script>
+
 
