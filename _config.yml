@@ -378,6 +378,6 @@ counter:
   slug: "wincle626.github.io"
 
   # Display options for the badge:
-  label: "Visitors"
+  label: "Visitors Count"
   style: "flat-square"   # flat | flat-square | for-the-badge | plastic
   color: "2c7be5"        # hex without '#'
