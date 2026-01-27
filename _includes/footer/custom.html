@@ -20,15 +20,24 @@
 
 <!-- start homepage visitor counter -->
 {% if site.counter.enabled and page.url == "/" %}
-  <div class="site-visitor-counter" style="margin-top:0.75rem; display:flex; justify-content:center;">
-    <a href="https://hits.sh/{{ site.counter.slug }}/"
-       rel="noopener"
-       aria-label="Visitor counter (click to view history)">
+  <style>
+    .site-visitor-counter {
+      position: fixed;
+      top: 0.75rem;
+      right: 0.75rem;
+      z-index: 1000; /* above header/nav */
+    }
+    @media (max-width: 640px) {
+      .site-visitor-counter { top: 0.5rem; right: 0.5rem; transform: scale(0.95); }
+    }
+  </style>
+
+  <div class="site-visitor-counter">
+    <a href="https://hits.sh/{{ site.counter.slug }}/" aria-label="Visitors stats">
       <img
         alt="{{ site.counter.label }}"
         src="https://hits.sh/{{ site.counter.slug }}.svg?style={{ site.counter.style }}&label={{ site.counter.label | uri_escape }}&color={{ site.counter.color }}"
-        referrerpolicy="no-referrer-when-downgrade"
-        loading="eager" />
+        decoding="async" loading="eager" />
     </a>
   </div>
 {% endif %}
