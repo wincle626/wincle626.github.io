@@ -367,17 +367,3 @@ compress_html:
   clippings: all
   ignore:
     envs: development
-
-# --- Page view counter (home page) ---
-counter:
-  enabled: true
-  provider: "hits.sh"
-  # This slug identifies your home page in the counter service.
-  # For GitHub Pages root, use your GH Pages domain (no protocol).
-  # Example: wincle626.github.io  → counts requests to https://wincle626.github.io/
-  slug: "wincle626.github.io"
-
-  # Display options for the badge:
-  label: "Visitors Count"
-  style: "flat-square"   # flat | flat-square | for-the-badge | plastic
-  color: "2c7be5"        # hex without '#'
