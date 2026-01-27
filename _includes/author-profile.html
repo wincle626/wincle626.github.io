@@ -23,6 +23,13 @@
   <div class="author__urls-wrapper">
     <button class="btn btn--inverse">Follow</button>
     <ul class="author__urls social-icons">
+      
+      <li class="author__counter">
+        <i class="fas fa-fw fa-eye" aria-hidden="true"></i>
+        <span>Visitors Count:</span>
+        <span id="site_visits">—</span>
+      </li>
+
       <!-- Font Awesome icons / Biographic information  -->
       {% if author.location %}
         <li class="author__desktop"><i class="fas fa-fw fa-location-dot icon-pad-right" aria-hidden="true"></i>{{ author.location }}</li>
