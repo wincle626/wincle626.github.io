@@ -1,3 +1,13 @@
+---
+title: 'YOLOv11 traning and inference example'
+date: 2025-12-01
+permalink: /posts/2025/12/yolov11-example/
+tags:
+  - cool posts
+  - category1
+  - category2
+---
+
 # Simple Yolo traning and inference example
 
 ## Install
