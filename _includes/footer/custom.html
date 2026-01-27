@@ -26,10 +26,9 @@
        rel="noopener"
        aria-label="Visitor counter (click to view history)">
       <img
-        alt="{{ site.counter.label }}"
-        src="https://hits.sh/{{ site.counter.slug }}.svg?style={{ site.counter.style }}&label={{ site.counter.label | uri_escape }}&color={{ site.counter.color }}"
-        referrerpolicy="no-referrer-when-downgrade"
-        loading="eager" />
+          alt="{{ site.counter.label }}"
+          src="https://hitscounter.dev/api/hits?url=https://{{ site.counter.slug }}&label={{ site.counter.label | uri_escape }}"
+          loading="eager" />
     </a>
   </div>
 {% endif %}
