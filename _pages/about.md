@@ -77,23 +77,29 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 
 <p><strong>Visits:</strong> <span id="visit-count">…</span></p>
 
+
+<p><strong>Visits:</strong> <span id="visit-count">…</span></p>
+
 <script>
   (function () {
-    // Use your own namespace, e.g., your GitHub Pages domain without protocol
-    const namespace = 'wincle626.github.io';
-    // Use path-specific key so each page can be counted separately if you reuse this snippet
-    // const key = encodeURIComponent(location.pathname || '/');
-    const key = 'home';
+    // Try to infer your GH Pages host. Works both locally and on GH Pages.
+    var host = '{{ site.url | replace: "https://", "" | replace: "http://", "" | split: "/" | first }}';
+    if (!host) { host = '{{ site.github.owner_name }}.github.io'; }
 
-    const url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+    // Per-page key: good if you reuse this on multiple pages.
+    var namespace = host;
+    var key = encodeURIComponent(location.pathname || '/');
+
+    var url = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + key;
 
     fetch(url)
-      .then(r => r.json())
-      .then(d => {
-        document.getElementById('visit-count').textContent = d.value.toLocaleString();
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        document.getElementById('visit-count').textContent = Number(d.value).toLocaleString();
       })
-      .catch(() => {
+      .catch(function () {
         document.getElementById('visit-count').textContent = '—';
       });
   })();
 </script>
+
