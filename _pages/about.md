@@ -74,3 +74,25 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 6. [Architectural Synthesis of Multi-SIMD Dataflow Accelerators for FPGA](https://wincle626.github.io/publication/2018-01-01-TPDS)
 
 7. [Runtime Support for Adaptive Power Capping on Heterogeneous SoCs](https://wincle626.github.io/publication/2017-01-19-SAMOS)
+
+<p><strong>Visits:</strong> <span id="visit-count">…</span></p>
+
+<script>
+  (function () {
+    // Use your own namespace, e.g., your GitHub Pages domain without protocol
+    const namespace = 'wincle626.github.io';
+    // Use path-specific key so each page can be counted separately if you reuse this snippet
+    const key = encodeURIComponent(location.pathname || '/');
+
+    const url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+
+    fetch(url)
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('visit-count').textContent = d.value.toLocaleString();
+      })
+      .catch(() => {
+        document.getElementById('visit-count').textContent = '—';
+      });
+  })();
+</script>
