@@ -88,7 +88,7 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 
     // Per-page key: good if you reuse this on multiple pages.
     var namespace = host;
-    var key = encodeURIComponent(location.pathname || '/');
+    var key = 'global-home';
 
     var url = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + key;
 
