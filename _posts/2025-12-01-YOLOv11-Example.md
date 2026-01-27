@@ -8,7 +8,7 @@ tags:
   - category2
 ---
 
-# Simple Yolo traning and inference example
+# This post introduce how to install Yolo in general, as well as a simple example about training and inference on a single image. 
 
 ## Install
 
