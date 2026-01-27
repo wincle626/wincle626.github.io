@@ -31,15 +31,19 @@
       .site-visitor-counter { top: 0.5rem; right: 0.5rem; transform: scale(0.95); }
     }
   </style>
-
-  <div class="site-visitor-counter">
-    <a href="https://hits.sh/{{ site.counter.slug }}/" aria-label="Visitors stats">
+  
+<div class="site-visitor-counter" style="margin-top:0.75rem; display:flex; justify-content:center;">
+    <a href="https://hits.sh/{{ site.counter.slug }}/"
+       rel="noopener"
+       aria-label="Visitor counter (click to view history)">
       <img
         alt="{{ site.counter.label }}"
         src="https://hits.sh/{{ site.counter.slug }}.svg?style={{ site.counter.style }}&label={{ site.counter.label | uri_escape }}&color={{ site.counter.color }}"
-        decoding="async" loading="eager" />
+        referrerpolicy="no-referrer-when-downgrade"
+        loading="eager" />
     </a>
   </div>
+
 {% endif %}
 <!-- end homepage visitor counter -->
 
