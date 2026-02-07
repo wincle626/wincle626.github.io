@@ -15,7 +15,7 @@ I am a Lecturer (Assistant Professor) in computing systems at Queen's University
 # Research Directions
 
 * Approximate Computing
-* Reconfigurable Accelerators and Security
+* Reconfigurable Accelerators and its Resilience
 * Low Size, Weight and Power - Cost (SWaP-C) Embedded Systems
 * Efficient & Trustworthy Artificial intelligence (AI)/Autonomous Systems (AS)
 
