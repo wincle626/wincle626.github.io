@@ -47,7 +47,9 @@ Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac
 
 **--> Application outcome (April 2026)**
 
-# Funding Opportunities (Cycling every year, opened around mid-November, closed by mid-January)
+# Funding Opportunities (Cycling every year)
+
+**Opened around mid-November, closed by mid-January**
 
 <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**2026年国家建设高水平大学公派研究生项目**](https://belfast.china-consulate.gov.cn/jlhz/jysw_142282/202601/t20260106_11806857.htm)
 
