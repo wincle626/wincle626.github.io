@@ -23,7 +23,7 @@ I am a Lecturer (Assistant Professor) in computing systems at Queen's University
 
 # Openning Positions
 
-Accepting PhD student all year round in reconfigurable architecture and design automations.  
+Accepting PhD student all year round in **Efficient Reconfigurable Architecture** and **AI-Assisted Design Automations** for **Approximate Computing**.  
 
 Please contact me through [YUN dot WU at QUB dot AC dot UK](mailto:yun.wu@qub.ac.uk) for more details or search for [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at [QUB](https://www.qub.ac.uk) with my name. 
 
