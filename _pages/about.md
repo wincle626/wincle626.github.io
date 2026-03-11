@@ -25,7 +25,7 @@ I am a Lecturer (Assistant Professor) in computing systems at Queen's University
 
 Accepting PhD student all year round in topics of **Approximate Computing**:  
 
-* **Efficient Reconfigurable Architecture**
+* **Efficient & Resilient Reconfigurable Architecture**
 * **AI-Assisted Electronic Design Automations**
 
 Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qub.ac.uk) for more details and keep eyes on [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at [QUB](https://www.qub.ac.uk) with my name. 
