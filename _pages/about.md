@@ -48,7 +48,7 @@ Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qu
 
 **--> ~~Interview process (before 2nd March 2026)~~** 
 
-**--> Application outcome (April 2026)**
+**--> ~~Application outcome (April 2026)~~**
 
 # Funding Opportunities (Cycling every year)
 
