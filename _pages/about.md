@@ -10,7 +10,7 @@ kramdown:
   parse_block_html: true
 ---
 
-I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methods and architecture for MPSoC and FPGA accelerators. I am interested in both software and hardware development for embedded systems.
+I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methods and architecture for MPSoC and FPGA accelerators. I am interested in new design methods and software/hardware architectures for embedded systems.
 
 # Research Directions
 
