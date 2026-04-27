@@ -35,12 +35,13 @@ Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qu
 * ✨ [**~~Efficient Reconfigurable Accelerator for Autonomous Systems~~**](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities/efficient-reconfigurable-accelerator-for-autonomous-systems.html)✨
   
   <!-- <img src="https://raw.githubusercontent.com/wincle626/wincle626.github.io/refs/heads/master/images/Screenshot_20251025_104607_Chrome.jpg" alt="project1" width="700"> -->
-  
+<!--   
 * ✨ [**~~AI-Assisted Accelerator Design for FPGA technologies~~**](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities/aiassisted-accelerator-design-for-fpga-technologies.html)✨
-  
+-->
+<!--   
   <!-- <img src="https://raw.githubusercontent.com/wincle626/wincle626.github.io/refs/heads/master/images/Screenshot_20251025_104720_Chrome.jpg" alt="project2" width="700"> -->
   
-
+<!-- 
 **Application Timeline:**
 
 **--> ~~Application starts (November 2025)~~**
