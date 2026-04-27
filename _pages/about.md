@@ -55,7 +55,7 @@ Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qu
 **  ~~Application outcome (April 2026)~~**
 -->
 
-# Funding Opportunities (Cycling every year)
+# Chinese Students Funding Opportunities (Cycling every year)
 
 **Opened around mid-November, closed by mid-January of the next year**
 
