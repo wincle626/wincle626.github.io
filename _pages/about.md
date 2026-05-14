@@ -11,7 +11,7 @@ kramdown:
 ---
 
 <iframe 
-    src="./_pages/fpga_mpsoc.html" 
+    src="https://github.com/wincle626/wincle626.github.io/blob/master/_pages/fpga_mpsoc.html" 
     width="100%" 
     height="800px" 
     style="border:none;">
