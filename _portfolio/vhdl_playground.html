@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VHDL Playground (Compile / Download / Run)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0f1733; --panel2:#101b3d;
+      --text:#e7ecff; --muted:#aab4e6; --accent:#6ea8fe; --bad:#ff6b6b; --ok:#51cf66;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    }
+    html,body{height:100%; margin:0; background:linear-gradient(180deg,#070b18,#0b1020); color:var(--text); font-family:var(--sans)}
+    .app{height:100%; display:grid; grid-template-rows:auto 1fr auto; gap:10px; padding:12px; box-sizing:border-box;}
+    .topbar{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+      background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06);
+      padding:10px 12px; border-radius:14px;
+    }
+    .left, .right{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
+    .btn{
+      appearance:none; border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text); padding:8px 12px; border-radius:12px; cursor:pointer;
+      font-weight:600;
+    }
+    .btn:hover{border-color:rgba(110,168,254,.55); box-shadow:0 0 0 3px rgba(110,168,254,.12);}
+    .btn:disabled{opacity:.55; cursor:not-allowed;}
+    .pill{
+      padding:6px 10px; border-radius:999px; font-size:12px;
+      border:1px solid rgba(255,255,255,.10); color:var(--muted); background:rgba(255,255,255,.03);
+    }
+    .pill.ok{border-color:rgba(81,207,102,.45); color:#bff4c7; background:rgba(81,207,102,.08);}
+    .pill.bad{border-color:rgba(255,107,107,.45); color:#ffd0d0; background:rgba(255,107,107,.06);}
+    .grid{
+      height:100%;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:10px;
+      min-height:0;
+    }
+    .card{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; overflow:hidden;
+      display:flex; flex-direction:column;
+      min-height:0;
+    }
+    .card header{
+      padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .card header h2{margin:0; font-size:13px; letter-spacing:.4px; text-transform:uppercase; color:var(--muted);}
+    .card .body{padding:0; min-height:0; flex:1; display:flex; flex-direction:column;}
+    #editorHost{flex:1; min-height:0;}
+    #fallbackEditor{
+      width:100%; height:100%; box-sizing:border-box;
+      font-family:var(--mono); font-size:13px; line-height:1.45;
+      padding:12px; border:none; outline:none; color:var(--text); background:transparent;
+      resize:none;
+    }
+    .panel{
+      padding:10px 12px; font-family:var(--mono); font-size:12px; line-height:1.35;
+      white-space:pre-wrap; word-break:break-word;
+      background:rgba(0,0,0,.16);
+      border-top:1px solid rgba(255,255,255,.06);
+      max-height:220px; overflow:auto;
+    }
+    .settings{
+      display:grid; grid-template-columns: 1fr; gap:10px; padding:12px;
+    }
+    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px;}
+    input, select{
+      width:100%; box-sizing:border-box;
+      padding:9px 10px; border-radius:12px; color:var(--text);
+      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03);
+      outline:none;
+    }
+    input:focus, select:focus{border-color:rgba(110,168,254,.6); box-shadow:0 0 0 3px rgba(110,168,254,.12);}
+    .small{font-size:12px; color:var(--muted)}
+    .footer{
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+      padding:10px 12px;
+      background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06);
+      border-radius:14px;
+    }
+    .waveHost{
+      padding:10px 12px; overflow:auto; min-height:0; flex:1;
+    }
+    .waveSvg text{font-family:var(--mono); fill:var(--text);}
+    .waveSvg .muted{fill:var(--muted);}
+    .waveSvg .gridline{stroke:rgba(255,255,255,.08); stroke-width:1;}
+    .waveSvg .sigline{stroke:rgba(110,168,254,.75); stroke-width:2; fill:none;}
+    .waveSvg .sigline2{stroke:rgba(81,207,102,.75); stroke-width:2; fill:none;}
+    .waveSvg .box{fill:rgba(255,255,255,.03); stroke:rgba(255,255,255,.08); stroke-width:1;}
+    .kbd{font-family:var(--mono); font-size:12px; padding:2px 6px; border-radius:8px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03);}
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr; grid-template-rows: 1.2fr .9fr;}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="left">
+      <button class="btn" id="btnCompile">Compile</button>
+      <button class="btn" id="btnDownload">Download</button>
+      <button class="btn" id="btnRun">Run</button>
+      <span class="pill" id="statusPill">Idle</span>
+      <span class="pill" id="modePill">Mode: auto</span>
+    </div>
+    <div class="right">
+      <span class="small">Tip: <span class="kbd">Ctrl</span>+<span class="kbd">S</span> saves to browser, <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> runs.</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Editor -->
+    <section class="card">
+      <header>
+        <h2>VHDL Editor</h2>
+        <div class="small" id="editorInfo">Loading editor…</div>
+      </header>
+      <div class="body">
+        <div id="editorHost"></div>
+        <textarea id="fallbackEditor" spellcheck="false" style="display:none"></textarea>
+        <div class="panel" id="logPanel">Logs will appear here.</div>
+      </div>
+    </section>
+
+    <!-- Settings + Waveform -->
+    <section class="card">
+      <header>
+        <h2>Run Settings & Waveform</h2>
+        <div class="small" id="runInfo">No waveform yet.</div>
+      </header>
+      <div class="body" style="min-height:0;">
+        <div class="settings">
+          <div>
+            <label for="backendUrl">Backend URL (optional for real compile/run)</label>
+            <input id="backendUrl" placeholder="e.g. http://localhost:8787" />
+            <div class="small">
+              If set, <b>Compile</b> uses <code>/api/compile</code> and <b>Run</b> uses <code>/api/run</code> (returns VCD).
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+              <label for="stopTime">Stop time</label>
+              <input id="stopTime" value="2000ns" />
+            </div>
+            <div>
+              <label for="seed">Random seed</label>
+              <input id="seed" value="12345" />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+              <label for="stimSteps">Stimulus steps</label>
+              <input id="stimSteps" value="80" />
+            </div>
+            <div>
+              <label for="topEntity">Top entity (optional override)</label>
+              <input id="topEntity" placeholder="auto-detect" />
+            </div>
+          </div>
+          <div class="small">
+            Built-in “Run” fallback shows <b>stimulus waveforms</b> if no backend is set.<br/>
+            With backend, it will render the <b>real VCD</b> generated by the simulator (via <code>--vcd=...</code>).
+          </div>
+        </div>
+        <div class="waveHost" id="waveHost"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="footer">
+    <div class="small">
+      Uses GHDL workflow concepts: analyze (<code>-a</code>), elaborate (<code>-e</code>), run (<code>-r</code>).
+    </div>
+    <div class="small" id="saveInfo">Autosave: off</div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ---------- Utilities ----------
+  const $ = (sel) => document.querySelector(sel);
+  const statusPill = $("#statusPill");
+  const modePill = $("#modePill");
+  const logPanel = $("#logPanel");
+  const waveHost = $("#waveHost");
+  const editorInfo = $("#editorInfo");
+  const runInfo = $("#runInfo");
+  const saveInfo = $("#saveInfo");
+
+  function setStatus(text, kind="") {
+    statusPill.textContent = text;
+    statusPill.classList.remove("ok","bad");
+    if (kind) statusPill.classList.add(kind);
+  }
+  function log(msg) {
+    const ts = new Date().toISOString().replace("T"," ").replace("Z","");
+    logPanel.textContent = `[${ts}] ${msg}\n` + logPanel.textContent;
+  }
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  // stable RNG (xorshift32)
+  function makeRng(seed) {
+    let x = (seed|0) || 12345;
+    return () => {
+      x ^= x << 13; x |= 0;
+      x ^= x >>> 17; x |= 0;
+      x ^= x << 5; x |= 0;
+      return ((x >>> 0) / 4294967296);
+    };
+  }
+
+  // ---------- Editor (Monaco if available, else textarea) ----------
+  const fallback = $("#fallbackEditor");
+  let editor = null; // monaco editor instance OR null
+  function getCode() { return editor ? editor.getValue() : fallback.value; }
+  function setCode(v) { editor ? editor.setValue(v) : (fallback.value = v); }
+
+  const DEFAULT_CODE =
+`library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity demo is
+  port(
+    clk   : in  std_logic;
+    rst   : in  std_logic;
+    a     : in  std_logic_vector(7 downto 0);
+    y     : out std_logic_vector(7 downto 0)
+  );
+end entity;
+
+architecture rtl of demo is
+begin
+  process(clk)
+  begin
+    if rising_edge(clk) then
+      if rst='1' then
+        y <= (others=>'0');
+      else
+        y <= std_logic_vector(unsigned(a) + 1);
+      end if;
+    end if;
+  end process;
+end architecture;
+`;
+
+  // Load last code
+  const LS_KEY = "vhdl_playground_code_v1";
+  const saved = localStorage.getItem(LS_KEY);
+  setCode(saved || DEFAULT_CODE);
+
+  function enableAutosave() {
+    let t = null;
+    const tick = () => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        try {
+          localStorage.setItem(LS_KEY, getCode());
+          saveInfo.textContent = "Autosave: on (localStorage)";
+        } catch {
+          saveInfo.textContent = "Autosave: failed";
+        }
+      }, 300);
+    };
+    if (editor) editor.onDidChangeModelContent(tick);
+    else fallback.addEventListener("input", tick);
+  }
+
+  async function initEditor() {
+    // Try Monaco via CDN (requires http(s), may fail on file://)
+    const host = $("#editorHost");
+    host.style.height = "100%";
+    host.style.minHeight = "0";
+    host.style.position = "relative";
+    try {
+      // Only attempt Monaco if served over http(s)
+      if (!location.protocol.startsWith("http")) throw new Error("Not served via http(s); skip Monaco");
+      editorInfo.textContent = "Loading Monaco…";
+      const loader = document.createElement("script");
+      loader.src = "https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/min/vs/loader.js";
+      loader.onload = () => {
+        require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/min/vs" } });
+        require(["vs/editor/editor.main"], () => {
+          editor = monaco.editor.create(host, {
+            value: saved || DEFAULT_CODE,
+            language: "vhdl",
+            theme: "vs-dark",
+            automaticLayout: true,
+            fontFamily: getComputedStyle(document.documentElement).getPropertyValue("--mono"),
+            fontSize: 13,
+            minimap: { enabled: false }
+          });
+          fallback.style.display = "none";
+          editorInfo.textContent = "Monaco ready";
+          modePill.textContent = "Mode: Monaco + backend optional";
+          enableAutosave();
+        });
+      };
+      loader.onerror = () => { throw new Error("Monaco loader failed"); };
+      document.head.appendChild(loader);
+    } catch (e) {
+      // fallback to textarea
+      editor = null;
+      editorInfo.textContent = "Textarea editor (offline fallback)";
+      modePill.textContent = "Mode: offline fallback";
+      fallback.style.display = "block";
+      fallback.value = saved || DEFAULT_CODE;
+      host.style.display = "none";
+      enableAutosave();
+    }
+  }
+
+  // Keyboard shortcuts
+  window.addEventListener("keydown", (ev) => {
+    if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "s") {
+      ev.preventDefault();
+      try { localStorage.setItem(LS_KEY, getCode()); log("Saved to browser (localStorage)." ); }
+      catch { log("Save failed." ); }
+    }
+    if ((ev.ctrlKey || ev.metaKey) && ev.key === "Enter") {
+      ev.preventDefault();
+      $("#btnRun").click();
+    }
+  });
+
+  // ---------- VHDL sniffing (simple) ----------
+  function detectTopEntity(code) {
+    // naive: first "entity <name> is"
+    const m = code.match(/\bentity\s+([a-zA-Z_]\w*)\s+is\b/i);
+    return m ? m[1] : null;
+  }
+
+  function parsePorts(code, entityName) {
+    // naive extraction of port(...) section within that entity
+    // supports: name[,name] : in|out|inout <type>
+    const reEnt = new RegExp("\\bentity\\s+" + entityName + "\\s+is\\b([\\s\\S]*?)\\bend\\b", "i");
+    const entBlock = (code.match(reEnt) || [])[1] || "";
+    const portMatch = entBlock.match(/\bport\s*\(([\s\S]*?)\)\s*;/i);
+    if (!portMatch) return [];
+    const portBody = portMatch[1];
+
+    // Split by semicolons at top level
+    const decls = portBody.split(";").map(s => s.trim()).filter(Boolean);
+    const ports = [];
+    for (const d of decls) {
+      // remove comments
+      const clean = d.replace(/--.*$/gm,"").trim();
+      if (!clean) continue;
+      // e.g. "clk, rst : in std_logic"
+      const m = clean.match(/^(.+?)\s*:\s*(in|out|inout)\s+(.+)$/i);
+      if (!m) continue;
+      const names = m[1].split(",").map(x => x.trim()).filter(Boolean);
+      const dir = m[2].toLowerCase();
+      const type = m[3].trim();
+      for (const n of names) ports.push({ name:n, dir, type });
+    }
+    return ports;
+  }
+
+  function basicVhdlLint(code) {
+    // NOT a real compiler: just sanity checks
+    const issues = [];
+    if (!/\bentity\b/i.test(code)) issues.push({ sev:"error", msg:"No ENTITY found." });
+    if (!/\barchitecture\b/i.test(code)) issues.push({ sev:"error", msg:"No ARCHITECTURE found." });
+
+    const ents = [...code.matchAll(/\bentity\s+([a-zA-Z_]\w*)\s+is\b/ig)].map(m=>m[1]);
+    for (const e of ents) {
+      const endOk = new RegExp("\\bend\\s+(entity\\s+)?"+e+"\\s*;", "i").test(code) || new RegExp("\\bend\\s*;", "i").test(code);
+      if (!endOk) issues.push({ sev:"warn", msg:`ENTITY "${e}" might be missing a matching "end" (heuristic).` });
+    }
+
+    const archs = [...code.matchAll(/\barchitecture\s+([a-zA-Z_]\w*)\s+of\s+([a-zA-Z_]\w*)\s+is\b/ig)]
+      .map(m=>({arch:m[1], ent:m[2]}));
+    if (archs.length===0) issues.push({ sev:"warn", msg:"No 'architecture ... of ... is' pattern detected." });
+
+    const beginCount = (code.match(/\bbegin\b/ig) || []).length;
+    const endCount = (code.match(/\bend\b/ig) || []).length;
+    if (beginCount>0 && endCount===0) issues.push({ sev:"error", msg:"Has BEGIN but no END." });
+    if (beginCount> endCount) issues.push({ sev:"warn", msg:`BEGIN/END count mismatch (BEGIN=${beginCount}, END=${endCount})` });
+
+    return issues;
+  }
+
+  // ---------- Download ----------
+  async function downloadCode() {
+    const code = getCode();
+    const entity = detectTopEntity(code) || "design";
+    const filename = `${entity}.vhd`;
+
+    // Prefer File System Access API (Save As)
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await showSaveFilePicker({
+          suggestedName: filename,
+          types: [{ description:"VHDL file", accept:{ "text/plain":[".vhd", ".vhdl"] } }]
+        });
+        const writable = await handle.createWritable();
+        await writable.write(code);
+        await writable.close();
+        log(`Saved to file via Save As: ${filename}`);
+        return;
+      } catch (e) {
+        log(`Save As cancelled or failed (${e.message}). Falling back to download.`);
+      }
+    }
+
+    // Fallback: anchor download
+    const blob = new Blob([code], { type:"text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    log(`Downloaded: ${filename}`);
+  }
+
+  // ---------- Backend API calls (optional) ----------
+  async function apiPost(path, payload) {
+    const base = ($("#backendUrl").value || "").trim().replace(/\/$/,"");
+    if (!base) throw new Error("No backend URL set");
+    const res = await fetch(base + path, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const txt = await res.text().catch(()=> "");
+      throw new Error(`Backend error ${res.status}: ${txt || res.statusText}`);
+    }
+    return await res.json();
+  }
+
+  // ---------- VCD parsing + waveform rendering ----------
+  function parseVcd(vcdText) {
+    // Minimal parse for scalar and binary vector updates.
+    // Returns {times:[], signals:[{name, changes:[{t,val}]}]}
+    const lines = vcdText.split(/\r?\n/);
+    const idToSig = new Map(); // id -> {name, size}
+    const sigs = new Map(); // name -> {name, size, changes}
+    let t = 0;
+    let inHeader = true;
+
+    for (const line0 of lines) {
+      const line = line0.trim();
+      if (!line) continue;
+
+      if (inHeader) {
+        if (line.startsWith("$var")) {
+          // $var wire 1 ! clk $end
+          const m = line.match(/^\$var\s+\S+\s+(\d+)\s+(\S+)\s+(\S+)\s+\$end/i);
+          if (m) {
+            const size = parseInt(m[1],10);
+            const id = m[2];
+            const name = m[3];
+            idToSig.set(id, {name, size});
+            if (!sigs.has(name)) sigs.set(name, {name, size, changes:[]});
+          }
+        } else if (line.startsWith("$enddefinitions")) {
+          inHeader = false;
+        }
+        continue;
+      }
+
+      if (line[0] === "#") {
+        t = parseInt(line.slice(1),10);
+        continue;
+      }
+
+      if (line[0] === "b") {
+        // b1010 <id>
+        const m = line.match(/^b([01xzXZ]+)\s+(\S+)$/);
+        if (!m) continue;
+        const bits = m[1].toLowerCase();
+        const id = m[2];
+        const meta = idToSig.get(id);
+        if (!meta) continue;
+        const s = sigs.get(meta.name);
+        s.changes.push({t, val: bits});
+        continue;
+      }
+
+      // scalar: 0! or 1!
+      const m = line.match(/^([01xzXZ])(\S+)$/);
+      if (m) {
+        const val = m[1].toLowerCase();
+        const id = m[2];
+        const meta = idToSig.get(id);
+        if (!meta) continue;
+        const s = sigs.get(meta.name);
+        s.changes.push({t, val});
+      }
+    }
+
+    // Normalize: ensure sorted, add t=0 initial if missing
+    const signals = [...sigs.values()].map(s => {
+      s.changes.sort((a,b)=>a.t-b.t);
+      if (s.changes.length && s.changes[0].t !== 0) {
+        s.changes.unshift({t:0, val:"x"});
+      } else if (!s.changes.length) {
+        s.changes.push({t:0, val:"x"});
+      }
+      return s;
+    });
+
+    const times = new Set([0]);
+    for (const s of signals) for (const c of s.changes) times.add(c.t);
+    const timeArr = [...times].sort((a,b)=>a-b);
+    return { times: timeArr, signals };
+  }
+
+  function makeSvgWaveform({signals, start=0, end=2000, title="Waveform"}) {
+    // Render as step lines in SVG.
+    // Times assumed in "ns" unit domain; data may be any int, we'll scale linearly.
+    const W = 980;
+    const rowH = 28;
+    const leftPad = 190;
+    const topPad = 40;
+    const height = topPad + signals.length*rowH + 40;
+
+    // limit to first ~20 signals for legibility
+    const shown = signals.slice(0, 20);
+    const scaleX = (t) => leftPad + (W-leftPad-20) * ((t - start) / Math.max(1, (end - start)));
+
+    // time grid: 10 divisions
+    const gridN = 10;
+    const gridTimes = Array.from({length:gridN+1}, (_,i)=> start + (end-start)*(i/gridN));
+
+    let svg = '';
+    svg += `<svg class="waveSvg" viewBox="0 0 ${W} ${height}" width="100%" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
+    svg += `<rect class="box" x="0" y="0" width="${W}" height="${height}" rx="14" />`;
+    svg += `<text x="16" y="24" font-size="14">${escapeXml(title)}</text>`;
+
+    // grid
+    for (const gt of gridTimes) {
+      const x = scaleX(gt);
+      svg += `<line class="gridline" x1="${x}" y1="${topPad-10}" x2="${x}" y2="${height-20}" />`;
+      svg += `<text class="muted" x="${x+2}" y="${topPad-14}" font-size="10">${Math.round(gt)} ns</text>`;
+    }
+
+    // signals
+    for (let i=0;i<shown.length;i++){
+      const y0 = topPad + i*rowH;
+      const yMid = y0 + rowH/2;
+      const yHi = y0 + 6;
+      const yLo = y0 + rowH - 8;
+
+      const sig = shown[i];
+      svg += `<text x="16" y="${yMid+4}" font-size="12">${escapeXml(sig.name)}</text>`;
+      // axis line
+      svg += `<line class="gridline" x1="${leftPad}" y1="${y0+rowH-2}" x2="${W-20}" y2="${y0+rowH-2}"/>`;
+
+      // Build steps
+      const changes = sig.changes.filter(c => c.t>=start && c.t<=end);
+      const all = [...changes];
+      // ensure last point at end
+      const lastVal = all.length ? all[all.length-1].val : "x";
+      if (!all.length || all[0].t !== start) all.unshift({t:start, val: lastVal});
+      if (all[all.length-1].t !== end) all.push({t:end, val: all[all.length-1].val});
+
+      const isScalar = (v) => /^[01xz]$/.test(v);
+      const levelY = (v) => {
+        if (v === "1") return yHi;
+        if (v === "0") return yLo;
+        return yMid; // x/z/other
+      };
+
+      // path
+      let d = "";
+      for (let k=0;k<all.length;k++){
+        const p = all[k];
+        const x = scaleX(p.t);
+        const v = p.val;
+        const y = isScalar(v) ? levelY(v) : yMid;
+
+        if (k===0) d += `M ${x} ${y}`;
+        else {
+          // step: horizontal from prev x to this x at prev y, then vertical
+          const prev = all[k-1];
+          const px = scaleX(prev.t);
+          const py = isScalar(prev.val) ? levelY(prev.val) : yMid;
+          d += ` L ${x} ${py} L ${x} ${y}`;
+        }
+
+        // label vectors at change points
+        if (!isScalar(v) && k>0) {
+          svg += `<text class="muted" x="${x+4}" y="${yMid-6}" font-size="10">${escapeXml(v)}</text>`;
+        }
+      }
+      const cls = (i % 2 === 0) ? "sigline" : "sigline2";
+      svg += `<path class="${cls}" d="${d}" />`;
+    }
+
+    svg += `</svg>`;
+    return svg;
+  }
+
+  function escapeXml(s){
+    return String(s).replace(/[<>&'\"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','\"':'&quot;'}[c]));
+  }
+
+  // ---------- Testbench generation (wrapper) ----------
+  function genTestbench(entity, ports, seed, stopTime, stimSteps) {
+    // minimal testbench: a clock if input "clk" exists; random stimulus via counter.
+    const hasClk = ports.some(p => p.dir !== "out" && p.name.toLowerCase().includes("clk"));
+    const inputs = ports.filter(p => p.dir === "in" || p.dir==="inout");
+
+    const declSig = (p) => `signal ${p.name} : ${p.type};`;
+    const mapPort = (p) => `${p.name} => ${p.name}`;
+
+    const stimAssign = (p, idx) => {
+      const n = p.name;
+      const t = p.type.toLowerCase();
+      if (t.includes("std_logic_vector")) {
+        return `      ${n} <= std_logic_vector(to_unsigned((seed + i*${idx+3}) mod 256, ${vectorWidthGuess(p.type)}));`;
+      }
+      if (t.includes("std_logic")) {
+        return `      ${n} <= std_logic'val(character'pos('0') + ((seed + i*${idx+7}) mod 2));`;
+      }
+      if (t.includes("unsigned") || t.includes("signed")) {
+        return `      ${n} <= to_unsigned((seed + i*${idx+5}) mod 256, ${vectorWidthGuess(p.type)});`;
+      }
+      if (t.includes("integer")) {
+        return `      ${n} <= (seed + i*${idx+11}) mod 1024;`;
+      }
+      return `      -- TODO: unsupported type stimulus for ${n}: ${p.type}`;
+    };
+
+    const clkProc =
+`  clk_gen: process
+  begin
+    while now < ${stopTime} loop
+      clk <= '0'; wait for 5 ns;
+      clk <= '1'; wait for 5 ns;
+    end loop;
+    wait;
+  end process;`;
+
+    const stimProc =
+`  stim: process
+    variable seed : integer := ${seed};
+  begin
+    -- reset pulse if present
+    ${inputs.some(p=>p.name.toLowerCase().includes("rst")) ? "rst <= '1'; wait for 20 ns; rst <= '0';" : "-- no rst detected"}
+    for i in 0 to ${Math.max(1, stimSteps|0)} loop
+${inputs.filter(p=>!p.name.toLowerCase().includes("clk")).map((p,idx)=>stimAssign(p,idx)).join("\n")}
+      wait for 20 ns;
+    end loop;
+    wait;
+  end process;`;
+
+    const tb =
+`library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity tb_${entity} is
+end entity;
+
+architecture sim of tb_${entity} is
+${ports.map(declSig).join("\n")}
+begin
+  dut: entity work.${entity}
+    port map (
+      ${ports.map(mapPort).join(",\n      ")}
+    );
+
+${hasClk ? clkProc : "  -- no clk detected"}
+${stimProc}
+
+end architecture;
+`;
+    return tb;
+  }
+
+  function vectorWidthGuess(typeStr) {
+    // crude: find "(N downto M)" width = N-M+1
+    const m = typeStr.match(/\(\s*(\d+)\s+downto\s+(\d+)\s*\)/i);
+    if (!m) return 8;
+    const hi = parseInt(m[1],10), lo = parseInt(m[2],10);
+    return Math.abs(hi-lo)+1;
+  }
+
+  // ---------- “Compile” ----------
+  async function compileClicked() {
+    setStatus("Compiling…");
+    $("#btnCompile").disabled = true;
+    try {
+      const code = getCode();
+      const top = ($("#topEntity").value || "").trim() || detectTopEntity(code);
+      const base = ($("#backendUrl").value || "").trim();
+      if (base) {
+        log(`Using backend compiler at ${base}`);
+        const res = await apiPost("/api/compile", { code, top });
+        if (res.ok) {
+          setStatus("Compile OK", "ok");
+          log(res.stdout || "Compile OK.");
+          if (res.stderr) log(res.stderr);
+        } else {
+          setStatus("Compile failed", "bad");
+          log(res.stderr || "Compile failed.");
+        }
+      } else {
+        const issues = basicVhdlLint(code);
+        if (!issues.length) {
+          setStatus("No issues (lint)", "ok");
+          log("Local lint: no obvious issues found (NOT a real compile)." );
+        } else {
+          const hasErr = issues.some(x=>x.sev==="error");
+          setStatus(hasErr ? "Errors (lint)" : "Warnings (lint)", hasErr ? "bad" : "");
+          for (const it of issues) log(`${it.sev.toUpperCase()}: ${it.msg}`);
+          log("Local lint completed (NOT a real compile). Set a backend URL for real compilation." );
+        }
+      }
+    } catch (e) {
+      setStatus("Compile error", "bad");
+      log(`Compile error: ${e.message}`);
+    } finally {
+      $("#btnCompile").disabled = false;
+    }
+  }
+
+  // ---------- “Run” ----------
+  async function runClicked() {
+    setStatus("Running…");
+    $("#btnRun").disabled = true;
+    waveHost.innerHTML = "";
+    runInfo.textContent = "Running…";
+
+    const code = getCode();
+    const top = ($("#topEntity").value || "").trim() || detectTopEntity(code) || "top";
+    const ports = parsePorts(code, top);
+    const seed = parseInt($("#seed").value, 10) || 12345;
+    const stopTime = ($("#stopTime").value || "2000ns").trim();
+    const stimSteps = parseInt($("#stimSteps").value, 10) || 80;
+
+    try {
+      const base = ($("#backendUrl").value || "").trim();
+      if (base) {
+        log(`Generating testbench for ${top} and running via backend…`);
+        const tb = genTestbench(top, ports, seed, stopTime, stimSteps);
+        const res = await apiPost("/api/run", { code, top, tb, stopTime });
+        if (!res.ok) throw new Error(res.stderr || "Run failed");
+
+        log(res.stdout || "Run OK.");
+        if (res.stderr) log(res.stderr);
+
+        if (res.vcd) {
+          const parsed = parseVcd(res.vcd);
+          const end = deriveEndNs(parsed);
+          const svg = makeSvgWaveform({
+            signals: parsed.signals.map(s => ({name:s.name, changes:s.changes})),
+            start: 0,
+            end: end || 2000,
+            title: `VCD waveform (top=${top})`
+          });
+          waveHost.innerHTML = svg;
+          setStatus("Run OK", "ok");
+          runInfo.textContent = "Rendered VCD waveform.";
+        } else {
+          throw new Error("Backend did not return VCD.");
+        }
+      } else {
+        log(`No backend set; rendering stimulus-only waveform for ${top} in ~2s…`);
+        const rng = makeRng(seed);
+
+        const sigs = [];
+        const inputPorts = ports.filter(p => p.dir === "in" || p.dir==="inout");
+        const N = Math.max(20, stimSteps|0);
+        const end = 2000; // ns for display
+        const dt = Math.max(1, Math.floor(end / N));
+        const timePoints = Array.from({length:N+1}, (_,i)=> i*dt);
+
+        for (const p of inputPorts) {
+          const t = p.type.toLowerCase();
+          const changes = [];
+          let last = null;
+          for (const tt of timePoints) {
+            let v;
+            if (t.includes("std_logic_vector") || t.includes("unsigned") || t.includes("signed")) {
+              const w = vectorWidthGuess(p.type);
+              const val = Math.floor(rng() * Math.pow(2, Math.min(w, 12))); // cap randomness
+              v = val.toString(2).padStart(Math.min(w,12), "0");
+            } else if (t.includes("std_logic")) {
+              v = (rng() > 0.5) ? "1" : "0";
+            } else if (t.includes("integer")) {
+              v = String(Math.floor(rng()*1024));
+            } else {
+              v = (rng() > 0.5) ? "1" : "0";
+            }
+            if (v !== last) changes.push({t:tt, val:v});
+            last = v;
+          }
+          sigs.push({name:p.name, changes});
+        }
+
+        await sleep(2000);
+        const svg = makeSvgWaveform({signals:sigs, start:0, end:2000, title:`Stimulus-only waveform (top=${top})`});
+        waveHost.innerHTML = svg;
+        setStatus("Rendered (stimulus)", "ok");
+        runInfo.textContent = "Rendered stimulus-only waveform (no real simulation). Set backend URL for real VCD.";
+      }
+    } catch (e) {
+      setStatus("Run failed", "bad");
+      runInfo.textContent = "Run failed.";
+      log(`Run error: ${e.message}`);
+    } finally {
+      $("#btnRun").disabled = false;
+    }
+  }
+
+  function deriveEndNs(parsed) {
+    let maxT = 0;
+    for (const s of parsed.signals) {
+      if (s.changes.length) maxT = Math.max(maxT, s.changes[s.changes.length-1].t);
+    }
+    if (maxT > 1e9) return 2000;
+    return maxT || 2000;
+  }
+
+  // ---------- Wire up buttons ----------
+  $("#btnCompile").addEventListener("click", compileClicked);
+  $("#btnDownload").addEventListener("click", downloadCode);
+  $("#btnRun").addEventListener("click", runClicked);
+
+  // init
+  initEditor().then(() => {
+    setStatus("Idle");
+    log("Ready. Set backend URL for real compile/run, or use offline fallback.");
+  });
+
+})();
+</script>
+</body>
+</html>
