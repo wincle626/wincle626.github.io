@@ -186,7 +186,7 @@ body {
 }
 .bridge-port .bw{ display:inline-block; margin-top:6px; font-size:9px; color:#93c5fd; }
 .bridge-port .sig{ display:block; margin-top:2px; font-size:8px; color:#cbd5e1; opacity:0.9; }
-/* connector stubs to PS and PL */
+.bridge-port{ position:relative; }
 .bridge-port::before, .bridge-port::after{
  content:"";
  position:absolute;
@@ -195,13 +195,12 @@ body {
  background:#38bdf8;
  transform:translateY(-50%);
 }
-.bridge-port{ position:relative; }
 .bridge-port::before{ left:-22px; width:22px; }
 .bridge-port::after{ right:-22px; width:22px; }
 
-/* ===== Mini diagrams inside DDR and Peripherals ===== */
-.node-title{ font-weight:700; font-size:11px; margin-bottom:4px; pointer-events:none; }
-.mini-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:3px; margin-top:4px; pointer-events:none; }
+/* ===== Mini diagrams inside DDR and Peripherals (clickable sub-blocks) ===== */
+.node-title{ font-weight:700; font-size:11px; margin-bottom:4px; }
+.mini-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:3px; margin-top:4px; }
 .mini{
  font-size:7px;
  padding:2px 2px;
@@ -210,11 +209,21 @@ body {
  background:rgba(2,6,23,0.35);
  color:#e2e8f0;
  text-align:center;
+ cursor:pointer;
+ user-select:none;
 }
+.mini:hover{ border-color:rgba(56,189,248,0.8); background:rgba(56,189,248,0.12); }
 .mini.wide{ grid-column:span 2; }
 
 /* Hide legacy PS-side HP/GP/HPC boxes (kept in DOM for compatibility) */
 #gp, #hp, #hpc { display:none; }
+
+/* ===== Info panel typography (smaller) ===== */
+#info{ font-size:11px; line-height:1.35; }
+#info h2{ font-size:16px; margin:0 0 6px 0; }
+#info ul{ margin:6px 0 10px 18px; padding:0; }
+#info li{ margin:2px 0; }
+#info b{ color:#e2e8f0; }
 
 </style>
 </head>
@@ -242,24 +251,24 @@ body {
 <div id="ddr" class="node" data-type="DDR">
   <div class="node-title">DDR Subsystem</div>
   <div class="mini-grid">
-    <div class="mini">QoS</div>
-    <div class="mini">Scheduler</div>
-    <div class="mini">Addr Map</div>
-    <div class="mini">ECC</div>
-    <div class="mini wide">PHY / Training</div>
+    <div class="mini" data-type="DDR_QOS">QoS</div>
+    <div class="mini" data-type="DDR_SCHED">Scheduler</div>
+    <div class="mini" data-type="DDR_ADDR">Addr Map</div>
+    <div class="mini" data-type="DDR_ECC">ECC</div>
+    <div class="mini wide" data-type="DDR_PHY">PHY / Training</div>
   </div>
 </div>
 <div id="periph" class="node" data-type="PERIPH">
   <div class="node-title">Peripherals</div>
   <div class="mini-grid">
-    <div class="mini">USB3 DRD</div>
-    <div class="mini">GEM</div>
-    <div class="mini">SD/eMMC</div>
-    <div class="mini">UART</div>
-    <div class="mini">I2C</div>
-    <div class="mini">SPI</div>
-    <div class="mini">GPIO</div>
-    <div class="mini">Timers</div>
+    <div class="mini" data-type="PERIPH_USB">USB3 DRD</div>
+    <div class="mini" data-type="PERIPH_GEM">GEM</div>
+    <div class="mini" data-type="PERIPH_SD">SD/eMMC</div>
+    <div class="mini" data-type="PERIPH_UART">UART</div>
+    <div class="mini" data-type="PERIPH_I2C">I2C</div>
+    <div class="mini" data-type="PERIPH_SPI">SPI</div>
+    <div class="mini" data-type="PERIPH_GPIO">GPIO</div>
+    <div class="mini" data-type="PERIPH_TMR">Timers</div>
   </div>
 </div>
 <div id="gp" class="node" data-type="GP">AXI-GP</div>
@@ -268,14 +277,10 @@ body {
 
 <!-- wiring -->
 <div class="line v" style="left:240px; top:-30px; height:50px;"></div>
-<!-- from AXI Interconnect down to internal bus -->
 <div class="line v" style="left:240px; top:90px; height:25px;"></div>
-<!-- internal bus kept between DDR/periph blocks -->
 <div class="line h" style="left:160px; top:115px; width:160px;"></div>
-<!-- DDR branch (approach from the right edge, not through the block) -->
 <div class="line v" style="left:160px; top:115px; height:50px;"></div>
 <div class="line h" style="left:156px; top:165px; width:4px;"></div>
-<!-- Peripherals branch (approach from the left edge, not through the block) -->
 <div class="line v" style="left:320px; top:115px; height:50px;"></div>
 <div class="line h" style="left:320px; top:165px; width:4px;"></div>
 
@@ -319,180 +324,246 @@ return `
   <li><b>L1 caches (per core):</b> 32KB instruction cache (2‑way, parity) + 32KB data cache (4‑way, ECC).</li>
   <li><b>Coherency support:</b> Extendable cache coherency (ACE/ACP/CCI infrastructure) for multi-master systems.</li>
 </ul>
-<b>Performance:</b>
+<b>Performance notes:</b>
 <ul>
-  <li><b>Max core frequency:</b> up to 1.5 GHz (device/grade dependent).</li>
-  <li><b>What dominates runtime:</b> memory hierarchy + coherency traffic; keep hot code/data in L1/L2 and avoid unnecessary cache maintenance.</li>
-  <li><b>When to offload:</b> move streaming/parallel kernels to PL (DSP/BRAM/URAM) and communicate via HP/HPC ports depending on coherency needs.</li>
+  <li>Max frequency is device/grade dependent (commonly up to ~1.5 GHz).</li>
+  <li>Runtime is often limited by memory hierarchy + coherency traffic rather than raw ALU throughput.</li>
 </ul>`;
 
 case "L2":
 return `
-<h2>Shared L2 Cache (APU Cluster) + Coherency</h2>
+<h2>Shared L2 Cache (APU Cluster)</h2>
 <ul>
-  <li><b>Role:</b> Shared last-level cache for the Cortex‑A53 cluster, reducing DDR traffic and smoothing contention across cores.</li>
-  <li><b>Integrity:</b> L2 cache includes ECC; coherency is supported through the MPSoC coherency interconnect (ACE/ACP/CCI infrastructure).</li>
-  <li><b>Software impact:</b> cacheability and shareability attributes (MMU) strongly affect performance and coherency behavior for PS↔PL data sharing.</li>
+  <li><b>Role:</b> Shared last-level cache for the Cortex‑A53 cluster to reduce DDR traffic.</li>
+  <li><b>Coherency:</b> Works with the coherency interconnect (CCI/ACE/ACP/HPC paths depending on configuration).</li>
 </ul>
-<b>Performance:</b>
+<b>Performance notes:</b>
 <ul>
-  <li><b>Size:</b> 1MB, 16‑way set associative, shared across the CPUs.</li>
-  <li><b>Optimization tips:</b> use huge pages/contiguous buffers for DMA, and choose HPC (coherent) vs HP (non‑coherent) carefully to reduce cache flush/invalidate overhead.</li>
+  <li>Keep DMA buffers consistent with software cache settings (cacheability/shareability).</li>
 </ul>`;
 
 case "AXI":
 return `
-<h2>PS AXI Interconnect (Simplified View)</h2>
+<h2>PS AXI Interconnect (Simplified)</h2>
 <ul>
-  <li><b>Role:</b> Connects PS masters (APU/RPU/DMAs/peripherals) and PS↔PL AXI interfaces to DDR and on-chip services.</li>
-  <li><b>Protocol:</b> AMBA AXI4 (bursts, multiple outstanding IDs), typically with clock-domain crossings and QoS/arbitration.</li>
-  <li><b>System behavior:</b> bandwidth is shared—contention from APU/RPU, PL ports (HP/HPC), and other PS masters impacts latency and throughput.</li>
+  <li><b>Role:</b> Interconnect between PS masters, DDR, peripherals, and PS↔PL ports.</li>
+  <li><b>Behavior:</b> Arbitration/QoS + DDR efficiency drive throughput/latency under contention.</li>
 </ul>
-<b>Performance:</b>
+<b>Performance notes:</b>
 <ul>
-  <li><b>Throughput limiters:</b> arbitration/QoS settings, DDR efficiency (bursts, row hits), and overlap of reads/writes.</li>
-  <li><b>Practical guidance:</b> keep transactions bursty and aligned; profile with Vitis System Performance Analysis when available.</li>
+  <li>Prefer aligned, bursty transactions and avoid tiny random accesses when chasing bandwidth.</li>
 </ul>`;
 
+/* ===== DDR subsystem: coarse-grain + sub-blocks ===== */
 case "DDR":
 return `
-<h2>PS DDR Subsystem (Controller + QoS)</h2>
+<h2>PS DDR Subsystem (Overview)</h2>
 <ul>
-  <li><b>Role:</b> Primary external memory interface for PS and PL masters (via HP/HPC) — often the most contended shared resource.</li>
-  <li><b>Key internal functions (conceptual):</b> traffic class/QoS mapping, transaction scheduling & arbitration, address mapping, and DDR PHY timing/training support.</li>
-  <li><b>System tuning knobs:</b> DDR QoS/urgent control, outstanding-transaction limits, and traffic shaping of HP/HPC ports affect achieved throughput and latency.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Max PS DDR4 data rate:</b> up to 2400 Mb/s (controller limit; may be derated by topology/ranks).</li>
-  <li><b>Theoretical peak bandwidth (example):</b> 2400 MT/s × 64-bit (8B) ≈ 19.2 GB/s (before efficiency losses).</li>
-  <li><b>Practical tip:</b> for PL masters, use wide data width and bursty traffic (e.g., 128-bit, BL=16) to improve DDR efficiency under load.</li>
+  <li>Click a <b>sub-block</b> (QoS, Scheduler, Addr Map, ECC, PHY/Training) for focused details.</li>
+  <li>The DDR controller is a heavily shared resource across PS masters and PL HP/HPC ports.</li>
 </ul>`;
 
+case "DDR_QOS":
+return `
+<h2>DDR QoS / Traffic Classes</h2>
+<ul>
+  <li><b>What it does:</b> Maps requests into priority/traffic classes and enforces throttling/urgent behavior.</li>
+  <li><b>Why it matters:</b> Under load, QoS influences who gets serviced first and how latency tails behave.</li>
+  <li><b>Where it’s tuned:</b> HP/HPC traffic shaping and DDR QoS controls can be iteratively adjusted to meet throughput goals.</li>
+</ul>
+<b>Practical tip:</b>
+<ul>
+  <li>Keep PL traffic bursty and predictable; measure, then tune QoS rather than guessing.</li>
+</ul>`;
+
+case "DDR_SCHED":
+return `
+<h2>Transaction Scheduler / Arbitration</h2>
+<ul>
+  <li><b>What it does:</b> Selects among competing read/write requests to maximize efficiency and fairness.</li>
+  <li><b>Key impacts:</b> Read vs write turn-around, outstanding depth, and row hit rate affect bandwidth.</li>
+</ul>
+<b>Practical tip:</b>
+<ul>
+  <li>Use wider PL ports and long bursts (e.g., 128-bit, BL=16) to improve scheduler efficiency under contention.</li>
+</ul>`;
+
+case "DDR_ADDR":
+return `
+<h2>Address Mapping / Interleaving</h2>
+<ul>
+  <li><b>What it does:</b> Translates system addresses into DDR rows/banks/columns; can enable interleaving for parallelism.</li>
+  <li><b>Why it matters:</b> Good locality improves row hits; poor patterns increase activate/precharge overhead.</li>
+</ul>
+<b>Practical tip:</b>
+<ul>
+  <li>Allocate large contiguous buffers for DMA and align bursts to cacheline/beat boundaries.</li>
+</ul>`;
+
+case "DDR_ECC":
+return `
+<h2>ECC (Reliability)</h2>
+<ul>
+  <li><b>What it does:</b> Detects/corrects memory bit errors depending on configuration.</li>
+  <li><b>Trade-off:</b> ECC adds some overhead but improves robustness for long-lived or safety/security-sensitive systems.</li>
+</ul>`;
+
+case "DDR_PHY":
+return `
+<h2>PHY / Training</h2>
+<ul>
+  <li><b>What it does:</b> Handles DDR electrical interface timing, calibration, and training to meet margins.</li>
+  <li><b>Why it matters:</b> Board layout/topology and speed targets can require derating to achieve stable timing.</li>
+</ul>`;
+
+/* ===== Peripherals: coarse-grain + sub-blocks ===== */
 case "PERIPH":
 return `
-<h2>PS Peripherals (I/O Subsystem)</h2>
+<h2>PS Peripherals (Overview)</h2>
 <ul>
-  <li><b>Role:</b> Integrated hard controllers connected via MIO/EMIO (e.g., USB, Ethernet, SD/eMMC, UART, I2C, SPI, GPIO, timers).</li>
-  <li><b>USB 3.0 (example detail):</b> two independent dual‑role device (DRD) controllers; software interface via xHCI through an AXI slave port, with an internal DMA engine (AXI master) and internal RAMs for RX/TX FIFOs and descriptor/register cache.</li>
-  <li><b>Ethernet (example detail):</b> multiple PS Gigabit Ethernet MACs (GEM) supporting board PHY connections (e.g., RGMII via MIO) and routing options via EMIO.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Design focus:</b> DMA + buffering + interrupt moderation are usually the bottleneck; move bulk data via DDR/HP/HPC and keep GP/HPM for control.</li>
+  <li>Click a <b>sub-block</b> (USB3, GEM, SD/eMMC, UART, I2C, SPI, GPIO, Timers) for focused details.</li>
+  <li>These controllers connect via MIO/EMIO and typically rely on DMA + interrupts for throughput.</li>
 </ul>`;
 
+case "PERIPH_USB":
+return `
+<h2>USB 3.0 DRD (xHCI + DMA)</h2>
+<ul>
+  <li><b>Block:</b> Two independent Dual-Role-Device (DRD) controllers; each can be configured as host or device.</li>
+  <li><b>Software view:</b> Exposes an xHCI interface through an AXI slave interface.</li>
+  <li><b>Data movement:</b> Includes an internal DMA engine that uses an AXI master interface; internal RAMs implement RX/TX FIFOs and descriptor/register cache.</li>
+</ul>
+<b>Design focus:</b>
+<ul>
+  <li>Throughput depends on DMA buffer sizing, cacheability, interrupt moderation, and platform clocking.</li>
+</ul>`;
+
+case "PERIPH_GEM":
+return `
+<h2>Gigabit Ethernet MAC (GEM)</h2>
+<ul>
+  <li><b>Role:</b> PS Ethernet MAC(s) connect to external PHYs (e.g., via RGMII through MIO) or route signals via EMIO.</li>
+  <li><b>Data movement:</b> Typically DMA-based, with descriptors and buffers in memory.</li>
+</ul>
+<b>Design focus:</b>
+<ul>
+  <li>Use appropriate PHY interface/clocking; for high throughput, tune buffer rings and interrupt coalescing.</li>
+</ul>`;
+
+case "PERIPH_SD":
+return `
+<h2>SD / eMMC Controller</h2>
+<ul>
+  <li><b>Role:</b> Boot/media storage via SD/eMMC; performance depends on card/device mode, bus width, and driver/DMA setup.</li>
+  <li><b>Typical use:</b> Boot, logging, and bulk file storage (Linux block layer).</li>
+</ul>`;
+
+case "PERIPH_UART":
+return `
+<h2>UART</h2>
+<ul>
+  <li><b>Role:</b> Console/debug/low‑rate serial links via MIO/EMIO.</li>
+  <li><b>Design focus:</b> baud clocking + interrupt-driven buffering, especially under Linux.</li>
+</ul>`;
+
+case "PERIPH_I2C":
+return `
+<h2>I2C</h2>
+<ul>
+  <li><b>Role:</b> Low-speed control bus for sensors/PMICs/expanders via MIO/EMIO.</li>
+  <li><b>Design focus:</b> pull-ups, bus speed, and shared-bus arbitration.</li>
+</ul>`;
+
+case "PERIPH_SPI":
+return `
+<h2>SPI</h2>
+<ul>
+  <li><b>Role:</b> High-speed serial peripheral bus (flash, ADCs, DACs, sensors) via MIO/EMIO.</li>
+  <li><b>Design focus:</b> clock mode, chip select timing, and DMA for sustained transfers.</li>
+</ul>`;
+
+case "PERIPH_GPIO":
+return `
+<h2>GPIO</h2>
+<ul>
+  <li><b>Role:</b> Simple digital I/O via MIO/EMIO; often used for resets, interrupts, enables.</li>
+</ul>`;
+
+case "PERIPH_TMR":
+return `
+<h2>Timers / Watchdogs</h2>
+<ul>
+  <li><b>Role:</b> Timing, scheduling, profiling, watchdog supervision; critical for real-time subsystems.</li>
+</ul>`;
+
+/* ===== PS↔PL ports ===== */
 case "GP":
 return `
 <h2>AXI GP / HPM (PS→PL Control / MMIO)</h2>
 <ul>
-  <li><b>Role:</b> PS master interface to access PL slaves (typical use: register control via AXI4‑Lite peripherals, configuration, status).</li>
-  <li><b>Addressing:</b> used for memory-mapped access into the PL aperture; best for control-plane rather than data-plane traffic.</li>
-  <li><b>Data width:</b> configurable (commonly 32-bit for AXI4‑Lite style control; can be wider depending on configuration).</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Best for:</b> short, infrequent transactions. Bulk streaming should use HP/HPC + DMA.</li>
+  <li><b>Use:</b> Memory-mapped register access from PS to PL slaves (control plane).</li>
+  <li><b>Data width:</b> configurable; commonly used with AXI4‑Lite peripherals.</li>
 </ul>`;
 
 case "HP":
 return `
-<h2>AXI HP (High‑Performance, Non‑Coherent PL→PS)</h2>
+<h2>AXI HP (PL→PS DDR, Non‑Coherent)</h2>
 <ul>
-  <li><b>Role:</b> High‑bandwidth PL master access to the PS memory system (typically DDR) <b>without cache snooping</b>.</li>
-  <li><b>Typical workloads:</b> DMA engines and streaming accelerators moving large buffers to/from DDR.</li>
-  <li><b>Data width:</b> configurable (32/64/128-bit). Wider buses improve efficiency for burst traffic under contention.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Software implication:</b> cache maintenance (flush/invalidate) is usually required when APU caches are enabled.</li>
+  <li><b>Use:</b> High-throughput PL masters moving bulk data to DDR (DMA/streaming).</li>
+  <li><b>Data width:</b> 32/64/128-bit (configurable).</li>
+  <li><b>Software:</b> usually needs cache maintenance when APU caches are enabled.</li>
 </ul>`;
 
 case "HPC":
 return `
-<h2>AXI HPC (High‑Performance, Cache‑Coherent PL→PS)</h2>
+<h2>AXI HPC (PL→PS DDR, Cache‑Coherent)</h2>
 <ul>
-  <li><b>Role:</b> Enables <b>I/O coherency</b>: PL masters can <b>snoop the APU caches</b> through the coherency interconnect for coherent transfers.</li>
-  <li><b>Important setup:</b> PL master must drive <code>AxCACHE</code>/<code>AxPROT</code> appropriately; memory region attributes (e.g., outer shareable) and CCI snooping must be enabled.</li>
-  <li><b>Data width:</b> configurable (32/64/128-bit). HPC ports are often preferred to ACP for coherent transfers in many designs.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Trade‑offs:</b> coherency traffic increases interconnect activity; still subject to DDR contention like HP ports.</li>
+  <li><b>Use:</b> Coherent PL masters that snoop APU caches via the coherency interconnect.</li>
+  <li><b>Data width:</b> 32/64/128-bit (configurable).</li>
+  <li><b>Setup:</b> PL must drive AxCACHE/AxPROT correctly; memory region attributes must allow snooping.</li>
 </ul>`;
 
+/* ===== PL fabric resources ===== */
 case "CLB":
 return `
 <h2>CLB (Configurable Logic Block)</h2>
 <ul>
-  <li><b>Role:</b> Main programmable fabric for control logic, datapaths, and glue logic in the PL.</li>
-  <li><b>Contents:</b> slices provide LUTs, storage elements (flip‑flops), multiplexers, and dedicated carry logic; SLICEM variants also support distributed RAM and shift registers.</li>
-  <li><b>Design tip:</b> use carry chains for adders/counters, and LUTRAM/SRLs for small/fast buffers; push big memories to BRAM/URAM.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Critical path drivers:</b> LUT levels + routing; floorplanning and pipelining often beat “micro-optimizing” Boolean equations.</li>
+  <li><b>Role:</b> LUT/FF/carry/mux resources for general logic; some slices support LUTRAM/SRLs.</li>
 </ul>`;
 
 case "DSP":
 return `
-<h2>DSP48E2 (DSP Slice)</h2>
+<h2>DSP48E2</h2>
 <ul>
-  <li><b>Role:</b> Hard arithmetic block for high‑speed multiply‑accumulate, filtering, control, and ML kernels.</li>
-  <li><b>Capabilities:</b> multiplication, add/subtract/accumulate, shifts, logic operations and pattern detection; supports efficient cascading.</li>
-  <li><b>Design tip:</b> map MAC‑intensive loops to DSP48E2; use cascade paths for wide accumulators and FIR chains.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Latency:</b> configured by pipeline registers; deeper pipelining improves Fmax at the cost of cycle latency.</li>
+  <li><b>Role:</b> Hard MAC/ALU for DSP and ML kernels; supports pipelining/cascading.</li>
 </ul>`;
 
 case "BRAM":
 return `
 <h2>Block RAM (BRAM)</h2>
 <ul>
-  <li><b>Role:</b> On‑chip dual‑port SRAM for FIFOs, line buffers, scratchpads, and low‑latency shared memory.</li>
-  <li><b>Granularity:</b> 36Kb blocks that can be split into two independent 18Kb blocks; flexible port widths and optional output registers.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Strength:</b> predictable synchronous access with high aggregate bandwidth via parallel instantiation.</li>
+  <li><b>Role:</b> On-chip dual-port memory (36Kb blocks) for FIFOs/buffers/scratchpads.</li>
 </ul>`;
 
 case "URAM":
 return `
 <h2>UltraRAM (URAM)</h2>
 <ul>
-  <li><b>Role:</b> High‑density on‑chip memory for deep buffers (feature maps, large FIFOs, replay buffers).</li>
-  <li><b>Block type:</b> URAM288 resources with cascade support; power-saving features and ECC options.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Scaling:</b> excellent for deep, streaming designs where external DDR latency would stall pipelines.</li>
+  <li><b>Role:</b> High-density on-chip memory blocks for deep buffers.</li>
 </ul>`;
 
 case "CLOCK":
 return `
-<h2>Clock Network (BUFG / MMCM / PLL)</h2>
+<h2>Clock Network</h2>
 <ul>
-  <li><b>Role:</b> Generates, conditions, and distributes clocks across clock regions using global/horizontal routing and clock buffers.</li>
-  <li><b>Clock management:</b> CMTs contain MMCMs/PLLs for frequency synthesis, deskew, jitter filtering, and optional fractional divides.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Quality:</b> jitter and duty-cycle distortion can dominate high-speed I/O and timing closure.</li>
+  <li><b>Role:</b> MMCM/PLL clock generation and global distribution resources.</li>
 </ul>`;
 
 case "IOB":
 return `
-<h2>IOB / SelectIO (Programmable I/O)</h2>
+<h2>IOB / SelectIO</h2>
 <ul>
-  <li><b>Role:</b> Programmable input/output resources supporting a wide range of single‑ended and differential standards.</li>
-  <li><b>Configurability:</b> programmable drive strength and slew rate; on‑chip termination options; INTERNAL_VREF depending on bank type.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Signal integrity:</b> board layout + termination strategy are as important as FPGA settings for reliable high-speed I/O.</li>
+  <li><b>Role:</b> Programmable I/O with supported standards, termination options, and I/O resources.</li>
 </ul>`;
 }
 return type;
@@ -500,6 +571,9 @@ return type;
 /* PS */
 document.querySelectorAll(".core-block,.l2,.axi-core,.node,.bridge-port")
 .forEach(el=> el.onclick=()=> info.innerHTML=desc(el.dataset.type));
+
+/* sub-block clicks inside coarse-grain blocks */
+document.querySelectorAll('.mini').forEach(m=> m.onclick=(e)=>{ e.stopPropagation(); info.innerHTML=desc(m.dataset.type); });
 
 /* ===== PL ROUTING (UNCHANGED) ===== */
 let selected=null, connections={};
