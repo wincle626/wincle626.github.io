@@ -10,3 +10,12 @@ collection: portfolio
   src="./_pages/fpga_mpsoc.html"
   style="width:200%; height:70vh; border:none;">
 </iframe>
+
+
+<iframe
+  src="{{ site.baseurl }}/_portfolio/fpga_mpsoc.html"
+  width="100%"
+  height="700"
+  style="border:0;">
+</iframe>
+
