@@ -79,7 +79,7 @@ Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qu
 
 7. [Runtime Support for Adaptive Power Capping on Heterogeneous SoCs](https://wincle626.github.io/publication/2017-01-19-SAMOS)
 
-# Know some FPGA architecture
+# Know some Xilinx Ultrascale+ MPSoC architecture
 
 <iframe 
   src="./_pages/fpga_mpsoc.html"
