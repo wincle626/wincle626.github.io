@@ -10,6 +10,17 @@ kramdown:
   parse_block_html: true
 ---
 
+<p>
+Below is my interactive UltraScale+ MPSoC visualisation:
+</p>
+<iframe 
+    src="./fpga.html" 
+    width="100%" 
+    height="800px" 
+    style="border:none;">
+</iframe>
+
+
 I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methdologies and software/hardware architecture for MPSoC and FPGA accelerators. 
 
 # Research Directions
