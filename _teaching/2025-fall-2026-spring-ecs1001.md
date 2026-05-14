@@ -8,9 +8,9 @@ date: 2025-09-01
 location: "Belfast, UK"
 ---
 
-# Concurrent Programming
+# Embedded System
 
-This undergraduate course introduces the principles and practice of concurrent programming, focusing on multi-threaded and distributed systems. Students will learn how to design, implement, and reason about concurrent programs using modern programming languages and tools.
+This undergraduate course introduces the principles and practice of embedded programming using Python and C based on Arduino UNO board. Students will learn how to design, implement, and reason about embedded programs using VS code and Arduino IDE. There is also a small portion of module learing about PCB design using Autodesk Fusion 360. 
 
 ## Course Objectives
 
