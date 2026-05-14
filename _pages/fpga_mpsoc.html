@@ -219,6 +219,10 @@ body {
 .cache[data-type]{ cursor:pointer; }
 .cache[data-type]:hover{ outline:1px solid rgba(56,189,248,0.7); background:rgba(56,189,248,0.12); }
 
+/* APU cluster internal core grid */
+.apu-cores{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:10px; }
+.apu-cores .core-block{ font-size:11px; }
+
 /* Hide legacy PS-side HP/GP/HPC boxes (kept in DOM for compatibility) */
 #gp, #hp, #hpc { display:none; }
 
@@ -239,17 +243,18 @@ body {
 <div id="ps">
   <div class="block-label ps-label">PROCESSING SYSTEM (PS)</div>
 
-<div class="ps-section">
-<div class="core-block" data-type="CORE">Core0<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
-<div class="core-block" data-type="CORE">Core1<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
-<div class="core-block" data-type="CORE">Core2<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
-<div class="core-block" data-type="CORE">Core3<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
-</div>
+
 
 <div class="l2" data-type="APU_CLUSTER">
   <div class="node-title" style="pointer-events:none;">APU Cluster</div>
-  <div style="font-size:10px; opacity:0.9; pointer-events:none;">L2 + Coherency</div>
-  <div class="mini-grid" style="margin-top:6px;">
+  <div style="font-size:10px; opacity:0.9; pointer-events:none;">Cores + L2 + Coherency</div>
+  <div class="apu-cores">
+    <div class="core-block" data-type="CORE">Core0<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+    <div class="core-block" data-type="CORE">Core1<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+    <div class="core-block" data-type="CORE">Core2<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+    <div class="core-block" data-type="CORE">Core3<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+  </div>
+  <div class="mini-grid" style="margin-top:10px;">
     <div class="mini" data-type="APU_L2">L2 Cache</div>
     <div class="mini" data-type="APU_CCI">CCI / Coherency</div>
     <div class="mini wide" data-type="APU_PWR">Power/Clocks</div>
