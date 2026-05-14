@@ -249,18 +249,17 @@ body {
 
 /* ===== PS layout + APU Cluster refactor (single-column cores, unified widths) ===== */
 :root{ --ps-block-w: 340px; --tile:45px; --gap:15px; --ps-pad:15px; }
-/* PS slightly wider than APU Cluster with border-to-border spacing ~= PL gap */
 #ps{ width: calc(var(--ps-block-w) + 2*var(--ps-pad)); align-items:center; padding-left:var(--ps-pad); padding-right:var(--ps-pad); box-sizing:border-box; }
-.l2{ width:var(--ps-block-w); margin:0; }
+.l2{ width:var(--ps-block-w); margin:0; box-sizing:border-box; }
 .l2 .apu-cores{ grid-template-columns:1fr; gap:8px; }
 .l2 .core-block{ width:100%; box-sizing:border-box; }
 .l2 .mini-grid{ grid-template-columns:1fr; }
 .l2 .mini{ width:100%; box-sizing:border-box; }
 .l2 .mini.wide{ grid-column:auto; }
 .axi-area{ margin:0; padding:0; width:100%; display:flex; flex-direction:column; gap:15px; align-items:center; }
+.axi-core{ box-sizing:border-box; }
 .axi-core, #ddr, #periph{ width:var(--ps-block-w); box-sizing:border-box; position:relative; left:auto; right:auto; top:auto; bottom:auto; }
 #periph .mini-grid{ display:grid; grid-template-columns:repeat(3, 1fr); grid-template-rows:repeat(2, auto); grid-auto-flow:column; grid-auto-columns:1fr; gap:6px; overflow-x:auto; padding-bottom:4px; }
-/* Remove connector lines on PS↔PL AXI INTERFACES ports */
 .bridge-port::before, .bridge-port::after{ display:none !important; width:0 !important; }
 #grid{ grid-template-columns: repeat(8, var(--tile)); gap: var(--gap); }
 .tile{ width: var(--tile); height: var(--tile); }
@@ -377,32 +376,40 @@ case "CORE0":
 return `
 <h2>Cortex-A53 Core0 (APU)</h2>
 <ul>
- <li><b>Role:</b> General-purpose application core; commonly used for OS housekeeping and non-real-time tasks when pinning is not applied.</li>
- <li><b>Tip:</b> For deterministic workloads, isolate a core (e.g., Core2/Core3) and keep IRQ affinity off it.</li>
+ <li><b>Typical role:</b> OS housekeeping, kernel threads, and background services.</li>
+ <li><b>Tip 1:</b> Keep IRQ affinity and kthreads here to reduce jitter on isolated compute cores.</li>
+ <li><b>Tip 2:</b> Pin control-plane threads (drivers, command queues) to Core0 to keep data-plane cores cache-hot.</li>
+ <li><b>Tip 3:</b> Enable <code>performance</code> governor during profiling to avoid DVFS-induced variance.</li>
 </ul>
 `;
 case "CORE1":
 return `
 <h2>Cortex-A53 Core1 (APU)</h2>
 <ul>
- <li><b>Role:</b> Symmetric peer core; suitable for application threads and background services.</li>
- <li><b>Tip:</b> Use CPU affinity / cpuset for cache locality with shared buffers and to reduce migration jitter.</li>
+ <li><b>Typical role:</b> General application threads; good for medium-latency workloads.</li>
+ <li><b>Tip 1:</b> Use CPU affinity / cpuset to keep producer-consumer stages co-located for cache locality.</li>
+ <li><b>Tip 2:</b> If sharing buffers with PL via HP (non-coherent), batch work to reduce cache flush/invalidate frequency.</li>
+ <li><b>Tip 3:</b> Use <code>perf</code>/<code>ftrace</code> to verify hotspots before offloading to PL.</li>
 </ul>
 `;
 case "CORE2":
 return `
 <h2>Cortex-A53 Core2 (APU)</h2>
 <ul>
- <li><b>Role:</b> Symmetric peer core; often reserved for latency-sensitive user threads in mixed workloads.</li>
- <li><b>Tip:</b> Pair with HPC coherent traffic if sharing data structures with PL to reduce cache maintenance.</li>
+ <li><b>Typical role:</b> Latency-sensitive user threads (soft real-time within Linux constraints).</li>
+ <li><b>Tip 1:</b> Pair with HPC/ACP coherent paths for shared-memory pipelines to minimize cache maintenance.</li>
+ <li><b>Tip 2:</b> Prefer large, aligned DMA buffers; avoid tiny transfers that amplify interrupt and syscall overhead.</li>
+ <li><b>Tip 3:</b> Isolate with <code>isolcpus</code>/<code>nohz_full</code> when deterministic scheduling is needed.</li>
 </ul>
 `;
 case "CORE3":
 return `
 <h2>Cortex-A53 Core3 (APU)</h2>
 <ul>
- <li><b>Role:</b> Symmetric peer core; can be isolated for real-time-ish control loops (within Linux constraints).</li>
- <li><b>Tip:</b> Minimize interrupts and scheduling noise using isolcpus/nohz_full (Linux) where applicable.</li>
+ <li><b>Typical role:</b> Dedicated compute or control loop core; commonly isolated alongside Core2.</li>
+ <li><b>Tip 1:</b> Set RT priority cautiously (SCHED_FIFO) and cap IRQs to other cores to avoid priority inversion.</li>
+ <li><b>Tip 2:</b> For sync with PL accelerators, use event-driven interrupts instead of polling to reduce cache thrash.</li>
+ <li><b>Tip 3:</b> Keep working sets within L2 where possible; tile streaming workloads with BRAM/URAM in PL.</li>
 </ul>
 `;
 case "CORE":
@@ -643,33 +650,6 @@ return `
 /* =====================
    DDR SUBSYSTEM (COARSE + SUB-BLOCKS)
    ===================== */
-case "LPD":
-return `
-<h2>AXI LPD Interface (PL↔PS Low-Power Domain)</h2>
-<ul>
- <li><b>Definition:</b> PS–PL AXI interface associated with the Low-Power Domain path.</li>
- <li><b>Usage:</b> Low-latency access to select PS resources and LPD-connected functions.</li>
-</ul>
-<b>Design note:</b> Use for control/LPD-centric access patterns; use HP/HPC for bulk DDR traffic.
-`;
-case "ACP":
-return `
-<h2>AXI ACP (Accelerator Coherency Port)</h2>
-<ul>
- <li><b>Definition:</b> Coherency-capable interface enabling PL masters to participate in APU cache coherency.</li>
- <li><b>Usage:</b> Shared-memory patterns to reduce explicit cache maintenance.</li>
-</ul>
-<b>Design note:</b> Measure versus HPC ports for throughput-centric coherent transfers.
-`;
-case "ACE":
-return `
-<h2>AXI ACE (AXI Coherency Extensions)</h2>
-<ul>
- <li><b>Definition:</b> AXI Coherency Extensions interface for advanced coherency transactions.</li>
- <li><b>Usage:</b> Coherent PL masters requiring ACE semantics.</li>
-</ul>
-<b>Design note:</b> Prefer simpler coherent ports (HPC/ACP) unless ACE features are required.
-`;
 case "DDR":
 return `
 <h2>PS DDR Subsystem (Overview)</h2>
@@ -1122,9 +1102,8 @@ function syncHeightsToBridge(){
 // ===== Resize PL tiles so a 12x8 grid matches the PL column height =====
 function syncPLGridToHeight(){
   const pl=document.getElementById('pl');
-  const ps=document.getElementById('ps');
   const routes=document.getElementById('routes');
-  if(!pl||!routes||!ps) return;
+  if(!pl||!routes) return;
   const rows=12, cols=8;
   const padTop=28;
   const available=Math.max(240, pl.clientHeight - padTop);
@@ -1134,9 +1113,7 @@ function syncPLGridToHeight(){
   tile=Math.max(16, tile);
   pl.style.setProperty('--tile', tile+'px');
   pl.style.setProperty('--gap', gap+'px');
-  // Keep PS border spacing similar to PL component spacing
   document.documentElement.style.setProperty('--ps-pad', gap+'px');
-  // update svg overlay size to match computed grid size
   const gridW = cols*tile + (cols-1)*gap;
   const gridH = rows*tile + (rows-1)*gap;
   routes.style.width = gridW+'px';
