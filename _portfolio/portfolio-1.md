@@ -13,7 +13,7 @@ collection: portfolio
 
 
 <iframe
-  src="{{ site.baseurl }}/_portfolio/fpga_mpsoc.html"
+  src="{{ site.baseurl }}/_pages/fpga_mpsoc.html"
   width="100%"
   height="700"
   style="border:0;">
