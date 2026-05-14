@@ -1,6 +1,6 @@
 ---
 title: "FPGA Hardware Demonstration"
-excerpt: "Short description of portfolio item number 1<br/><img src='/images/XilinxUltrascale+MPSoC.png'>"
+excerpt: "Know some Xilinx Ultrascale+ MPSoC architecture<br/><img src='/images/XilinxUltrascale+MPSoC.png'>"
 collection: portfolio
 ---
 
