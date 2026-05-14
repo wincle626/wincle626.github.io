@@ -10,11 +10,8 @@ kramdown:
   parse_block_html: true
 ---
 
-<p>
-Below is my interactive UltraScale+ MPSoC visualisation:
-</p>
 <iframe 
-    src="./fpga_mpsoc.html" 
+    src="./_pages/fpga_mpsoc.html" 
     width="100%" 
     height="800px" 
     style="border:none;">
