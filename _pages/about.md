@@ -10,14 +10,6 @@ kramdown:
   parse_block_html: true
 ---
 
-<iframe 
-    src="./_pages/fpga_mpsoc.html" 
-    width="100%" 
-    height="800px" 
-    style="border:none;">
-</iframe>
-
-
 I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methdologies and software/hardware architecture for MPSoC and FPGA accelerators. 
 
 # Research Directions
@@ -86,3 +78,12 @@ Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qu
 6. [Architectural Synthesis of Multi-SIMD Dataflow Accelerators for FPGA](https://wincle626.github.io/publication/2018-01-01-TPDS)
 
 7. [Runtime Support for Adaptive Power Capping on Heterogeneous SoCs](https://wincle626.github.io/publication/2017-01-19-SAMOS)
+
+# Try some FPGA
+
+<iframe 
+    src="./_pages/fpga_mpsoc.html" 
+    width="100%" 
+    height="800px" 
+    style="border:none;">
+</iframe>
