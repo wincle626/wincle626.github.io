@@ -84,6 +84,6 @@ Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qu
 
 <iframe 
   src="./_pages/fpga_mpsoc.html"
-  style="width:150%; height:70vh; border:none;">
+  style="width:200%; height:70vh; border:none;">
 </iframe>
 
