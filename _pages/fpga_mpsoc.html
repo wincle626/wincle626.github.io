@@ -16,7 +16,17 @@ body {
 }
 #container { display:flex; gap:20px; }
 
-#ps { width:480px; border-right:3px solid #334155;}
+#ps {
+ width:520px;
+ border-right:3px solid #334155;
+ padding-top:28px;
+ min-height:460px;
+ height:auto;
+ display:flex;
+ flex-direction:column;
+ gap:15px;
+ overflow:visible;
+ }
 
 .ps-section {
  display:grid;
@@ -29,10 +39,10 @@ body {
  background:rgba(244,63,94,0.2);
  border:1px solid #f43f5e;
  border-radius:6px;
- padding:6px;
+  padding:7px;
  text-align:center;
  cursor:pointer;
- font-size:12px;
+  font-size:14px;
 }
 
 .cache-row{
@@ -43,15 +53,15 @@ body {
 }
 
 .cache{
- font-size:9px;
- padding:2px 4px;
+  font-size:10px;
+  padding:2px 5px;
  border-radius:3px;
  background:rgba(255,255,255,0.1);
 }
 
 .l2 {
- margin:10px;
- padding:10px;
+  margin:8px;
+  padding:12px;
  border:2px solid #f97316;
  text-align:center;
  border-radius:6px;
@@ -79,14 +89,14 @@ body {
 
 .node {
  position:absolute;
- width:130px;
- padding:8px;
+  width:150px;
+  padding:9px;
  border-radius:6px;
  background:rgba(255,255,255,0.05);
  border:1px solid #94a3b8;
  text-align:center;
  cursor:pointer;
- font-size:11px;
+  font-size:13px;
 }
 
 #ddr { left:10px; top:130px;}
@@ -100,7 +110,7 @@ body {
 .v { width:2px;}
 .h { height:2px;}
 
-#pl { position:relative;}
+#pl { position:relative; padding-top:28px; min-height:460px; height:auto; overflow:hidden;}
 
 #grid {
  display:grid;
@@ -110,7 +120,7 @@ body {
 
 #routes {
  position:absolute;
- width:520px;height:520px;
+ width:1px;height:1px;
  pointer-events:none;
 }
 
@@ -144,7 +154,11 @@ body {
 }
 
 /* ===== Block headers and PS/PL separation ===== */
-#ps, #pl, #bridge { position: relative; }
+#ps, #pl, #bridge { position: relative; 
+ min-height:460px;
+ height:auto;
+ overflow:visible;
+ }
 #ps, #pl { padding-top:28px; }
 .block-label {
  position:absolute;
@@ -172,21 +186,21 @@ body {
  gap:12px;
  border-right:3px solid #334155;
 }
-.bridge-stack{ display:flex; flex-direction:column; gap:14px; margin-top:4px; }
+.bridge-stack{ display:flex; flex-direction:column; gap:10px; margin-top:2px; }
 .bridge-port{
  width:160px;
- padding:10px 8px;
+ padding:6px 6px;
  border-radius:8px;
  border:1px solid rgba(56,189,248,0.6);
  background:rgba(56,189,248,0.08);
  text-align:center;
  cursor:pointer;
- font-size:10px;
- line-height:1.15;
+ font-size:9px;
+ line-height:1.1;
  position:relative;
 }
-.bridge-port .bw{ display:inline-block; margin-top:6px; font-size:9px; color:#93c5fd; }
-.bridge-port .sig{ display:block; margin-top:2px; font-size:8px; color:#cbd5e1; opacity:0.9; }
+.bridge-port .bw{ display:inline-block; margin-top:4px; font-size:8px; color:#93c5fd; }
+.bridge-port .sig{ display:block; margin-top:2px; font-size:7px; color:#cbd5e1; opacity:0.9; }
 .bridge-port::before, .bridge-port::after{
  content:"";
  position:absolute;
@@ -202,8 +216,8 @@ body {
 .node-title{ font-weight:700; font-size:11px; margin-bottom:4px; }
 .mini-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:3px; margin-top:4px; }
 .mini{
- font-size:7px;
- padding:2px 2px;
+  font-size:8px;
+  padding:3px 3px;
  border-radius:4px;
  border:1px solid rgba(148,163,184,0.35);
  background:rgba(2,6,23,0.35);
@@ -220,7 +234,7 @@ body {
 .cache[data-type]:hover{ outline:1px solid rgba(56,189,248,0.7); background:rgba(56,189,248,0.12); }
 
 /* APU cluster internal core grid */
-.apu-cores{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:10px; }
+.apu-cores{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:8px; }
 .apu-cores .core-block{ font-size:11px; }
 
 /* Hide legacy PS-side HP/GP/HPC boxes (kept in DOM for compatibility) */
@@ -232,6 +246,25 @@ body {
 #info ul{ margin:6px 0 10px 18px; padding:0; }
 #info li{ margin:2px 0; }
 
+
+/* ===== PS layout + APU Cluster refactor (single-column cores, unified widths) ===== */
+:root{ --ps-block-w: 340px; --tile:45px; --gap:15px; }
+#ps{ align-items:center; }
+/* APU Cluster: single column cores; sub-blocks stacked; shrink to fit */
+.l2{ width:var(--ps-block-w); margin:0; }
+.l2 .apu-cores{ grid-template-columns:1fr; gap:8px; }
+.l2 .core-block{ width:100%; box-sizing:border-box; }
+.l2 .mini-grid{ grid-template-columns:1fr; }
+.l2 .mini{ width:100%; box-sizing:border-box; }
+.l2 .mini.wide{ grid-column:auto; }
+/* PS AXI/DDR/Periph: single column, equal spacing via flex gap */
+.axi-area{ margin:0; padding:0; width:100%; display:flex; flex-direction:column; gap:15px; align-items:center; }
+.axi-core, #ddr, #periph{ width:var(--ps-block-w); box-sizing:border-box; position:relative; left:auto; right:auto; top:auto; bottom:auto; }
+/* Peripherals sub-blocks layout (2 rows x 3 cols) */
+#periph .mini-grid{ display:grid; grid-template-columns:repeat(3, 1fr); grid-template-rows:repeat(2, auto); grid-auto-flow:column; grid-auto-columns:1fr; gap:6px; overflow-x:auto; padding-bottom:4px; }
+/* ===== PL grid uses CSS vars; sized dynamically by JS to match height ===== */
+#grid{ grid-template-columns: repeat(8, var(--tile)); gap: var(--gap); }
+.tile{ width: var(--tile); height: var(--tile); }
 </style>
 </head>
 
@@ -271,8 +304,7 @@ body {
     <div class="mini" data-type="DDR_SCHED">Scheduler</div>
     <div class="mini" data-type="DDR_ADDR">Addr Map</div>
     <div class="mini" data-type="DDR_ECC">ECC</div>
-    <div class="mini wide" data-type="DDR_PHY">PHY / Training</div>
-  </div>
+</div>
 </div>
 <div id="periph" class="node" data-type="PERIPH">
   <div class="node-title">Peripherals</div>
@@ -292,13 +324,11 @@ body {
 <div id="hpc" class="node" data-type="HPC">AXI-HPC</div>
 
 <!-- wiring -->
-<div class="line v" style="left:240px; top:-30px; height:50px;"></div>
-<div class="line v" style="left:240px; top:90px; height:25px;"></div>
-<div class="line h" style="left:160px; top:115px; width:160px;"></div>
-<div class="line v" style="left:160px; top:115px; height:50px;"></div>
-<div class="line h" style="left:156px; top:165px; width:4px;"></div>
-<div class="line v" style="left:320px; top:115px; height:50px;"></div>
-<div class="line h" style="left:320px; top:165px; width:4px;"></div>
+
+
+
+
+
 
 </div>
 </div>
@@ -308,10 +338,20 @@ body {
 <div id="bridge">
   <div class="block-label bridge-label">PS↔PL AXI INTERFACES</div>
   <div class="bridge-stack">
-    <div class="bridge-port" data-type="GP">AXI GP / HPM <span class="sig">(PS→PL MMIO)</span><span class="bw">32/64/128-bit</span></div>
-    <div class="bridge-port" data-type="HP">AXI HP <span class="sig">(PL→DDR non-coherent)</span><span class="bw">32/64/128-bit</span></div>
-    <div class="bridge-port" data-type="HPC">AXI HPC <span class="sig">(PL→DDR coherent)</span><span class="bw">32/64/128-bit</span></div>
-  </div>
+<div class="bridge-port" data-type="GP">AXI GP / HPM0_FPD <span class="sig">(PS→PL MMIO)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="GP">AXI GP / HPM1_FPD <span class="sig">(PS→PL MMIO)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="GP">AXI GP / HPM0_LPD <span class="sig">(PS→PL MMIO)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="HP">AXI HP0 <span class="sig">(PL→DDR non-coherent)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="HP">AXI HP1 <span class="sig">(PL→DDR non-coherent)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="HP">AXI HP2 <span class="sig">(PL→DDR non-coherent)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="HP">AXI HP3 <span class="sig">(PL→DDR non-coherent)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="LPD">AXI LPD <span class="sig">(PL→PS low-power)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="HPC">AXI HPC0 <span class="sig">(PL→DDR coherent)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="HPC">AXI HPC1 <span class="sig">(PL→DDR coherent)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="ACP">AXI ACP <span class="sig">(PL↔APU cache coherent)</span><span class="bw">32/64/128-bit</span></div>
+<div class="bridge-port" data-type="ACE">AXI ACE <span class="sig">(PL↔CCI coherency ext.)</span><span class="bw">32/64/128-bit</span></div>
+</div>
+</div>
 </div>
 
 <!-- ===== PL ===== -->
@@ -572,6 +612,33 @@ return `
 /* =====================
    DDR SUBSYSTEM (COARSE + SUB-BLOCKS)
    ===================== */
+case "LPD":
+return `
+<h2>AXI LPD Interface (PL↔PS Low-Power Domain)</h2>
+<ul>
+ <li><b>Definition:</b> PS–PL AXI interface associated with the Low-Power Domain path.</li>
+ <li><b>Usage:</b> Low-latency access to select PS resources and LPD-connected functions.</li>
+</ul>
+<b>Design note:</b> Use for control/LPD-centric access patterns; use HP/HPC for bulk DDR traffic.
+`;
+case "ACP":
+return `
+<h2>AXI ACP (Accelerator Coherency Port)</h2>
+<ul>
+ <li><b>Definition:</b> Coherency-capable interface enabling PL masters to participate in APU cache coherency.</li>
+ <li><b>Usage:</b> Shared-memory patterns to reduce explicit cache maintenance.</li>
+</ul>
+<b>Design note:</b> Measure versus HPC ports for throughput-centric coherent transfers.
+`;
+case "ACE":
+return `
+<h2>AXI ACE (AXI Coherency Extensions)</h2>
+<ul>
+ <li><b>Definition:</b> AXI Coherency Extensions interface for advanced coherency transactions.</li>
+ <li><b>Usage:</b> Coherent PL masters requiring ACE semantics.</li>
+</ul>
+<b>Design note:</b> Prefer simpler coherent ports (HPC/ACP) unless ACE features are required.
+`;
 case "DDR":
 return `
 <h2>PS DDR Subsystem (Overview)</h2>
@@ -908,7 +975,7 @@ const grid=document.getElementById("grid");
 const svg=document.getElementById("routes");
 
 function getType(x,y){
- if(x===0||y===0||x===7||y===7) return "IOB";
+ if(x===0||y===0||x===7||y===11) return "IOB";
  if(x===2) return "DSP";
  if(x===4) return "BRAM";
  if(x===5) return "URAM";
@@ -962,8 +1029,8 @@ function key(a,b){
  : b.dataset.id+"-"+a.dataset.id;
 }
 
-for(let y=0;y<8;y++){
- for(let x=0;x<8;x++){
+for(let y=0;y<12;y++){
+  for(let x=0;x<8;x++){
   const t=document.createElement("div");
   const type=getType(x,y);
 
@@ -985,6 +1052,46 @@ for(let y=0;y<8;y++){
 
   grid.appendChild(t);
 }}
+
+
+// ===== Sync PS/PL/Bridge heights to full PS↔PL AXI INTERFACES content =====
+function syncHeightsToBridge(){
+  const bridge=document.getElementById('bridge');
+  const ps=document.getElementById('ps');
+  const pl=document.getElementById('pl');
+  if(!bridge||!ps||!pl) return;
+  bridge.style.height='auto';
+  bridge.style.overflow='visible';
+  const h=Math.ceil(bridge.scrollHeight);
+  ps.style.height=h+'px';
+  pl.style.height=h+'px';
+  bridge.style.height=h+'px';
+  syncPLGridToHeight();
+}
+
+// ===== Resize PL tiles so a 12x8 grid matches the PL column height =====
+function syncPLGridToHeight(){
+  const pl=document.getElementById('pl');
+  const routes=document.getElementById('routes');
+  if(!pl||!routes) return;
+  const rows=12, cols=8;
+  const padTop=28;
+  const available=Math.max(240, pl.clientHeight - padTop);
+  let gap=15;
+  let tile=Math.floor((available - (rows-1)*gap)/rows);
+  if(tile<22){ gap=10; tile=Math.floor((available - (rows-1)*gap)/rows); }
+  tile=Math.max(16, tile);
+  pl.style.setProperty('--tile', tile+'px');
+  pl.style.setProperty('--gap', gap+'px');
+  const gridW = cols*tile + (cols-1)*gap;
+  const gridH = rows*tile + (rows-1)*gap;
+  routes.style.width = gridW+'px';
+  routes.style.height = gridH+'px';
+}
+
+window.addEventListener('load', ()=>{ requestAnimationFrame(syncHeightsToBridge); });
+window.addEventListener('resize', ()=>{ requestAnimationFrame(syncHeightsToBridge); });
+
 </script>
 
 </body>
