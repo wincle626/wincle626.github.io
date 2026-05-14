@@ -1,5 +1,5 @@
 ---
-title: "Portfolio item number 1"
+title: "FPGA Hardware Emulator"
 excerpt: "Short description of portfolio item number 1<br/><img src='/images/XilinxUltrascale+MPSoC.png'>"
 collection: portfolio
 ---
