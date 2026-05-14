@@ -195,207 +195,159 @@ const info=document.getElementById("info");
 
 /* ===== FULL TECH + PERFORMANCE ===== */
 function desc(type){
+
 switch(type){
+
 case "CORE":
-return `
-<h2>Cortex-A53 (APU Core)</h2>
+return `<h2>Cortex-A53 Core</h2>
 <ul>
-  <li><b>Role:</b> 64-bit application processor (Linux/RTOS user space, rich OS workloads) within the Zynq UltraScale+ MPSoC Processing System (PS).</li>
-  <li><b>ISA / features:</b> Armv8‑A, TrustZone, NEON Advanced SIMD and single/double precision FPU.</li>
-  <li><b>L1 caches (per core):</b> 32KB instruction cache (2‑way, parity) + 32KB data cache (4‑way, ECC).</li>
-  <li><b>Coherency support:</b> Extendable cache coherency (ACE/ACP/CCI infrastructure) for multi-master systems.</li>
+<li>Dual-issue in-order ARMv8-A core</li>
+<li>L1I/L1D: 32KB each</li>
+<li>NEON SIMD + FPU</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Max core frequency:</b> up to 1.5 GHz (device/grade dependent).</li>
-  <li><b>What dominates runtime:</b> memory hierarchy + coherency traffic; keep hot code/data in L1/L2 and avoid unnecessary cache maintenance.</li>
-  <li><b>When to offload:</b> move streaming/parallel kernels to PL (DSP/BRAM/URAM) and communicate via HP/HPC ports depending on coherency needs.</li>
+<li>Frequency: ~1.2–1.5 GHz</li>
+<li>Latency (L1 hit): ~1–3 cycles</li>
+<li>IPC: ~2 max</li>
 </ul>`;
 
 case "L2":
-return `
-<h2>Shared L2 Cache (APU Cluster) + Coherency</h2>
+return `<h2>L2 Cache + SCU</h2>
 <ul>
-  <li><b>Role:</b> Shared last-level cache for the Cortex‑A53 cluster, reducing DDR traffic and smoothing contention across cores.</li>
-  <li><b>Integrity:</b> L2 cache includes ECC; coherency is supported through the MPSoC coherency interconnect (ACE/ACP/CCI infrastructure).</li>
-  <li><b>Software impact:</b> cacheability and shareability attributes (MMU) strongly affect performance and coherency behavior for PS↔PL data sharing.</li>
+<li>Shared coherent cache</li>
+<li>Maintains MESI protocol</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Size:</b> 1MB, 16‑way set associative, shared across the CPUs.</li>
-  <li><b>Optimization tips:</b> use huge pages/contiguous buffers for DMA, and choose HPC (coherent) vs HP (non‑coherent) carefully to reduce cache flush/invalidate overhead.</li>
+<li>Size: 512KB–2MB</li>
+<li>Latency: ~10–20 cycles</li>
+<li>Bandwidth: ~20–40 GB/s internal</li>
 </ul>`;
 
 case "AXI":
-return `
-<h2>PS AXI Interconnect (Simplified View)</h2>
+return `<h2>AXI Interconnect</h2>
 <ul>
-  <li><b>Role:</b> Connects PS masters (APU/RPU/DMAs/peripherals) and PS↔PL AXI interfaces to DDR and on-chip services.</li>
-  <li><b>Protocol:</b> AMBA AXI4 (bursts, multiple outstanding IDs), typically with clock-domain crossings and QoS/arbitration.</li>
-  <li><b>System behavior:</b> bandwidth is shared—contention from APU/RPU, PL ports (HP/HPC), and other PS masters impacts latency and throughput.</li>
+<li>AXI4 with burst support</li>
+<li>Multiple masters/slaves</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Throughput limiters:</b> arbitration/QoS settings, DDR efficiency (bursts, row hits), and overlap of reads/writes.</li>
-  <li><b>Practical guidance:</b> keep transactions bursty and aligned; profile with Vitis System Performance Analysis when available.</li>
+<li>Bandwidth: up to ~15 GB/s</li>
+<li>Latency: 10–50 ns (no DDR)</li>
 </ul>`;
 
 case "DDR":
-return `
-<h2>PS DDR Memory Controller</h2>
+return `<h2>DDR Controller</h2>
 <ul>
-  <li><b>Role:</b> Primary external memory interface for the PS and PL (via HP/HPC) — the most contended shared resource in many designs.</li>
-  <li><b>Supported memories:</b> PS DDR can be configured for DDR4 and LPDDR4 (device/board dependent) via the PS configuration wizard.</li>
-  <li><b>Design reality:</b> achieved bandwidth depends on access patterns, outstanding requests, and contention from multiple masters.</li>
+<li>Main external memory</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Max PS DDR4 data rate:</b> up to 2400 Mb/s (PS DDR controller limit; may be derated by topology/ranks).</li>
-  <li><b>Theoretical peak bandwidth:</b> DDR data rate × bus width (bytes). Example: 2400 MT/s × 64-bit (8B) ≈ 19.2 GB/s (before efficiency losses).</li>
-  <li><b>Latency sensitivity:</b> random small accesses suffer; prefer larger bursts, locality, and buffering (BRAM/URAM) when possible.</li>
-</ul>`;
-
-case "PERIPH":
-return `
-<h2>PS Peripherals (I/O Subsystem)</h2>
-<ul>
-  <li><b>Role:</b> Integrated controllers (UART, SPI, I2C, SD/eMMC, USB, Ethernet, GPIO, timers, etc.) connected via PS interconnect and MIO/EMIO pins.</li>
-  <li><b>Clocking:</b> Peripheral clocks are generated from PS PLLs and can be gated/scaled for power/performance trade-offs.</li>
-  <li><b>Integration tip:</b> route high-speed datapaths through DMA to DDR/OCM; keep register-level control on lightweight buses.</li>
-</ul>
-<b>Performance:</b>
-<ul>
-  <li><b>Design focus:</b> driver efficiency, interrupt moderation, and DMA/buffer sizing usually matter more than raw bus width.</li>
+<li>Bandwidth: 4–20 GB/s</li>
+<li>Latency: 50–120 ns</li>
 </ul>`;
 
 case "GP":
-return `
-<h2>AXI GP (General‑Purpose PS↔PL Interface)</h2>
+return `<h2>AXI-GP</h2>
 <ul>
-  <li><b>Role:</b> Commonly used for <b>control/status</b> traffic between PS software and PL peripherals (register reads/writes, configuration, low‑rate messaging).</li>
-  <li><b>Typical mapping:</b> PS accesses PL‑mapped address space; many designs pair this with AXI4‑Lite peripherals for simple register banks.</li>
-  <li><b>Design tip:</b> keep GP for “control plane” and move bulk data to HP/HPC to avoid congesting software-visible transactions.</li>
+<li>Control interface</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Best for:</b> short, infrequent accesses; not intended for sustained bulk streaming into DDR.</li>
-  <li><b>Latency drivers:</b> interconnect arbitration + clock-domain crossings + software overhead (especially in Linux).</li>
+<li>Bandwidth: <1 GB/s</li>
+<li>Latency: low (~50ns)</li>
 </ul>`;
 
 case "HP":
-return `
-<h2>AXI HP (High‑Performance, Non‑Coherent PL→PS)</h2>
+return `<h2>AXI-HP</h2>
 <ul>
-  <li><b>Role:</b> High‑bandwidth PL master access to PS memory system (typically DDR) for DMA/streaming workloads <b>without cache snooping</b>.</li>
-  <li><b>When to use:</b> PL engines that move large buffers to/from DDR where software can manage cache maintenance explicitly.</li>
-  <li><b>Shared resource:</b> the DDR controller is shared by APU/RPU/HP/ACP/HPC and other masters—contention affects all ports.</li>
+<li>High throughput data path</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Throughput planning:</b> estimate an upper bound from DDR peak bandwidth; measured throughput depends on burst length, access pattern, and arbitration.</li>
-  <li><b>Software implication:</b> you usually need cache flush/invalidate around DMA buffers to maintain correctness when the APU caches are enabled.</li>
+<li>Bandwidth: 6–12 GB/s</li>
+<li>Latency: ~100 ns</li>
 </ul>`;
 
 case "HPC":
-return `
-<h2>AXI HPC (High‑Performance, Cache‑Coherent PL→PS)</h2>
+return `<h2>AXI-HPC</h2>
 <ul>
-  <li><b>Role:</b> Enables <b>I/O coherency</b>: PL masters can <b>snoop the APU caches</b> through the coherency interconnect for coherent transfers.</li>
-  <li><b>Why it matters:</b> reduces or eliminates explicit cache maintenance in software for shared DDR buffers (when configured correctly).</li>
-  <li><b>Important setup:</b> PL master must drive <code>AxCACHE</code>/<code>AxPROT</code> appropriately; memory region attributes (e.g., outer shareable) and CCI snooping must be enabled.</li>
+<li>Cache-coherent PL access</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Recommendation:</b> HPC0/HPC1 are often preferred over ACP because they offer higher bandwidth and avoid disturbing the processor L2 cache contents.</li>
-  <li><b>Trade‑offs:</b> coherency traffic can increase interconnect activity; still subject to DDR contention like HP ports.</li>
+<li>Bandwidth: ~5–10 GB/s</li>
+<li>Latency: 150–300 ns</li>
 </ul>`;
 
 case "CLB":
-return `
-<h2>CLB (Configurable Logic Block)</h2>
+return `<h2>CLB</h2>
 <ul>
-  <li><b>Role:</b> Main programmable fabric for control logic, datapaths, and glue logic in the PL.</li>
-  <li><b>Contents:</b> slices provide LUTs, storage elements (flip‑flops), multiplexers, and dedicated carry logic; SLICEM variants also support distributed RAM and shift registers.</li>
-  <li><b>Design tip:</b> use carry chains for adders/counters, and LUTRAM/SRLs for small/fast buffers; push big memories to BRAM/URAM.</li>
+<li>LUT6 + FF + carry chain</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Critical path drivers:</b> LUT levels + routing; floorplanning and pipelining often beat “micro-optimizing” Boolean equations.</li>
-  <li><b>Clocking:</b> keep fanout manageable with BUFG/BUFCE_LEAF and register replication when needed.</li>
+<li>Delay: ~100–300 ps</li>
+<li>Freq: 300–600 MHz</li>
 </ul>`;
 
 case "DSP":
-return `
-<h2>DSP48E2 (DSP Slice)</h2>
+return `<h2>DSP48</h2>
 <ul>
-  <li><b>Role:</b> Hard arithmetic block for high‑speed multiply‑accumulate, filtering, control, and ML kernels.</li>
-  <li><b>Capabilities:</b> implements multiplication, add/subtract/accumulate, shifts, logic operations and pattern detection; supports efficient cascading.</li>
-  <li><b>Design tip:</b> map MAC‑intensive loops to DSP48E2; use cascade paths for wide accumulators and FIR chains.</li>
+<li>MAC unit</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Best for:</b> throughput‑oriented kernels with regular, pipelinable arithmetic.</li>
-  <li><b>Latency:</b> configured by pipeline registers; deeper pipelining increases Fmax at the cost of cycle latency.</li>
+<li>Freq: up to 600 MHz</li>
+<li>Latency: 3–5 cycles</li>
 </ul>`;
 
 case "BRAM":
-return `
-<h2>Block RAM (BRAM)</h2>
+return `<h2>BRAM</h2>
 <ul>
-  <li><b>Role:</b> On‑chip dual‑port SRAM for FIFOs, line buffers, scratchpads, and low‑latency shared memory.</li>
-  <li><b>Granularity:</b> 36Kb blocks (RAMB36E2) that can be split into two independent 18Kb blocks; flexible port widths and optional output registers.</li>
-  <li><b>Reliability/features:</b> supports built‑in FIFO options and ECC modes (device/config dependent).</li>
+<li>Dual-port memory</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Strength:</b> predictable single‑cycle synchronous access with high aggregate bandwidth via parallel instantiation.</li>
-  <li><b>Scaling:</b> cascade in width/depth for larger memories; use BRAM for mid‑sized buffers and URAM for deeper storage.</li>
+<li>Latency: 1–2 cycles</li>
+<li>Bandwidth: high (parallel)</li>
 </ul>`;
 
 case "URAM":
-return `
-<h2>UltraRAM (URAM)</h2>
+return `<h2>URAM</h2>
 <ul>
-  <li><b>Role:</b> High‑density on‑chip memory for deep buffers (e.g., feature maps, large FIFOs, replay buffers).</li>
-  <li><b>Block type:</b> URAM288 resources with cascade support; includes power-gating features and ECC options.</li>
-  <li><b>Design tip:</b> prefer URAM for depth and BRAM for flexible aspect ratios/very high multi-porting via replication.</li>
+<li>High-density memory</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Scaling:</b> excellent for deep, streaming designs where external DDR latency would stall pipelines.</li>
-  <li><b>Latency:</b> synchronous with optional pipeline stages; plan pipelines to match your target Fmax.</li>
+<li>Latency: 2–4 cycles</li>
 </ul>`;
 
 case "CLOCK":
-return `
-<h2>Clock Network (BUFG / MMCM / PLL)</h2>
+return `<h2>Clock Network</h2>
 <ul>
-  <li><b>Role:</b> Generates, conditions, and distributes clocks across clock regions using global/horizontal routing and clock buffers.</li>
-  <li><b>Clock management:</b> Clock Management Tiles (CMTs) contain MMCMs/PLLs for frequency synthesis, deskew, jitter filtering, and optional fractional divides.</li>
-  <li><b>Design tip:</b> isolate unrelated clock domains; use proper CDC synchronizers and avoid unnecessary derived clocks.</li>
+<li>PLL/MMCM</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>Quality:</b> jitter and duty-cycle distortion can dominate high-speed I/O and timing closure; use MMCM/PLL settings and constraints carefully.</li>
-  <li><b>Debug:</b> confirm lock/reset behavior and clock enable strategy (BUFGCE/BUFGCTRL) early to avoid intermittent failures.</li>
+<li>Jitter: low (<50 ps)</li>
 </ul>`;
 
 case "IOB":
-return `
-<h2>IOB / SelectIO (Programmable I/O)</h2>
+return `<h2>IOB</h2>
 <ul>
-  <li><b>Role:</b> Programmable input/output resources supporting a wide range of single‑ended and differential standards.</li>
-  <li><b>Configurability:</b> programmable drive strength and slew rate; on‑chip termination options; ability to generate internal reference voltages (INTERNAL_VREF) depending on bank type.</li>
-  <li><b>Standards examples:</b> LVCMOS, SSTL/HSTL, LVDS, and MIPI D‑PHY (device/bank dependent).</li>
+<li>External interface</li>
 </ul>
 <b>Performance:</b>
 <ul>
-  <li><b>High‑speed I/O building blocks:</b> access to delay, SERDES, and register resources (“bit-slices”) for source‑synchronous interfaces.</li>
-  <li><b>Signal integrity:</b> board layout + termination strategy are as important as FPGA settings for reliable GHz‑class I/O.</li>
+<li>Supports GHz-level I/O</li>
 </ul>`;
 }
+
 return type;
 }
+
 /* PS */
 document.querySelectorAll(".core-block,.l2,.axi-core,.node")
 .forEach(el=> el.onclick=()=> info.innerHTML=desc(el.dataset.type));
