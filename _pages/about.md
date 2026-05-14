@@ -81,9 +81,9 @@ Please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qu
 
 # Know some FPGA
 
-<iframe 
-    src="./_pages/fpga_mpsoc.html" 
-    width="50%" 
-    height="900px" 
-    style="border:none;">
-</iframe>
+<div style="width:100%; height:100vh;">
+  <iframe 
+    src="./_pages/fpga_mpsoc.html"
+    style="width:100%; height:100%; border:none;">
+  </iframe>
+</div>
