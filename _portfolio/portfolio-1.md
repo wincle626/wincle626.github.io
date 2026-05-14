@@ -6,16 +6,10 @@ collection: portfolio
 
 # Know some Xilinx Ultrascale+ MPSoC architecture
 
-<iframe 
-  src="./_pages/fpga_mpsoc.html"
-  style="width:200%; height:70vh; border:none;">
-</iframe>
-
-
 <iframe
   src="{{ site.baseurl }}/_pages/fpga_mpsoc.html"
-  width="100%"
-  height="700"
+  width="200%"
+  height="1000"
   style="border:0;">
 </iframe>
 
