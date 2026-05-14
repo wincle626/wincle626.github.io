@@ -14,7 +14,7 @@ kramdown:
 Below is my interactive UltraScale+ MPSoC visualisation:
 </p>
 <iframe 
-    src="./fpga.html" 
+    src="./fpga_mpsoc.html" 
     width="100%" 
     height="800px" 
     style="border:none;">
