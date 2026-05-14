@@ -7,9 +7,8 @@ collection: portfolio
 # Know some Xilinx Ultrascale+ MPSoC architecture
 
 <iframe
-  src="{{ site.baseurl }}/_pages/fpga_mpsoc.html"
+  src="{{ '/portfolio/fpga_mpsoc/' | relative_url }}"
   width="200%"
   height="1000"
   style="border:0;">
 </iframe>
-
