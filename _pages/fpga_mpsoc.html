@@ -248,21 +248,20 @@ body {
 
 
 /* ===== PS layout + APU Cluster refactor (single-column cores, unified widths) ===== */
-:root{ --ps-block-w: 340px; --tile:45px; --gap:15px; }
-#ps{ align-items:center; }
-/* APU Cluster: single column cores; sub-blocks stacked; shrink to fit */
+:root{ --ps-block-w: 340px; --tile:45px; --gap:15px; --ps-pad:15px; }
+/* PS slightly wider than APU Cluster with border-to-border spacing ~= PL gap */
+#ps{ width: calc(var(--ps-block-w) + 2*var(--ps-pad)); align-items:center; padding-left:var(--ps-pad); padding-right:var(--ps-pad); box-sizing:border-box; }
 .l2{ width:var(--ps-block-w); margin:0; }
 .l2 .apu-cores{ grid-template-columns:1fr; gap:8px; }
 .l2 .core-block{ width:100%; box-sizing:border-box; }
 .l2 .mini-grid{ grid-template-columns:1fr; }
 .l2 .mini{ width:100%; box-sizing:border-box; }
 .l2 .mini.wide{ grid-column:auto; }
-/* PS AXI/DDR/Periph: single column, equal spacing via flex gap */
 .axi-area{ margin:0; padding:0; width:100%; display:flex; flex-direction:column; gap:15px; align-items:center; }
 .axi-core, #ddr, #periph{ width:var(--ps-block-w); box-sizing:border-box; position:relative; left:auto; right:auto; top:auto; bottom:auto; }
-/* Peripherals sub-blocks layout (2 rows x 3 cols) */
 #periph .mini-grid{ display:grid; grid-template-columns:repeat(3, 1fr); grid-template-rows:repeat(2, auto); grid-auto-flow:column; grid-auto-columns:1fr; gap:6px; overflow-x:auto; padding-bottom:4px; }
-/* ===== PL grid uses CSS vars; sized dynamically by JS to match height ===== */
+/* Remove connector lines on PS↔PL AXI INTERFACES ports */
+.bridge-port::before, .bridge-port::after{ display:none !important; width:0 !important; }
 #grid{ grid-template-columns: repeat(8, var(--tile)); gap: var(--gap); }
 .tile{ width: var(--tile); height: var(--tile); }
 </style>
@@ -282,10 +281,10 @@ body {
   <div class="node-title" style="pointer-events:none;">APU Cluster</div>
   <div style="font-size:10px; opacity:0.9; pointer-events:none;">Cores + L2 + Coherency</div>
   <div class="apu-cores">
-    <div class="core-block" data-type="CORE">Core0<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
-    <div class="core-block" data-type="CORE">Core1<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
-    <div class="core-block" data-type="CORE">Core2<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
-    <div class="core-block" data-type="CORE">Core3<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+    <div class="core-block" data-type="CORE0">Core0<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+    <div class="core-block" data-type="CORE1">Core1<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+    <div class="core-block" data-type="CORE2">Core2<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
+    <div class="core-block" data-type="CORE3">Core3<div class="cache-row"><div class="cache" data-type="APU_L1I">L1I</div><div class="cache" data-type="APU_L1D">L1D</div><div class="cache-row" style="margin-top:3px;"><div class="cache" data-type="APU_NEON">NEON</div><div class="cache" data-type="APU_FPU">FPU</div><div class="cache" data-type="APU_CORESIGHT">ETM</div></div></div></div>
   </div>
   <div class="mini-grid" style="margin-top:10px;">
     <div class="mini" data-type="APU_L2">L2 Cache</div>
@@ -374,6 +373,38 @@ switch(type){
 /* =====================
    APU CORE + MICRO-FEATURES
    ===================== */
+case "CORE0":
+return `
+<h2>Cortex-A53 Core0 (APU)</h2>
+<ul>
+ <li><b>Role:</b> General-purpose application core; commonly used for OS housekeeping and non-real-time tasks when pinning is not applied.</li>
+ <li><b>Tip:</b> For deterministic workloads, isolate a core (e.g., Core2/Core3) and keep IRQ affinity off it.</li>
+</ul>
+`;
+case "CORE1":
+return `
+<h2>Cortex-A53 Core1 (APU)</h2>
+<ul>
+ <li><b>Role:</b> Symmetric peer core; suitable for application threads and background services.</li>
+ <li><b>Tip:</b> Use CPU affinity / cpuset for cache locality with shared buffers and to reduce migration jitter.</li>
+</ul>
+`;
+case "CORE2":
+return `
+<h2>Cortex-A53 Core2 (APU)</h2>
+<ul>
+ <li><b>Role:</b> Symmetric peer core; often reserved for latency-sensitive user threads in mixed workloads.</li>
+ <li><b>Tip:</b> Pair with HPC coherent traffic if sharing data structures with PL to reduce cache maintenance.</li>
+</ul>
+`;
+case "CORE3":
+return `
+<h2>Cortex-A53 Core3 (APU)</h2>
+<ul>
+ <li><b>Role:</b> Symmetric peer core; can be isolated for real-time-ish control loops (within Linux constraints).</li>
+ <li><b>Tip:</b> Minimize interrupts and scheduling noise using isolcpus/nohz_full (Linux) where applicable.</li>
+</ul>
+`;
 case "CORE":
 return `
 <h2>Cortex-A53 (APU Core)</h2>
@@ -983,6 +1014,25 @@ function getType(x,y){
  return "CLB";
 }
 
+function xilinxLoc(type,x,y){
+  // Simplified UltraScale-style site naming (illustrative)
+  switch(type){
+    case 'CLB': return `SLICE_X${x}Y${y}`;
+    case 'DSP': return `DSP48E2_X${x}Y${y}`;
+    case 'BRAM': return `RAMB36_X${x}Y${y}`;
+    case 'URAM': return `URAM288_X${x}Y${y}`;
+    case 'CLOCK': return `BUFGCE_X${x}Y${y}`;
+    case 'IOB': return `IOB_X${x}Y${y}`;
+    default: return `SITE_X${x}Y${y}`;
+  }
+}
+function plLocHtml(type,x,y){
+  const loc=xilinxLoc(type,x,y);
+  return `
+<hr style='border-color:rgba(148,163,184,0.35);opacity:0.6'>
+<div><b>PL Location:</b> <code>${loc}</code> <span style='opacity:0.75'>(tile ${x},${y})</span></div>`;
+}
+
 function edge(a,b){
  const ar=a.getBoundingClientRect();
  const br=b.getBoundingClientRect();
@@ -1030,7 +1080,7 @@ function key(a,b){
 }
 
 for(let y=0;y<12;y++){
-  for(let x=0;x<8;x++){
+ for(let x=0;x<8;x++){
   const t=document.createElement("div");
   const type=getType(x,y);
 
@@ -1047,7 +1097,7 @@ for(let y=0;y<12;y++){
      return;
    }
    selected=t;
-   info.innerHTML=desc(type);
+   info.innerHTML=desc(type)+plLocHtml(type,x,y);
   };
 
   grid.appendChild(t);
@@ -1072,8 +1122,9 @@ function syncHeightsToBridge(){
 // ===== Resize PL tiles so a 12x8 grid matches the PL column height =====
 function syncPLGridToHeight(){
   const pl=document.getElementById('pl');
+  const ps=document.getElementById('ps');
   const routes=document.getElementById('routes');
-  if(!pl||!routes) return;
+  if(!pl||!routes||!ps) return;
   const rows=12, cols=8;
   const padTop=28;
   const available=Math.max(240, pl.clientHeight - padTop);
@@ -1083,6 +1134,9 @@ function syncPLGridToHeight(){
   tile=Math.max(16, tile);
   pl.style.setProperty('--tile', tile+'px');
   pl.style.setProperty('--gap', gap+'px');
+  // Keep PS border spacing similar to PL component spacing
+  document.documentElement.style.setProperty('--ps-pad', gap+'px');
+  // update svg overlay size to match computed grid size
   const gridW = cols*tile + (cols-1)*gap;
   const gridH = rows*tile + (rows-1)*gap;
   routes.style.width = gridW+'px';
