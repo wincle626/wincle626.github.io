@@ -55,7 +55,7 @@ If you are passionate about computing, please contact me through [**YUN dot WU a
 **  ~~Application outcome (April 2026)~~**
 -->
 
-# Chinese Students Funding Opportunities (Cycling every year)
+# Chinese Students Specific Funding Opportunities (Cycling every year)
 
 **Opened around mid-November, closed by mid-January of the next year**
 
