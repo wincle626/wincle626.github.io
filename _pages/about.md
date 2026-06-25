@@ -23,14 +23,14 @@ I am a Lecturer (Assistant Professor) in computing systems at Queen's University
 
 # Openning Positions
 
-Accepting **[PhD](https://www.qub.ac.uk/Study/postgraduate/research-degrees)** student all year round in topics of **[Approximate Computing](https://en.wikipedia.org/wiki/Approximate_computing)**:  
+Accepting [**PhD**](https://www.qub.ac.uk/Study/postgraduate/research-degrees) student all year round in topics of [**Approximate Computing*](https://en.wikipedia.org/wiki/Approximate_computing)*:  
 
 * **Efficient & Resilient Reconfigurable ML/AI Accelerators**
 * **AI-Assisted Electronic Design Automations**
 
-Accepting **[Postdoctoral Fellowships - Marie Skłodowska-Curie Actions](https://marie-sklodowska-curie-actions.ec.europa.eu/funding/msca-postdoctoral-fellowships-2026)** application all year round. It is due by 9th September 2026 this year.
+Accepting [**Postdoctoral Fellowships - Marie Skłodowska-Curie Actions**](https://marie-sklodowska-curie-actions.ec.europa.eu/funding/msca-postdoctoral-fellowships-2026) application all year round. It is due by 9th September 2026 this year.
 
-If you are passionate about computing, please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qub.ac.uk) for more details and keep eyes on [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at [QUB](https://www.qub.ac.uk) with my name. 
+If you are passionate about computing, please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qub.ac.uk) for more details and keep eyes on [**PhD Opportunities**](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at [**QUB**](https://www.qub.ac.uk) with my name. 
 
 <!-- 
 <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/>**~~Two PhD project topics for October 2026 entry:~~**
