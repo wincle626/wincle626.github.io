@@ -28,7 +28,7 @@ Accepting PhD student all year round in topics of **Approximate Computing**:
 * **Efficient & Resilient Reconfigurable ML/AI Accelerators**
 * **AI-Assisted Electronic Design Automations**
 
-Accepting [Postdoctoral Fellowships - Marie Skłodowska-Curie Actions](https://marie-sklodowska-curie-actions.ec.europa.eu/funding/msca-postdoctoral-fellowships-2026) application, due by 9th September 2026 this year.
+Accepting [Postdoctoral Fellowships - Marie Skłodowska-Curie Actions](https://marie-sklodowska-curie-actions.ec.europa.eu/funding/msca-postdoctoral-fellowships-2026) application all year round. It is due by 9th September 2026 this year.
 
 If you are passionate about computing, please contact me through [**YUN dot WU at QUB dot AC dot UK**](mailto:yun.wu@qub.ac.uk) for more details and keep eyes on [PhD Opportunities](https://www.qub.ac.uk/courses/postgraduate-research/phd-opportunities) at [QUB](https://www.qub.ac.uk) with my name. 
 
