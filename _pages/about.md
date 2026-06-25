@@ -23,7 +23,7 @@ I am a Lecturer (Assistant Professor) in computing systems at Queen's University
 
 # Openning Positions
 
-Accepting **PhD** student all year round in topics of **[Approximate Computing](https://en.wikipedia.org/wiki/Approximate_computing)**:  
+Accepting ****PhD**** student all year round in topics of **[Approximate Computing](https://en.wikipedia.org/wiki/Approximate_computing)**:  
 
 * **Efficient & Resilient Reconfigurable ML/AI Accelerators**
 * **AI-Assisted Electronic Design Automations**
