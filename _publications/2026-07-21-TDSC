@@ -1,0 +1,23 @@
+---
+title: "Remote Rowhammer Attack using Adversarial Observations on Federated Learning Clients"
+collection: publications
+category: manuscripts
+permalink: /publication/2026-07-21-TDSC
+excerpt: 'This paper discovered how the rowhammer attack on federating learning client would affect on the authentication at the server side.'
+date: 2026-07-21
+venue: 'IEEE Transactions on Dependable and Secure Computing'
+paperurl: ''
+slidesurl: ''
+bibtexurl: ''
+citation: 'Jinsheng Yuan, Yuhang Hao, Yun Wu, Chongyan Gu, Weisi Guo (2026). Remote Rowhammer Attack using Adversarial Observations on Federated Learning Clients. *IEEE Transactions on Parallel and Distributed Systems'
+---
+
+This paper finds that adversarial noise at the sensor edge can be steered to act as a remote hammering primitive on server memory, linking adversarial ML to hardware fault injection for the first time.
+
+Key contributions include:
+
+1. First Rowhammer attack vector driven purely from the physical domain, requiring no software access, privileges, or backdoor on the victim server.
+
+2. A two-stage PPO framework that learns adversarial waveforms optimised not for misclassification but for *where* and *how repeatedly* parameters update — a new objective for adversarial ML.
+
+3. Explicit identification of FL efficiency optimisations (sparse updates, huge pages, pinned memory, RDMA) as the mechanism that converts client-side perturbations into stable, high-rate DRAM row activations.
