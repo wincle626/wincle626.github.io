@@ -1,0 +1,23 @@
+---
+title: "ApproxLeak: Stealing or Sshielding? Power Side-Channel Analysis of Approximate Neural Hardware"
+collection: publications
+category: manuscripts
+permalink: /publication/2026-07-22-TCAD
+excerpt: 'This paper discovered how approximate computing counteremeasuring side channal attack. '
+date: 2026-07-22
+venue: 'IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems'
+paperurl: ''
+slidesurl: ''
+bibtexurl: ''
+citation: 'Minmin Jiang, Aditya Japa, Jack Miskelly, Yun Wu, Anh-Tuan Hoang, Maire O'Neill, Chongyan Gu (2026). ApproxLeak: Stealing or Sshielding? Power Side-Channel Analysis of Approximate Neural Hardware. *IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems*'
+---
+
+This paper finds that approximate computing, adopted for energy efficiency, is shown on real hardware to double as a near-free side-channel countermeasure — but how much protection you get depends on which approximation mechanism you choose.
+
+Key contributions include:
+
+1. This is the first power side-channel analysis of *approximate* systolic arrays on physical silicon — extending from a simulated ASIC PE (45 nm, Cadence) to a 3×3 array on a ChipWhisperer CW305 FPGA, and the first full weight extraction attempted against a physically approximated systolic-array implementation.
+
+2. It systematically compares three approximation mechanisms (undervolting, overclocking, bitwise approximate circuits) at matched error rates and shows they reshape leakage in *distinct* ways — deterministic bitwise approximation preserves MSB-related leakage and remains attackable, whereas the semi-random perturbations of voltage/frequency scaling suppress correlation far more strongly (MTD up 4×–20×+ in simulation, ≥19× on board).
+
+3. It introduces the SPDA metric, which folds output correctness into the classic security-power-delay figure of merit, exposing a non-monotonic trade-off that SPD alone hides (higher error no longer always means a better design point).
