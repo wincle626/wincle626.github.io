@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "IRIS@QUB "
+title: "RIS@QUB "
 layout: single
 author_profile: true
 redirect_from: 
@@ -10,7 +10,7 @@ kramdown:
   parse_block_html: true
 ---
 
-#### The vision of IRIS@QUB is to pioneer the next generation of intelligent and reconfigurable computing systems that deliver unprecedented levels of efficiency, adaptability, and trustworthiness. By combining advances in artificial intelligence, programmable hardware, computer architecture, and embedded systems, we aim to create sustainable computing technologies capable of powering future edge, autonomous, and cyber-physical systems. Our research seeks to transform how intelligent systems are built, enabling them to learn, adapt, and operate reliably in dynamic and resource-constrained environments.
+#### The vision of Reconfigurable and Intelligent Systems @ Queen's University Belfast is to pioneer the future computing systems that deliver unprecedented levels of efficiency, adaptability, and trustworthiness. By combining advances in artificial intelligence, programmable hardware, computer architecture, and embedded systems, we aim to create sustainable computing technologies capable of powering future edge, autonomous, and cyber-physical systems. Our research seeks to transform how intelligent systems are built, enabling them to learn, adapt, and operate reliably in dynamic and resource-constrained environments.
 
 ## Research Themes
 
