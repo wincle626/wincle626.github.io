@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Bio "
+title: "IRIS@QUB "
 layout: single
 author_profile: true
 redirect_from: 
@@ -10,14 +10,44 @@ kramdown:
   parse_block_html: true
 ---
 
-I am a Lecturer (Assistant Professor) in computing systems at Queen's University Belfast. My current research efforts concentrates on advance design methdologies and software/hardware architecture for MPSoC and FPGA accelerators. 
+The vision of IRIS@QUB is to pioneer the next generation of intelligent and reconfigurable computing systems that deliver unprecedented levels of efficiency, adaptability, and trustworthiness. By combining advances in artificial intelligence, programmable hardware, computer architecture, and embedded systems, we aim to create sustainable computing technologies capable of powering future edge, autonomous, and cyber-physical systems. Our research seeks to transform how intelligent systems are built, enabling them to learn, adapt, and operate reliably in dynamic and resource-constrained environments.
 
-# Research Directions
+---
 
+# Research Themes
+
+### Efficient and Trustworthy AI Systems
+- Hardware acceleration for AI and machine learning
+- Energy-efficient AI deployment at the edge
+- Trustworthy and resilient AI systems
+- AI for autonomous platforms
+
+### Approximate Computing
+- Error-resilient architectures
+- Quality-energy-performance trade-offs
+- Sustainable computing
+- Fault-tolerant edge systems
+
+### Reconfigurable Computing and FPGA Acceleration
+- FPGA-based AI accelerators
+- Automated accelerator generation
+- High-performance embedded architectures
+- Design automation methodologies
+
+### Low SWaP-C Embedded Systems
+- Size, Weight, Power and Cost constrained platforms
+- Autonomous vehicles and robotics
+- Edge intelligence
+- Real-time embedded computing
+
+---
+
+<!-- 
 * Approximate Computing
 * Reconfigurable Accelerators Architecture and Design-Automation
 * Low Size, Weight and Power - Cost (SWaP-C) Embedded Systems
 * Efficient & Trustworthy Artificial intelligence (AI)/Autonomous Systems (AS)
+-->
 
 <!-- <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/image_2025-10-15_225921013.png?raw=true" alt="research" width="1000"> -->
 
