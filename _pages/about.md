@@ -16,12 +16,6 @@ The vision of IRIS@QUB is to pioneer the next generation of intelligent and reco
 
 # Research Themes
 
-### Efficient and Trustworthy AI Systems
-- Hardware acceleration for AI and machine learning
-- Energy-efficient AI deployment at the edge
-- Trustworthy and resilient AI systems
-- AI for autonomous platforms
-
 ### Approximate Computing
 - Error-resilient architectures
 - Quality-energy-performance trade-offs
@@ -39,6 +33,12 @@ The vision of IRIS@QUB is to pioneer the next generation of intelligent and reco
 - Autonomous vehicles and robotics
 - Edge intelligence
 - Real-time embedded computing
+
+### Efficient and Trustworthy AI Systems
+- Hardware acceleration for AI and machine learning
+- Energy-efficient AI deployment at the edge
+- Trustworthy and resilient AI systems
+- AI for safety-critical autonomous platforms
 
 ---
 
