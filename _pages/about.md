@@ -53,7 +53,7 @@ The vision of IRIS@QUB is to pioneer the next generation of intelligent and reco
 
 # Openning Positions
 
-Accepting [**PhD**](https://www.qub.ac.uk/Study/postgraduate/research-degrees) student all year round in topics of [**Approximate Computing**](https://en.wikipedia.org/wiki/Approximate_computing):  
+Accepting Outstanding candidates for [**PhD**](https://www.qub.ac.uk/Study/postgraduate/research-degrees) all year round in topics of [**Approximate Computing**](https://en.wikipedia.org/wiki/Approximate_computing):  
 
 * **Efficient & Resilient Reconfigurable ML/AI Accelerators**
 * **AI-Assisted Electronic Design Automations**
