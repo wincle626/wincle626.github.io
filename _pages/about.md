@@ -18,7 +18,7 @@ The vision of **Reconfigurable and Intelligent Systems @ Queen's University Belf
 <tr>
 <td width="50%" valign="top">
 
-⚡ **Approximate Computing**
+⚡ Approximate Computing
 
 - Error-resilient architectures
   
@@ -31,7 +31,7 @@ The vision of **Reconfigurable and Intelligent Systems @ Queen's University Belf
 </td>
 <td width="50%" valign="top">
 
-🔧 **Reconfigurable Computing and FPGA Acceleration**
+🔧 Reconfigurable Computing and FPGA Acceleration
 
 - FPGA-based AI accelerators
   
@@ -47,7 +47,7 @@ The vision of **Reconfigurable and Intelligent Systems @ Queen's University Belf
 <tr>
 <td width="50%" valign="top">
 
-🚀 **Low SWaP-C Embedded Systems**
+🚀 Low SWaP-C Embedded Systems
 
 - Size, Weight, Power and Cost constrained platforms
   
@@ -60,7 +60,7 @@ The vision of **Reconfigurable and Intelligent Systems @ Queen's University Belf
 </td>
 <td width="50%" valign="top">
 
-🧠 **Efficient and Trustworthy AI Systems**
+🧠 Efficient and Trustworthy AI Systems
 
 - Hardware acceleration for AI and machine learning
   
