@@ -21,8 +21,11 @@ The vision of **Reconfigurable and Intelligent Systems @ Queen's University Belf
 ⚡ **Approximate Computing**
 
 - Error-resilient architectures
+  
 - Quality-energy-performance trade-offs
+  
 - Sustainable computing
+  
 - Fault-tolerant edge systems
 
 </td>
