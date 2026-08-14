@@ -12,35 +12,51 @@ kramdown:
 
 The vision of IRIS@QUB is to pioneer the next generation of intelligent and reconfigurable computing systems that deliver unprecedented levels of efficiency, adaptability, and trustworthiness. By combining advances in artificial intelligence, programmable hardware, computer architecture, and embedded systems, we aim to create sustainable computing technologies capable of powering future edge, autonomous, and cyber-physical systems. Our research seeks to transform how intelligent systems are built, enabling them to learn, adapt, and operate reliably in dynamic and resource-constrained environments.
 
----
+## Research Themes
 
-# Research Themes
+<table>
+<tr>
+<td width="50%" valign="top">
 
-### Approximate Computing
+### ⚡ Approximate Computing
 - Error-resilient architectures
 - Quality-energy-performance trade-offs
 - Sustainable computing
 - Fault-tolerant edge systems
 
-### Reconfigurable Computing and FPGA Acceleration
+</td>
+<td width="50%" valign="top">
+
+### 🔧 Reconfigurable Computing and FPGA Acceleration
 - FPGA-based AI accelerators
 - Automated accelerator generation
 - High-performance embedded architectures
 - Design automation methodologies
 
-### Low SWaP-C Embedded Systems
+</td>
+</tr>
+
+<tr>
+<td width="50%" valign="top">
+
+### 🚀 Low SWaP-C Embedded Systems
 - Size, Weight, Power and Cost constrained platforms
 - Autonomous vehicles and robotics
 - Edge intelligence
 - Real-time embedded computing
 
-### Efficient and Trustworthy AI Systems
+</td>
+<td width="50%" valign="top">
+
+### 🧠 Efficient and Trustworthy AI Systems
 - Hardware acceleration for AI and machine learning
 - Energy-efficient AI deployment at the edge
 - Trustworthy and resilient AI systems
-- AI for safety-critical autonomous platforms
+- AI for autonomous platforms
 
----
+</td>
+</tr>
+</table>
 
 <!-- 
 * Approximate Computing
