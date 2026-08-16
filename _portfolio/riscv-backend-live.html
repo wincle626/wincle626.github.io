@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RV32IM — RISC-V backend simulator (live)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style id="sheet">
+:root{
+  --paper:#E4E8EC;
+  --card:#FBFCFD;
+  --ink:#0F141A;
+  --ink-2:#4A5560;
+  --ink-3:#7A8794;
+  --rule:#C0C9D2;
+  --rule-2:#DCE3E9;
+  --blue:#14477E;
+  --blue-soft:#E2ECF7;
+  --hot:#B0175C;
+  --hot-soft:#FBE4EE;
+  --amber:#8A5A00;
+  --amber-soft:#FAEFD8;
+  --green:#1D6B4A;
+  --green-soft:#DFF0E7;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(var(--rule-2) 1px,transparent 1px),linear-gradient(90deg,var(--rule-2) 1px,transparent 1px);
+  background-size:28px 28px;background-position:-1px -1px;
+}
+.shell{max-width:1500px;margin:0 auto;padding:22px 20px 60px}
+
+.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{font-family:var(--cond);font-weight:700;font-size:30px;letter-spacing:-.02em;margin:0;text-transform:uppercase}
+.brand .rev{font-family:var(--mono);font-size:11px;color:var(--hot);border:1px solid var(--hot);padding:1px 5px;border-radius:2px;letter-spacing:.04em}
+.masthead p{margin:0;color:var(--ink-2);max-width:56ch;font-size:13px}
+.masthead .spec{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.7}
+.masthead .spec b{color:var(--ink);font-weight:500}
+
+.rail{position:relative;display:grid;grid-template-columns:repeat(8,1fr);margin:0 0 22px;border-bottom:1px solid var(--rule);background:var(--card)}
+.rail::before{content:"";position:absolute;left:0;right:0;top:38px;height:1px;background:var(--rule);z-index:0}
+.stage{position:relative;z-index:1;background:none;border:0;border-right:1px solid var(--rule-2);padding:12px 8px 14px;text-align:left;cursor:pointer;font:inherit;color:var(--ink-3)}
+.stage:last-child{border-right:0}
+.stage .no{font-family:var(--mono);font-size:10px;letter-spacing:.1em;display:block}
+.stage .nm{font-family:var(--cond);font-weight:600;font-size:13px;letter-spacing:.01em;color:var(--ink-2);display:block;margin:1px 0 8px;text-transform:uppercase}
+.stage .dot{width:11px;height:11px;border-radius:50%;background:var(--paper);border:1.5px solid var(--rule);display:block;margin-bottom:9px}
+.stage .ct{font-family:var(--mono);font-size:11px;color:var(--ink-3);display:block}
+.stage:hover .nm{color:var(--ink)}
+.stage[aria-selected="true"]{color:var(--ink)}
+.stage[aria-selected="true"] .nm{color:var(--hot)}
+.stage[aria-selected="true"] .dot{background:var(--hot);border-color:var(--hot);box-shadow:0 0 0 3px var(--hot-soft)}
+.stage[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hot)}
+.stage:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+
+.grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:20px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:3px}
+.panel > h2{font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:600;color:var(--ink-2);margin:0;padding:9px 14px;border-bottom:1px solid var(--rule-2);background:#F1F4F7;border-radius:3px 3px 0 0}
+.pad{padding:14px}
+
+textarea{width:100%;min-height:190px;resize:vertical;font-family:var(--mono);font-size:13px;line-height:1.65;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:2px;padding:10px 11px;tab-size:2}
+.editor{display:flex;border:1px solid var(--rule);border-radius:2px;background:#fff;overflow:hidden}
+.editor:focus-within{outline:2px solid var(--blue);outline-offset:-1px;border-color:var(--blue)}
+.gutter{flex:0 0 36px;background:#F1F4F7;border-right:1px solid var(--rule-2);font-family:var(--mono);font-size:13px;line-height:1.65;color:var(--ink-3);text-align:right;padding:10px 6px 10px 0;overflow:hidden;user-select:none;-webkit-user-select:none}
+.gutter b{display:block;font-weight:400;border-radius:2px 0 0 2px}
+.gutter b.bad{background:var(--hot);color:#fff;font-weight:600;padding-right:4px;margin-right:-4px}
+.editor textarea{flex:1;min-width:0;border:0;border-radius:0;white-space:pre;overflow:auto}
+.editor textarea:focus{outline:none;border:0}
+
+.status{display:flex;align-items:center;gap:8px;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--ink-3);min-height:18px}
+.pulse{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:var(--green)}
+.pulse.beat{animation:beat .45s ease-out}
+.pulse.bad{background:var(--hot)}
+@keyframes beat{from{box-shadow:0 0 0 0 rgba(29,107,74,.5)}to{box-shadow:0 0 0 8px rgba(29,107,74,0)}}
+.status .delta{margin-left:auto;white-space:nowrap}
+.status .delta.up{color:var(--hot)}
+.status .delta.down{color:var(--green)}
+
+.samples{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-family:var(--cond);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:4px 9px;border:1px solid var(--rule);background:#fff;color:var(--ink-2);border-radius:2px;cursor:pointer}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+
+fieldset{border:0;margin:16px 0 0;padding:0}
+legend{font-family:var(--cond);text-transform:uppercase;letter-spacing:.07em;font-size:11px;font-weight:600;color:var(--ink-3);padding:0 0 6px}
+.opt{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--rule-2)}
+.opt input[type=checkbox]{margin:3px 0 0;accent-color:var(--hot);width:14px;height:14px}
+.opt label{cursor:pointer}
+.opt .t{font-family:var(--mono);font-size:12px;display:block}
+.opt .d{font-size:11.5px;color:var(--ink-3);line-height:1.4;display:block}
+.rowinp{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid var(--rule-2);font-family:var(--mono);font-size:12px}
+.rowinp input[type=range]{flex:1;accent-color:var(--hot)}
+.rowinp .val{min-width:20px;text-align:right;color:var(--hot);font-weight:600}
+.args{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.args label{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.args input{width:100%;font-family:var(--mono);font-size:13px;padding:5px 7px;border:1px solid var(--rule);border-radius:2px;background:#fff;color:var(--ink)}
+.args input:focus{outline:2px solid var(--blue);outline-offset:-1px}
+
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:14px}
+.dlb{font-family:var(--cond);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding:9px 6px;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:2px;cursor:pointer}
+.dlb:hover{background:var(--blue);border-color:var(--blue)}
+.dlb.alt{background:#fff;color:var(--ink);border-color:var(--rule)}
+.dlb.alt:hover{color:var(--blue);border-color:var(--blue);background:#fff}
+.dlb:disabled{background:#EDF0F3;border-color:var(--rule);color:var(--ink-3);cursor:not-allowed}
+.dlb:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.hint{font-size:11px;color:var(--ink-3);margin:6px 0 0;text-align:center;min-height:15px}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));border-bottom:1px solid var(--rule-2)}
+.metric{padding:10px 14px;border-right:1px solid var(--rule-2)}
+.metric:last-child{border-right:0}
+.metric .k{font-family:var(--cond);text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--ink-3);display:block}
+.metric .v{font-family:var(--mono);font-size:19px;font-weight:500;line-height:1.25;display:block}
+.metric .v small{font-size:11px;color:var(--ink-3);font-weight:400}
+.metric.good .v{color:var(--green)}
+.metric.warn .v{color:var(--amber)}
+
+.view{padding:16px 18px 22px;min-height:420px}
+.view h3{font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;font-size:11.5px;color:var(--ink-3);font-weight:600;margin:0 0 8px}
+.view h3:not(:first-child){margin-top:24px}
+.view p.note{font-size:12.5px;color:var(--ink-2);max-width:80ch;margin:0 0 12px}
+pre{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:#fff;border:1px solid var(--rule-2);border-left:2px solid var(--blue);border-radius:2px;padding:12px 14px;overflow-x:auto;margin:0 0 4px}
+code{font-family:var(--mono)}
+.kw{color:var(--blue);font-weight:500}
+.ty{color:var(--ink-3)}
+.vr{color:var(--hot)}
+.im{color:var(--amber)}
+.cm{color:var(--ink-3);font-style:italic}
+.mn{color:var(--ink);font-weight:600}
+.pr{color:var(--blue);font-weight:500}
+.lbl{color:var(--green);font-weight:600}
+
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:12px}
+th{font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;font-size:10px;color:var(--ink-3);text-align:left;font-weight:600;border-bottom:1px solid var(--rule);padding:5px 9px 5px 0;white-space:nowrap}
+td{padding:5px 9px 5px 0;border-bottom:1px solid var(--rule-2);vertical-align:top}
+tr.fired td{background:var(--hot-soft)}
+.tag{display:inline-block;font-family:var(--cond);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:2px}
+.tag.hot{background:var(--hot-soft);color:var(--hot)}
+.tag.blue{background:var(--blue-soft);color:var(--blue)}
+.tag.amber{background:var(--amber-soft);color:var(--amber)}
+.tag.green{background:var(--green-soft);color:var(--green)}
+.tag.mute{background:#EDF0F3;color:var(--ink-3)}
+
+.chart{overflow-x:auto;border:1px solid var(--rule-2);background:#fff;border-radius:2px;padding:10px 12px}
+.iv{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;margin-bottom:3px}
+.iv .nmv{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-align:right}
+.iv .track{position:relative;height:15px;background:repeating-linear-gradient(90deg,var(--rule-2) 0 1px,transparent 1px var(--step))}
+.iv .bar{position:absolute;top:1px;height:13px;border-radius:2px;background:var(--blue);color:#fff;font-family:var(--mono);font-size:9.5px;line-height:13px;text-align:center;overflow:hidden}
+.iv .bar.spilled{background:repeating-linear-gradient(45deg,var(--hot),var(--hot) 4px,#C8477D 4px,#C8477D 8px)}
+.axis{display:grid;grid-template-columns:64px 1fr;gap:10px;margin-top:4px}
+.axis .ticks{display:flex;font-family:var(--mono);font-size:9px;color:var(--ink-3)}
+.axis .ticks span{flex:1;text-align:center}
+
+/* 5-stage pipeline diagram */
+.pipewrap{overflow-x:auto;border:1px solid var(--rule-2);background:#fff;border-radius:2px}
+table.pipe{width:auto;border-collapse:separate;border-spacing:0}
+table.pipe th{padding:4px 6px;position:sticky;top:0;background:#fff}
+table.pipe th.cyc{width:24px;min-width:24px;text-align:center;font-family:var(--mono);font-size:9px;padding:4px 0;color:var(--ink-3)}
+table.pipe td{border-bottom:1px solid var(--rule-2);padding:0}
+table.pipe td.asm{font-family:var(--mono);font-size:11px;white-space:nowrap;padding:2px 12px 2px 6px;position:sticky;left:0;background:#fff;border-right:1px solid var(--rule-2)}
+table.pipe td.ix{font-family:var(--mono);font-size:10px;color:var(--ink-3);padding:2px 6px;text-align:right}
+table.pipe td.c{width:24px;min-width:24px;height:19px;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:-.02em;color:var(--ink-2);border-right:1px solid #F0F3F6}
+.s-IF{background:var(--blue-soft);color:var(--blue)}
+.s-ID{background:#EDF0F3}
+.s-EX{background:var(--hot-soft);color:var(--hot);font-weight:600}
+.s-ME{background:var(--amber-soft);color:var(--amber)}
+.s-WB{background:var(--green-soft);color:var(--green)}
+.s-st{background:repeating-linear-gradient(45deg,#F6DCE7,#F6DCE7 3px,#FBE9F1 3px,#FBE9F1 6px);color:var(--hot)}
+table.pipe td.hz{font-family:var(--mono);font-size:10px;color:var(--hot);white-space:nowrap;padding:2px 8px}
+
+.err{background:var(--hot-soft);border:1px solid var(--hot);border-left-width:3px;border-radius:2px;padding:11px 13px;font-size:13px;color:#7C0F41}
+.err b{font-family:var(--cond);text-transform:uppercase;letter-spacing:.05em;font-size:11px;display:block;color:var(--hot)}
+.err pre{background:transparent;border:0;padding:6px 0 0;margin:0;color:#7C0F41;border-left:0}
+.warn-box{background:var(--amber-soft);border-left:3px solid var(--amber);padding:9px 12px;font-size:12.5px;color:#6B4600;border-radius:2px;margin-bottom:12px}
+.ok-box{background:var(--green-soft);border-left:3px solid var(--green);padding:9px 12px;font-size:12.5px;color:#125035;border-radius:2px;font-family:var(--mono)}
+
+.legendrow{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--ink-3);margin-top:10px}
+.legendrow i{width:10px;height:10px;display:inline-block;border-radius:2px;margin-right:5px;vertical-align:-1px}
+
+.enc{font-family:var(--mono);font-size:11px;display:flex;gap:1px;flex-wrap:nowrap}
+.enc span{padding:1px 5px;border-radius:2px}
+.f-op{background:var(--ink);color:#fff}
+.f-rd{background:var(--blue-soft);color:var(--blue)}
+.f-r1{background:#EDF0F3;color:var(--ink-2)}
+.f-r2{background:#E7EBEF;color:var(--ink-2)}
+.f-f3{background:var(--green-soft);color:var(--green)}
+.f-f7{background:var(--hot-soft);color:var(--hot)}
+.f-im{background:var(--amber-soft);color:var(--amber)}
+
+.footer{margin-top:26px;font-size:11.5px;color:var(--ink-3);border-top:1px solid var(--rule);padding-top:10px;font-family:var(--mono)}
+
+@media (max-width:1050px){
+  .grid{grid-template-columns:1fr}
+  .rail{grid-template-columns:repeat(3,1fr)}
+  .rail::before{display:none}
+  .stage{border-bottom:1px solid var(--rule-2)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="masthead">
+    <div>
+      <div class="brand"><h1>RV32IM</h1><span class="rev">riscv32 · 5-stage · live</span></div>
+      <p>A teaching model of a RISC-V backend. The target is a classic five-stage pipeline (IF/ID/EX/MEM/WB) with a non-pipelined multiplier and divider, and the kernel language exposes add, subtract, multiply and divide. Every keystroke recompiles all seven passes.</p>
+    </div>
+    <div class="spec">
+      target triple <b>riscv32-unknown-elf</b><br>
+      base <b>RV32I</b> + <b>M</b> extension · XLEN <b>32</b><br>
+      args <b>a0–a2</b> · result <b>a0</b> · frame <b>sp</b>
+    </div>
+  </header>
+
+  <nav class="rail" id="rail" role="tablist" aria-label="Compiler passes"></nav>
+
+  <div class="grid">
+    <section class="panel">
+      <h2>Kernel source</h2>
+      <div class="pad">
+        <div class="editor">
+          <div class="gutter" id="gutter" aria-hidden="true"></div>
+          <textarea id="src" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="Kernel source"></textarea>
+        </div>
+        <div class="status">
+          <span class="pulse" id="pulse"></span>
+          <span id="stat">ready</span>
+          <span class="delta" id="delta"></span>
+        </div>
+        <div class="samples" id="samples"></div>
+
+        <fieldset>
+          <legend>Argument values (used by the simulator)</legend>
+          <div class="args">
+            <div><label for="ax">x → a0</label><input id="ax" type="number" value="7"></div>
+            <div><label for="ay">y → a1</label><input id="ay" type="number" value="3"></div>
+            <div><label for="az">z → a2</label><input id="az" type="number" value="5"></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Backend passes</legend>
+          <div class="opt">
+            <input type="checkbox" id="o-fold" checked>
+            <label for="o-fold"><span class="t">constant folding</span><span class="d">Evaluate constant subexpressions while building IR.</span></label>
+          </div>
+          <div class="opt">
+            <input type="checkbox" id="o-str" checked>
+            <label for="o-str"><span class="t">immediate strength reduction</span><span class="d">×2 becomes an add, ×1 and ÷1 become mv, ×−1 becomes neg, and subtracting a constant becomes addi with the sign flipped.</span></label>
+          </div>
+          <div class="opt">
+            <input type="checkbox" id="o-sched" checked>
+            <label for="o-sched"><span class="t">list scheduling</span><span class="d">Reorder independent instructions to put distance between a producer and its consumer.</span></label>
+          </div>
+          <div class="opt">
+            <input type="checkbox" id="o-fwd" checked>
+            <label for="o-fwd"><span class="t">EX/MEM forwarding</span><span class="d">Hardware setting, not a compiler pass. Turn it off to see the pipeline stall on every dependence.</span></label>
+          </div>
+          <div class="rowinp">
+            <label for="o-regs">allocatable regs</label>
+            <input type="range" id="o-regs" min="2" max="8" value="8">
+            <span class="val" id="o-regs-v">8</span>
+          </div>
+        </fieldset>
+
+        <div class="dl">
+          <button class="dlb" id="dl-c">Download .c</button>
+          <button class="dlb" id="dl-ll">Download .ll</button>
+          <button class="dlb" id="dl-s">Download .s</button>
+          <button class="dlb alt" id="dl-html">Report .html</button>
+        </div>
+        <p class="hint" id="dlmsg">C source, LLVM IR, RISC-V assembly, or the whole run as one page.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="metrics" id="metrics"></div>
+      <div class="view" id="view" role="tabpanel"></div>
+    </section>
+  </div>
+
+  <p class="footer">Everything runs locally in this page — lexer, parser, IR builder, instruction selector, list scheduler, linear-scan allocator, RV32IM encoder, a five-stage timing model and a small ISS. Tab indents, Ctrl/⌘+Enter forces a rebuild.</p>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   0. Machine description — RV32IM subset
+   ============================================================ */
+const XN={zero:0,ra:1,sp:2,t0:5,t1:6,t2:7,s1:9,a0:10,a1:11,a2:12,a3:13,a4:14,a5:15,a6:16,a7:17,t3:28,t4:29,t5:30,t6:31};
+const POOL=["t0","t1","t2","s1","a3","a4","a5","a6"];   // allocatable, sliced by the slider
+const SCRATCH=["t3","t4","t5"];                          // reserved for spill reload
+const ARGR=["a0","a1","a2"], RETR="a0";
+
+// ex = cycles occupied in EX (the multiplier and divider are not pipelined)
+const ISA={
+  ADDI:{fmt:"I",f3:0x0,op:0x13,ex:1,doc:"rd ← rs1 + sext(imm)"},
+  ADD :{fmt:"R",f7:0x00,f3:0x0,op:0x33,ex:1,doc:"rd ← rs1 + rs2"},
+  SUB :{fmt:"R",f7:0x20,f3:0x0,op:0x33,ex:1,doc:"rd ← rs1 − rs2"},
+  MUL :{fmt:"R",f7:0x01,f3:0x0,op:0x33,ex:3,doc:"rd ← rs1 × rs2 (low 32)"},
+  DIV :{fmt:"R",f7:0x01,f3:0x4,op:0x33,ex:8,doc:"rd ← rs1 ÷ rs2 (signed, → 0)"},
+  LUI :{fmt:"U",op:0x37,ex:1,doc:"rd ← imm << 12"},
+  LW  :{fmt:"I",f3:0x2,op:0x03,ex:1,load:true,doc:"rd ← mem[rs1 + imm]"},
+  SW  :{fmt:"S",f3:0x2,op:0x23,ex:1,store:true,doc:"mem[rs1 + imm] ← rs2"},
+  JALR:{fmt:"I",f3:0x0,op:0x67,ex:1,doc:"pc ← rs1 + imm"}
+};
+// virtual mnemonics used before emission
+const LAT={LI:1,MV:1,NEG:1,ADD:1,SUB:1,ADDI:1,MUL:3,DIV:8,RET:1};
+
+const PATTERNS=[
+  {id:"P_ADD",  ins:"add",  dag:"(add GPR:$rs1, GPR:$rs2)"},
+  {id:"P_ADDI", ins:"addi", dag:"(add GPR:$rs1, simm12:$imm)"},
+  {id:"P_SUB",  ins:"sub",  dag:"(sub GPR:$rs1, GPR:$rs2)"},
+  {id:"P_SUBI", ins:"addi", dag:"(sub GPR:$rs1, simm12:$imm)  ⇒  addi $rs1, −imm", need:"str"},
+  {id:"P_NEG",  ins:"neg",  dag:"(sub 0, GPR:$rs)  ⇒  sub $rd, zero, $rs"},
+  {id:"P_MUL",  ins:"mul",  dag:"(mul GPR:$rs1, GPR:$rs2)"},
+  {id:"P_DIV",  ins:"div",  dag:"(sdiv GPR:$rs1, GPR:$rs2)"},
+  {id:"P_MUL2", ins:"add",  dag:"(mul GPR:$rs, 2)  ⇒  add $rs, $rs", need:"str"},
+  {id:"P_IDENT",ins:"mv",   dag:"(mul $rs,1) (sdiv $rs,1) (add $rs,0) (sub $rs,0)", need:"str"},
+  {id:"P_ZERO", ins:"li",   dag:"(mul GPR:$rs, 0)", need:"str"},
+  {id:"P_LI",   ins:"li",   dag:"(imm:$v)  — no reg/imm form for mul or div, so materialise"},
+  {id:"P_COPY", ins:"mv",   dag:"(copy physreg)  ⇒  addi $rd, $src, 0"}
+];
+
+const fits12 = v => v>=-2048 && v<=2047;
+const sdiv=(a,b)=>{ if(b===0) return -1; if(a===-2147483648&&b===-1) return a; return Math.trunc(a/b)|0; };
+
+/* ============================================================
+   1. Front end
+   ============================================================ */
+class CErr extends Error{ constructor(msg,pos,hint){ super(msg); this.pos=pos; this.hint=hint; } }
+
+function lex(src){
+  const t=[]; let i=0;
+  const dig=c=>c>="0"&&c<="9";
+  const alp=c=>(c>="a"&&c<="z")||(c>="A"&&c<="Z")||c==="_";
+  while(i<src.length){
+    const c=src[i];
+    if(/\s/.test(c)){i++;continue;}
+    if(c==="/"&&src[i+1]==="/"){ while(i<src.length&&src[i]!=="\n") i++; continue; }
+    if(dig(c)){ let j=i; while(j<src.length&&dig(src[j])) j++;
+      const v=parseInt(src.slice(i,j),10);
+      if(v>2147483647) throw new CErr(`literal ${src.slice(i,j)} does not fit in 32 bits`,i);
+      t.push({t:"num",v,p:i}); i=j; continue; }
+    if(alp(c)){ let j=i; while(j<src.length&&(alp(src[j])||dig(src[j]))) j++;
+      const w=src.slice(i,j);
+      t.push({t:w==="return"?"ret":"id",v:w,p:i}); i=j; continue; }
+    if("+-*/=();".includes(c)){ t.push({t:c,v:c,p:i}); i++; continue; }
+    if("%&|^<>!~".includes(c))
+      throw new CErr(`'${c}' has no instruction in this backend`,i,"The kernel language covers + − × ÷ only.");
+    throw new CErr(`unexpected character '${c}'`,i);
+  }
+  t.push({t:"eof",v:"",p:src.length});
+  return t;
+}
+
+function parse(toks){
+  let k=0;
+  const peek=()=>toks[k], next=()=>toks[k++];
+  const expect=(ty,what)=>{ const tk=peek(); if(tk.t!==ty) throw new CErr(`expected ${what} but found '${tk.v||"end of input"}'`,tk.p); return next(); };
+  function primary(){
+    const tk=peek();
+    if(tk.t==="num"){ next(); return {k:"num",v:tk.v,p:tk.p}; }
+    if(tk.t==="id"){ next(); return {k:"var",name:tk.v,p:tk.p}; }
+    if(tk.t==="("){ next(); const e=addExpr(); expect(")","')'"); return e; }
+    throw new CErr(`expected a value but found '${tk.v||"end of input"}'`,tk.p);
+  }
+  function unary(){
+    if(peek().t==="-"){ const p=next().p; return {k:"neg",e:unary(),p}; }
+    return primary();
+  }
+  function mulExpr(){ let l=unary(); while(peek().t==="*"||peek().t==="/"){ const o=next(); l={k:"bin",op:o.v,l,r:unary(),p:o.p}; } return l; }
+  function addExpr(){ let l=mulExpr(); while(peek().t==="+"||peek().t==="-"){ const o=next(); l={k:"bin",op:o.v,l,r:mulExpr(),p:o.p}; } return l; }
+
+  const stmts=[];
+  while(peek().t!=="eof"){
+    if(peek().t==="ret"){ const p=next().p; const e=addExpr(); expect(";","';'"); stmts.push({k:"return",e,p});
+      if(peek().t!=="eof") throw new CErr("nothing may follow the return statement",peek().p);
+      break; }
+    const id=expect("id","a variable name");
+    expect("=","'='"); const e=addExpr(); expect(";","';'");
+    stmts.push({k:"assign",name:id.v,e,p:id.p});
+  }
+  if(!stmts.length||stmts[stmts.length-1].k!=="return")
+    throw new CErr("the kernel must finish with a return statement",toks[toks.length-1].p,"Add a line such as: return x * y - z;");
+  return {k:"program",stmts};
+}
+
+/* ============================================================
+   2. IR builder — SSA, arguments pre-bound
+   ============================================================ */
+const ARGNAME=["x","y","z"];
+const vname=v=>v<=3?"%"+ARGNAME[v-1]:"%"+v;
+const IROP={"+":"add","-":"sub","*":"mul","/":"sdiv"};
+
+function buildIR(ast,opts){
+  const ir=[]; let n=3, folded=0;
+  const env=new Map([["x",{kind:"vreg",v:1}],["y",{kind:"vreg",v:2}],["z",{kind:"vreg",v:3}]]);
+  const imm=v=>({kind:"imm",v:v|0});
+  function val(node){
+    if(node.k==="num") return imm(node.v);
+    if(node.k==="neg") return val({k:"bin",op:"-",l:{k:"num",v:0,p:node.p},r:node.e,p:node.p});
+    if(node.k==="var"){
+      if(!env.has(node.name)) throw new CErr(`'${node.name}' is not defined`,node.p,"Assign it first, or use one of the arguments x, y, z.");
+      return env.get(node.name);
+    }
+    const a=val(node.l), b=val(node.r);
+    if(opts.fold&&a.kind==="imm"&&b.kind==="imm"){
+      folded++;
+      const v = node.op==="+"?(a.v+b.v)|0 : node.op==="-"?(a.v-b.v)|0 : node.op==="*"?Math.imul(a.v,b.v) : sdiv(a.v,b.v);
+      return imm(v);
+    }
+    const res=++n;
+    ir.push({res,op:IROP[node.op],a,b});
+    return {kind:"vreg",v:res};
+  }
+  let ret=null;
+  for(const s of ast.stmts){ if(s.k==="assign") env.set(s.name,val(s.e)); else ret=val(s.e); }
+  return {ir,ret,folded,maxV:n};
+}
+
+const irLines=(ir,ret)=>{
+  const o=[], opnd=v=>v.kind==="imm"?String(v.v):vname(v.v);
+  o.push(`define i32 @kernel(i32 %x, i32 %y, i32 %z) {`);
+  o.push(`entry:`);
+  for(const I of ir) o.push(`  ${vname(I.res)} = ${I.op} i32 ${opnd(I.a)}, ${opnd(I.b)}`);
+  o.push(`  ret i32 ${ret?opnd(ret):"0"}`);
+  o.push(`}`);
+  return o;
+};
+function irText(ir,ret){
+  const opnd=v=>v.kind==="imm"?`<span class="im">${v.v}</span>`:`<span class="vr">${vname(v.v)}</span>`;
+  const o=[`<span class="kw">define</span> <span class="ty">i32</span> <span class="lbl">@kernel</span>(<span class="ty">i32</span> <span class="vr">%x</span>, <span class="ty">i32</span> <span class="vr">%y</span>, <span class="ty">i32</span> <span class="vr">%z</span>) {`,`<span class="lbl">entry:</span>`];
+  for(const I of ir) o.push(`  <span class="vr">${vname(I.res)}</span> = <span class="kw">${I.op}</span> <span class="ty">i32</span> ${opnd(I.a)}, ${opnd(I.b)}`);
+  o.push(`  <span class="kw">ret</span> <span class="ty">i32</span> ${ret?opnd(ret):`<span class="im">0</span>`}`);
+  o.push(`}`);
+  return o.join("\n");
+}
+
+/* ============================================================
+   3. Instruction selection — IR → machine ops on virtual regs
+   ============================================================ */
+const vreg=v=>({kind:"vreg",v}), preg=r=>({kind:"preg",r}), immo=v=>({kind:"imm",v});
+
+function select(ir,ret,opts,maxV){
+  const mir=[], trace=[], fires={};
+  let next=maxV;
+  const fresh=()=>vreg(++next);
+  const fire=id=>{ fires[id]=(fires[id]||0)+1; return id; };
+  const put=(mn,def,uses,pat,cm)=>{ mir.push({mn,def,uses,pat,cm:cm||""}); };
+
+  const usedArg=[false,false,false];
+  ir.forEach(I=>[I.a,I.b].forEach(o=>{ if(o.kind==="vreg"&&o.v<=3) usedArg[o.v-1]=true; }));
+  if(ret&&ret.kind==="vreg"&&ret.v<=3) usedArg[ret.v-1]=true;
+  usedArg.forEach((u,i)=>{ if(u) put("MV",vreg(i+1),[preg(ARGR[i])],fire("P_COPY"),`argument ${ARGNAME[i]}`); });
+
+  const toReg=(o,why)=>{
+    if(o.kind!=="imm") return o;
+    const d=fresh();
+    put("LI",d,[o],fire("P_LI"),why);
+    return d;
+  };
+
+  for(const I of ir){
+    const src=`${vname(I.res)} = ${I.op}`;
+    let a=I.a, b=I.b;
+    const commutes = I.op==="add"||I.op==="mul";
+    if(commutes&&a.kind==="imm"&&b.kind!=="imm"){ const t=a; a=b; b=t; }
+
+    if(I.op==="sub"&&a.kind==="imm"&&a.v===0&&b.kind==="vreg"){
+      put("NEG",vreg(I.res),[b],fire("P_NEG"),"negate");
+      trace.push({src,pat:"P_NEG",out:"neg",note:"sub from zero"});
+      continue;
+    }
+    if(a.kind==="imm") a=toReg(a,"left operand must be in a register");
+
+    if(I.op==="add"){
+      if(b.kind==="imm"&&opts.str&&b.v===0){ put("MV",vreg(I.res),[a],fire("P_IDENT"),"+0 is a move"); trace.push({src,pat:"P_IDENT",out:"mv",note:"identity"}); }
+      else if(b.kind==="imm"&&fits12(b.v)){ put("ADDI",vreg(I.res),[a,b],fire("P_ADDI")); trace.push({src,pat:"P_ADDI",out:"addi",note:"12-bit immediate"}); }
+      else if(b.kind==="imm"){ const r=toReg(b,"immediate wider than 12 bits"); put("ADD",vreg(I.res),[a,r],fire("P_ADD")); trace.push({src,pat:"P_ADD",out:"add",note:"needed li first"}); }
+      else { put("ADD",vreg(I.res),[a,b],fire("P_ADD")); trace.push({src,pat:"P_ADD",out:"add",note:""}); }
+    }
+    else if(I.op==="sub"){
+      if(b.kind==="imm"&&opts.str&&b.v===0){ put("MV",vreg(I.res),[a],fire("P_IDENT"),"−0 is a move"); trace.push({src,pat:"P_IDENT",out:"mv",note:"identity"}); }
+      else if(b.kind==="imm"&&opts.str&&fits12(-b.v)){ put("ADDI",vreg(I.res),[a,immo(-b.v)],fire("P_SUBI"),`sub ${b.v} folded into addi`); trace.push({src,pat:"P_SUBI",out:"addi",note:"sign flipped, no sub needed"}); }
+      else { const r=toReg(b,"sub has no immediate form"); put("SUB",vreg(I.res),[a,r],fire("P_SUB")); trace.push({src,pat:"P_SUB",out:"sub",note:""}); }
+    }
+    else if(I.op==="mul"){
+      if(b.kind==="imm"&&opts.str&&b.v===2){ put("ADD",vreg(I.res),[a,a],fire("P_MUL2"),"×2 rewritten as an add"); trace.push({src,pat:"P_MUL2",out:"add",note:"3 EX cycles saved"}); }
+      else if(b.kind==="imm"&&opts.str&&b.v===1){ put("MV",vreg(I.res),[a],fire("P_IDENT"),"×1 is a move"); trace.push({src,pat:"P_IDENT",out:"mv",note:"identity"}); }
+      else if(b.kind==="imm"&&opts.str&&b.v===0){ put("LI",vreg(I.res),[immo(0)],fire("P_ZERO"),"×0 is a constant"); trace.push({src,pat:"P_ZERO",out:"li",note:"operand dropped"}); }
+      else if(b.kind==="imm"&&opts.str&&b.v===-1){ put("NEG",vreg(I.res),[a],fire("P_NEG"),"×−1 is a negate"); trace.push({src,pat:"P_NEG",out:"neg",note:"identity"}); }
+      else { const r=toReg(b,"mul has no immediate form"); put("MUL",vreg(I.res),[a,r],fire("P_MUL")); trace.push({src,pat:"P_MUL",out:"mul",note:"3 EX cycles"}); }
+    }
+    else { // sdiv
+      if(b.kind==="imm"&&opts.str&&b.v===1){ put("MV",vreg(I.res),[a],fire("P_IDENT"),"÷1 is a move"); trace.push({src,pat:"P_IDENT",out:"mv",note:"identity"}); }
+      else if(b.kind==="imm"&&opts.str&&b.v===-1){ put("NEG",vreg(I.res),[a],fire("P_NEG"),"÷−1 is a negate"); trace.push({src,pat:"P_NEG",out:"neg",note:"identity"}); }
+      else { const r=toReg(b,"div has no immediate form"); put("DIV",vreg(I.res),[a,r],fire("P_DIV")); trace.push({src,pat:"P_DIV",out:"div",note:"8 EX cycles, not pipelined"}); }
+    }
+  }
+
+  if(!ret||ret.kind==="imm") put("LI",preg(RETR),[immo(ret?ret.v:0)],fire("P_LI"),"constant result");
+  else put("MV",preg(RETR),[ret],fire("P_COPY"),"result to a0");
+  put("RET",null,[],"—","return");
+
+  return {mir,trace,fires,maxV:next};
+}
+
+/* ============================================================
+   4. List scheduling — hide producer→consumer latency
+   ============================================================ */
+function schedule(mir){
+  let h=0; while(h<mir.length&&mir[h].uses.some(u=>u.kind==="preg")) h++;
+  let t=mir.length; while(t>0&&(mir[t-1].def===null||mir[t-1].def.kind==="preg")) t--;
+  const body=mir.slice(h,t);
+  if(body.length<3) return {mir,moved:0};
+
+  const defAt=new Map();
+  body.forEach((I,i)=>{ if(I.def&&I.def.kind==="vreg") defAt.set(I.def.v,i); });
+  const preds=body.map(()=>[]), succs=body.map(()=>[]);
+  body.forEach((I,i)=>I.uses.forEach(u=>{
+    if(u.kind!=="vreg") return;
+    const p=defAt.get(u.v);
+    if(p!==undefined&&p!==i){ preds[i].push(p); succs[p].push(i); }
+  }));
+
+  const height=body.map(()=>0);
+  for(let i=body.length-1;i>=0;i--){
+    let m=0;
+    for(const s of succs[i]) m=Math.max(m,height[s]);
+    height[i]=(LAT[body[i].mn]||1)+m;
+  }
+
+  const indeg=preds.map(p=>p.length), avail=body.map(()=>0);
+  let ready=[]; body.forEach((_,i)=>{ if(!indeg[i]) ready.push(i); });
+  const out=[]; let cyc=0, guard=0;
+  while(out.length<body.length&&guard++<20000){
+    const cand=ready.filter(i=>avail[i]<=cyc);
+    if(!cand.length){ cyc++; continue; }
+    cand.sort((p,q)=>height[q]-height[p]||p-q);
+    const pick=cand[0];
+    ready=ready.filter(i=>i!==pick);
+    out.push(pick);
+    for(const s of succs[pick]){
+      avail[s]=Math.max(avail[s],cyc+(LAT[body[pick].mn]||1));
+      if(--indeg[s]===0) ready.push(s);
+    }
+    cyc++;
+  }
+  if(out.length<body.length) return {mir,moved:0};       // give up rather than drop work
+  const moved=out.reduce((a,v,i)=>a+(v===i?0:1),0);
+  return {mir:[...mir.slice(0,h),...out.map(i=>body[i]),...mir.slice(t)],moved};
+}
+
+/* ============================================================
+   5. Linear-scan register allocation
+   ============================================================ */
+function regalloc(mir,K){
+  const iv=new Map();
+  mir.forEach((I,i)=>{
+    if(I.def&&I.def.kind==="vreg"){
+      const e=iv.get(I.def.v);
+      if(!e) iv.set(I.def.v,{v:I.def.v,start:i,end:i}); else e.start=Math.min(e.start,i);
+    }
+    I.uses.forEach(u=>{
+      if(u.kind!=="vreg") return;
+      const e=iv.get(u.v);
+      if(!e) iv.set(u.v,{v:u.v,start:i,end:i}); else e.end=Math.max(e.end,i);
+    });
+  });
+  const list=[...iv.values()].sort((a,b)=>a.start-b.start||a.v-b.v);
+  const assign=new Map();
+  const free=[]; for(let i=K-1;i>=0;i--) free.push(i);
+  let active=[], slots=0, spills=0;
+  for(const cur of list){
+    active=active.filter(a=>{ if(a.end<cur.start){ free.push(assign.get(a.v).idx); free.sort((x,y)=>y-x); return false; } return true; });
+    if(free.length){ const idx=free.pop(); assign.set(cur.v,{idx,reg:POOL[idx]}); active.push(cur); active.sort((a,b)=>a.end-b.end); }
+    else{
+      const lastA=active[active.length-1]; spills++;
+      if(lastA&&lastA.end>cur.end){
+        const g=assign.get(lastA.v);
+        assign.set(cur.v,{idx:g.idx,reg:g.reg});
+        assign.set(lastA.v,{slot:slots++});
+        active.pop(); active.push(cur); active.sort((a,b)=>a.end-b.end);
+      } else assign.set(cur.v,{slot:slots++});
+    }
+  }
+  return {assign,intervals:list,slots,spills};
+}
+
+/* ============================================================
+   6. Emission — expand pseudos, insert spill code, build the frame
+   ============================================================ */
+const RG=r=>({k:"reg",r}), IM=v=>({k:"imm",v});
+
+function emit(mir,alloc){
+  const prog=[];
+  const frame=alloc.slots*4;
+  const push=(mn,ops,cm,disp)=>prog.push({mn,ops,cm:cm||"",disp:disp||null});
+  const li=(rd,v,cm)=>{
+    if(fits12(v)) push("ADDI",[RG(rd),RG("zero"),IM(v)],cm,"li");
+    else{
+      const hi=((v+0x800)>>12)&0xfffff, lo=(v<<20)>>20;
+      push("LUI",[RG(rd),IM(hi)],`li ${rd}, ${v} — upper 20 bits`);
+      push("ADDI",[RG(rd),RG(rd),IM(lo)],`… lower 12 bits`);
+    }
+  };
+  if(frame) push("ADDI",[RG("sp"),RG("sp"),IM(-frame)],`reserve ${frame}-byte spill frame`);
+
+  for(const I of mir){
+    if(I.mn==="RET"&&frame) push("ADDI",[RG("sp"),RG("sp"),IM(frame)],"release spill frame");
+    const ops=[]; let sc=0, store=null, defR=null;
+    if(I.def){
+      if(I.def.kind==="preg") defR=I.def.r;
+      else{
+        const a=alloc.assign.get(I.def.v);
+        if(a&&a.reg) defR=a.reg;
+        else{ defR=SCRATCH[0]; if(a) store={slot:a.slot,v:I.def.v}; }
+      }
+    }
+    for(const u of I.uses){
+      if(u.kind==="imm"){ ops.push(IM(u.v)); continue; }
+      if(u.kind==="preg"){ ops.push(RG(u.r)); continue; }
+      const a=alloc.assign.get(u.v);
+      if(a&&a.reg){ ops.push(RG(a.reg)); continue; }
+      const t=SCRATCH[Math.min(sc++,2)];
+      push("LW",[RG(t),IM(a.slot*4),RG("sp")],`reload ${vname(u.v)} from slot ${a.slot}`);
+      ops.push(RG(t));
+    }
+    const cm=I.cm;
+    switch(I.mn){
+      case "LI":  li(defR,ops[0].v,cm); break;
+      case "MV":  push("ADDI",[RG(defR),ops[0],IM(0)],cm,"mv"); break;
+      case "NEG": push("SUB",[RG(defR),RG("zero"),ops[0]],cm,"neg"); break;
+      case "RET": push("JALR",[RG("zero"),RG("ra"),IM(0)],cm,"ret"); break;
+      default:    push(I.mn,[RG(defR),...ops],cm); break;
+    }
+    if(store) push("SW",[RG(SCRATCH[0]),IM(store.slot*4),RG("sp")],`spill ${vname(store.v)} to slot ${store.slot}`);
+  }
+  return {prog,frame};
+}
+
+function opStr(I){
+  const o=I.ops, r=i=>o[i].r, v=i=>o[i].v;
+  if(I.disp==="li")  return `${r(0)}, ${v(2)}`;
+  if(I.disp==="mv")  return `${r(0)}, ${r(1)}`;
+  if(I.disp==="neg") return `${r(0)}, ${r(2)}`;
+  if(I.disp==="ret") return "";
+  if(I.mn==="LW"||I.mn==="SW") return `${r(0)}, ${v(1)}(${r(2)})`;
+  if(I.mn==="LUI") return `${r(0)}, ${v(1)}`;
+  return o.map(x=>x.k==="reg"?x.r:String(x.v)).join(", ");
+}
+const mnOf=I=>I.disp||I.mn.toLowerCase();
+
+function asmLines(prog){
+  const rows=prog.map(I=>{
+    const m=mnOf(I), s=opStr(I);
+    return {text:"\t"+m+(s?"\t"+s:""),cm:I.cm};
+  });
+  const w=rows.reduce((a,r)=>Math.max(a,r.text.length),0)+4;
+  const out=["\t.text","\t.globl\tkernel","\t.type\tkernel, @function","kernel:"];
+  for(const r of rows) out.push(r.text+(r.cm?" ".repeat(Math.max(1,w-r.text.length))+"# "+r.cm:""));
+  out.push("\t.size\tkernel, .-kernel");
+  return out;
+}
+function asmText(prog){
+  const rows=prog.map(I=>{
+    const m=mnOf(I);
+    return {plain:`  ${m.padEnd(6," ")}${opStr(I)}`,cm:I.cm,I,m};
+  });
+  const w=rows.reduce((a,r)=>Math.max(a,r.plain.length),0)+3;
+  const o=[`  <span class="cm">.text</span>`,`  <span class="cm">.globl</span> <span class="lbl">kernel</span>`,`<span class="lbl">kernel:</span>`];
+  for(const r of rows){
+    const ops=esc(opStr(r.I))
+      .replace(/\b([a-z]+[0-9]*)\b/g,m=>XN[m]!==undefined?`<span class="pr">${m}</span>`:m)
+      .replace(/(^|[\s,(])(-?\d+)/g,(_,p,d)=>`${p}<span class="im">${d}</span>`);
+    o.push(`  <span class="mn">${r.m.padEnd(6," ")}</span>${ops}`+(r.cm?" ".repeat(Math.max(1,w-r.plain.length))+`<span class="cm"># ${esc(r.cm)}</span>`:""));
+  }
+  return o.join("\n");
+}
+
+/* ============================================================
+   7. RV32IM encoder
+   ============================================================ */
+const b=(v,n)=>((v>>>0)&((1<<n)-1)).toString(2).padStart(n,"0");
+function encode(I){
+  const d=ISA[I.mn], o=I.ops;
+  const rn=i=>o[i]&&o[i].k==="reg"?XN[o[i].r]:0;
+  const iv=i=>o[i]&&o[i].k==="imm"?o[i].v:0;
+  let w=0, f=[];
+  if(d.fmt==="R"){
+    w=((d.f7<<25)|(rn(2)<<20)|(rn(1)<<15)|(d.f3<<12)|(rn(0)<<7)|d.op)>>>0;
+    f=[["f-f7","funct7",b(d.f7,7)],["f-r2","rs2",b(rn(2),5)],["f-r1","rs1",b(rn(1),5)],["f-f3","funct3",b(d.f3,3)],["f-rd","rd",b(rn(0),5)],["f-op","opcode",b(d.op,7)]];
+  } else if(d.fmt==="I"){
+    const im=(I.mn==="LW")?iv(1):iv(2), rs1=(I.mn==="LW")?rn(2):rn(1);
+    w=(((im&0xfff)<<20)|(rs1<<15)|(d.f3<<12)|(rn(0)<<7)|d.op)>>>0;
+    f=[["f-im","imm[11:0]",b(im,12)],["f-r1","rs1",b(rs1,5)],["f-f3","funct3",b(d.f3,3)],["f-rd","rd",b(rn(0),5)],["f-op","opcode",b(d.op,7)]];
+  } else if(d.fmt==="S"){
+    const im=iv(1);
+    w=((((im>>5)&0x7f)<<25)|(rn(0)<<20)|(rn(2)<<15)|(d.f3<<12)|((im&0x1f)<<7)|d.op)>>>0;
+    f=[["f-im","imm[11:5]",b(im>>5,7)],["f-r2","rs2",b(rn(0),5)],["f-r1","rs1",b(rn(2),5)],["f-f3","funct3",b(d.f3,3)],["f-im","imm[4:0]",b(im,5)],["f-op","opcode",b(d.op,7)]];
+  } else { // U
+    w=(((iv(1)&0xfffff)<<12)|(rn(0)<<7)|d.op)>>>0;
+    f=[["f-im","imm[31:12]",b(iv(1),20)],["f-rd","rd",b(rn(0),5)],["f-op","opcode",b(d.op,7)]];
+  }
+  return {word:w>>>0,fields:f};
+}
+
+/* ============================================================
+   8. Five-stage timing model  (IF ID EX MEM WB)
+   ============================================================ */
+function rw(I){
+  const o=I.ops, reg=i=>o[i]&&o[i].k==="reg"?o[i].r:null;
+  let r=[], w=[];
+  switch(I.mn){
+    case "ADDI": w=[reg(0)]; r=[reg(1)]; break;
+    case "LUI":  w=[reg(0)]; break;
+    case "ADD": case "SUB": case "MUL": case "DIV": w=[reg(0)]; r=[reg(1),reg(2)]; break;
+    case "LW":   w=[reg(0)]; r=[reg(2)]; break;
+    case "SW":   r=[reg(0),reg(2)]; break;
+    case "JALR": r=[reg(1)]; break;
+  }
+  const clean=a=>a.filter(x=>x&&x!=="zero");
+  return {r:clean(r),w:clean(w)};
+}
+
+function pipeline(prog,fwd){
+  const t=[]; const lastDef=new Map();
+  let pIFe=0,pIDe=0,pEXe=0,pMEM=0,pWB=0;
+  prog.forEach((I,i)=>{
+    const d=ISA[I.mn], lat=d.ex;
+    const IFs=pIFe+1;
+    const IDs=Math.max(IFs+1,pIDe+1);
+    let EXs=Math.max(IDs+1,pEXe+1);
+    let why=null;
+    for(const reg of rw(I).r){
+      const p=lastDef.get(reg); if(p===undefined) continue;
+      const pt=t[p], pd=ISA[prog[p].mn];
+      const rdy = fwd ? (pd.load?pt.MEM+1:pt.EXe+1) : pt.WB+1;
+      if(rdy>=EXs&&rdy>IDs+1){ EXs=Math.max(EXs,rdy); why=(pd.load?"load-use ":"RAW ")+reg+" from #"+p; }
+    }
+    const struct=!why&&EXs>IDs+1;
+    const EXe=EXs+lat-1;
+    const MEM=Math.max(EXe+1,pMEM+1);
+    const WB=Math.max(MEM+1,pWB+1);
+    const IDe=EXs-1, IFe=IDs-1;
+    t.push({IFs,IFe,IDs,IDe,EXs,EXe,MEM,WB,stall:IDe-IDs,why,struct,lat});
+    pIFe=IFe; pIDe=IDe; pEXe=EXe; pMEM=MEM; pWB=WB;
+    for(const reg of rw(I).w) lastDef.set(reg,i);
+  });
+  const total=t.length?t[t.length-1].WB:0;
+  const stalls=t.reduce((a,x)=>a+x.stall,0);
+  const ideal=t.length?t.length+4:0;
+  return {t,total,stalls,ideal,cpi:t.length?total/t.length:0};
+}
+
+/* ============================================================
+   9. Instruction-set simulator + reference interpreter
+   ============================================================ */
+function run(prog,args){
+  const r={}; Object.keys(XN).forEach(k=>r[k]=0);
+  r.a0=args[0]|0; r.a1=args[1]|0; r.a2=args[2]|0; r.sp=4096;
+  const mem={}; let steps=0;
+  for(const I of prog){
+    if(steps++>20000) throw new CErr("simulator step limit reached",0);
+    const o=I.ops, R=i=>r[o[i].r], N=i=>o[i].r, V=i=>o[i].v;
+    switch(I.mn){
+      case "ADDI": r[N(0)]=(R(1)+V(2))|0; break;
+      case "LUI":  r[N(0)]=(V(1)<<12)|0; break;
+      case "ADD":  r[N(0)]=(R(1)+R(2))|0; break;
+      case "SUB":  r[N(0)]=(R(1)-R(2))|0; break;
+      case "MUL":  r[N(0)]=Math.imul(R(1),R(2)); break;
+      case "DIV":  r[N(0)]=sdiv(R(1),R(2)); break;
+      case "LW":   r[N(0)]=mem[(r[N(2)]+V(1))]|0; break;
+      case "SW":   mem[(r[N(2)]+V(1))]=R(0)|0; break;
+      case "JALR": r.zero=0; return {result:r[RETR]|0,steps,regs:r};
+    }
+    r.zero=0;
+  }
+  return {result:r[RETR]|0,steps,regs:r};
+}
+
+function interpret(ast,args){
+  const env=new Map([["x",args[0]|0],["y",args[1]|0],["z",args[2]|0]]);
+  const ev=n=>{
+    if(n.k==="num") return n.v|0;
+    if(n.k==="neg") return (0-ev(n.e))|0;
+    if(n.k==="var") return env.get(n.name)|0;
+    const a=ev(n.l), c=ev(n.r);
+    return n.op==="+"?(a+c)|0:n.op==="-"?(a-c)|0:n.op==="*"?Math.imul(a,c):sdiv(a,c);
+  };
+  let out=0;
+  for(const s of ast.stmts){ if(s.k==="assign") env.set(s.name,ev(s.e)); else out=ev(s.e); }
+  return out;
+}
+
+/* ============================================================
+   10. C reconstruction (for the .c download)
+   ============================================================ */
+function toC(ast){
+  const prec=n=>n.k==="bin"?((n.op==="+"||n.op==="-")?1:2):(n.k==="neg"?3:4);
+  function ex(n,need){
+    if(n.k==="num") return String(n.v);
+    if(n.k==="var") return n.name;
+    if(n.k==="neg") return "-"+ex(n.e,3);
+    const p=prec(n);
+    const right=(n.op==="-"||n.op==="/")?p+1:p;
+    const s=`${ex(n.l,p)} ${n.op} ${ex(n.r,right)}`;
+    return p<need?`(${s})`:s;
+  }
+  const seen=new Set(), body=[];
+  for(const s of ast.stmts){
+    if(s.k==="assign"){
+      const d=seen.has(s.name)?"":"int32_t ";
+      seen.add(s.name);
+      body.push(`    ${d}${s.name} = ${ex(s.e,0)};`);
+    } else body.push(`    return ${ex(s.e,0)};`);
+  }
+  return `/* kernel.c — recovered from the backend simulator
+ * target: riscv32-unknown-elf (RV32IM)
+ * build:  riscv32-unknown-elf-gcc -O2 -march=rv32im -mabi=ilp32 -S kernel.c
+ */
+#include <stdint.h>
+
+int32_t kernel(int32_t x, int32_t y, int32_t z)
+{
+${body.join("\n")}
+}
+`;
+}
+
+/* ============================================================
+   11. Driver
+   ============================================================ */
+function compile(src,opts,args,baseline){
+  const toks=lex(src);
+  const ast=parse(toks);
+  const {ir,ret,folded,maxV}=buildIR(ast,opts);
+  const sel=select(ir,ret,opts,maxV);
+  const sch=opts.sched?schedule(sel.mir):{mir:sel.mir,moved:0};
+  const alloc=regalloc(sch.mir,opts.regs);
+  const em=emit(sch.mir,alloc);
+  const pipe=pipeline(em.prog,opts.fwd);
+  const sim=run(em.prog,args);
+  const ref=interpret(ast,args);
+  const res={src,args,toks,ast,ir,ret,folded,sel,sch,alloc,em,pipe,sim,ref,opts};
+  if(!baseline){
+    try{
+      const bl=compile(src,{fold:false,str:false,sched:false,fwd:opts.fwd,regs:opts.regs},args,true);
+      res.base={cyc:bl.pipe.total,n:bl.em.prog.length};
+    }catch(e){ res.base=null; }
+  }
+  return res;
+}
+
+/* ============================================================
+   12. Rendering
+   ============================================================ */
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const $=s=>document.querySelector(s);
+
+const STAGES=[
+  {id:"fe",  no:"01", nm:"Front end", ct:r=>`${r.toks.length-1} tokens`},
+  {id:"ir",  no:"02", nm:"LLVM IR",   ct:r=>`${r.ir.length} SSA nodes`},
+  {id:"sel", no:"03", nm:"ISel",      ct:r=>`${r.sel.mir.length} instrs`},
+  {id:"sch", no:"04", nm:"Schedule",  ct:r=>`${r.sch.moved} moved`},
+  {id:"ra",  no:"05", nm:"RegAlloc",  ct:r=>`${r.alloc.spills} spills`},
+  {id:"asm", no:"06", nm:"Assembly",  ct:r=>`${r.em.prog.length} lines`},
+  {id:"enc", no:"07", nm:"Encoding",  ct:r=>`${r.em.prog.length*4} bytes`},
+  {id:"pipe",no:"08", nm:"Pipeline",  ct:r=>`${r.pipe.total} cycles`}
+];
+let active="pipe", last=null;
+
+function buildRail(){
+  $("#rail").innerHTML=STAGES.map(s=>
+    `<button class="stage" role="tab" data-id="${s.id}" aria-selected="${s.id===active}">
+       <span class="no">${s.no}</span><span class="nm">${s.nm}</span><span class="dot"></span><span class="ct" data-ct="${s.id}">—</span>
+     </button>`).join("");
+  $("#rail").addEventListener("click",e=>{ const b=e.target.closest(".stage"); if(b){ active=b.dataset.id; render(); } });
+}
+
+function metrics(r){
+  const dC=r.base?r.base.cyc-r.pipe.total:0;
+  const ok=r.sim.result===r.ref;
+  return `
+  <div class="metric"><span class="k">IR nodes</span><span class="v">${r.ir.length}</span></div>
+  <div class="metric"><span class="k">Instructions</span><span class="v">${r.em.prog.length}</span></div>
+  <div class="metric ${dC>0?"good":""}"><span class="k">Cycles</span><span class="v">${r.pipe.total}${r.base&&dC!==0?` <small>${dC>0?"−":"+"}${Math.abs(dC)}</small>`:""}</span></div>
+  <div class="metric ${r.pipe.stalls?"warn":"good"}"><span class="k">Stall cycles</span><span class="v">${r.pipe.stalls}</span></div>
+  <div class="metric ${r.alloc.spills?"warn":""}"><span class="k">Spills</span><span class="v">${r.alloc.spills}</span></div>
+  <div class="metric ${ok?"good":"warn"}"><span class="k">a0</span><span class="v">${r.sim.result}</span></div>`;
+}
+
+function viewFE(r){
+  const tk=r.toks.slice(0,-1).map(t=>
+    `<tr><td>${t.p}</td><td><span class="tag ${t.t==="num"?"amber":t.t==="id"?"blue":t.t==="ret"?"green":"mute"}">${esc(t.t)}</span></td><td>${esc(t.v)}</td></tr>`).join("");
+  const lines=[];
+  const walk=(n,pre,isLast)=>{
+    const br=isLast?"└─ ":"├─ ";
+    let txt;
+    if(n.k==="num") txt=`<span class="im">const ${n.v}</span>`;
+    else if(n.k==="var") txt=`<span class="vr">${esc(n.name)}</span>`;
+    else if(n.k==="neg") txt=`<span class="kw">neg</span>`;
+    else if(n.k==="bin") txt=`<span class="kw">${IROP[n.op]}</span>`;
+    else if(n.k==="assign") txt=`<span class="kw">store</span> <span class="vr">${esc(n.name)}</span>`;
+    else txt=`<span class="kw">return</span>`;
+    lines.push(pre+br+txt);
+    const np=pre+(isLast?"   ":"│  ");
+    const kids=n.k==="bin"?[n.l,n.r]:(n.k==="neg"?[n.e]:(n.k==="assign"||n.k==="return")?[n.e]:[]);
+    kids.forEach((c,i)=>walk(c,np,i===kids.length-1));
+  };
+  lines.push(`<span class="lbl">program</span>`);
+  r.ast.stmts.forEach((s,i)=>walk(s,"",i===r.ast.stmts.length-1));
+  return `<h3>Token stream</h3>
+  <p class="note">The kernel language is a small subset of C: assignments, one return, and the four arithmetic operators the target implements.</p>
+  <div style="max-height:200px;overflow:auto"><table><thead><tr><th>pos</th><th>kind</th><th>text</th></tr></thead><tbody>${tk}</tbody></table></div>
+  <h3>Abstract syntax tree</h3><pre>${lines.join("\n")}</pre>
+  <h3>Reconstructed C</h3>
+  <p class="note">This is what the <b>Download .c</b> button writes — a compilable translation unit you can feed to a real riscv32 toolchain to compare against the assembly in pass 06.</p>
+  <pre>${esc(toC(r.ast))}</pre>`;
+}
+
+function viewIR(r){
+  return `<h3>Generated LLVM IR</h3>
+  <p class="note">SSA values, with the three arguments pre-bound. Division lowers to <code>sdiv</code>: signed, truncating toward zero, with the RISC-V rules for ÷0 (all ones) and INT_MIN÷−1 (unchanged). Constant folding ${r.opts.fold?`removed <b>${r.folded}</b> node${r.folded===1?"":"s"}`:"is off"}.</p>
+  <pre>${irText(r.ir,r.ret)}</pre>`;
+}
+
+function viewSel(r){
+  const rows=PATTERNS.map(p=>{
+    const c=r.sel.fires[p.id]||0;
+    const off=p.need==="str"&&!r.opts.str;
+    return `<tr class="${c?"fired":""}"><td><b>${p.id}</b></td><td>${esc(p.dag)}</td><td><span class="tag ${c?"hot":"mute"}">${p.ins}</span></td><td>${off?`<span class="tag mute">disabled</span>`:(c?`${c}×`:"—")}</td></tr>`;
+  }).join("");
+  const tr=r.sel.trace.map(t=>
+    `<tr><td><span class="vr">${esc(t.src)}</span></td><td>${t.pat}</td><td><span class="mn">${t.out}</span></td><td class="cm">${esc(t.note||"")}</td></tr>`).join("");
+  const mir=r.sel.mir.map((I,i)=>{
+    const ops=I.uses.map(o=>o.kind==="imm"?`<span class="im">${o.v}</span>`:o.kind==="preg"?`<span class="pr">${o.r}</span>`:`<span class="vr">${vname(o.v)}</span>`).join(", ");
+    const d=I.def?(I.def.kind==="preg"?`<span class="pr">${I.def.r}</span>`:`<span class="vr">${vname(I.def.v)}</span>`)+" = ":"";
+    return `${String(i).padStart(3," ")}  ${d}<span class="mn">${I.mn}</span> ${ops}${I.cm?`  <span class="cm">; ${esc(I.cm)}</span>`:""}`;
+  }).join("\n");
+  return `<h3>Pattern table (TableGen-style)</h3>
+  <p class="note">RV32IM has no immediate form for <code>mul</code> or <code>div</code>, so any constant operand of those has to be materialised with <code>li</code> first — one of the clearest differences from the add/sub side, where a 12-bit immediate rides along in the instruction.</p>
+  <table><thead><tr><th>pattern</th><th>DAG it matches</th><th>emits</th><th>fired</th></tr></thead><tbody>${rows}</tbody></table>
+  <h3>Coverage log</h3>
+  <table><thead><tr><th>IR node</th><th>pattern</th><th>machine op</th><th>note</th></tr></thead><tbody>${tr||`<tr><td colspan="4" class="cm">no arithmetic survived to selection</td></tr>`}</tbody></table>
+  <h3>Machine IR — still on virtual registers</h3><pre>${mir}</pre>`;
+}
+
+function viewSch(r){
+  const before=r.sel.mir, after=r.sch.mir;
+  const idx=new Map(before.map((I,i)=>[I,i]));
+  const rows=after.map((I,i)=>{
+    const was=idx.get(I);
+    const ops=I.uses.map(o=>o.kind==="imm"?o.v:o.kind==="preg"?o.r:vname(o.v)).join(", ");
+    const d=I.def?(I.def.kind==="preg"?I.def.r:vname(I.def.v))+" = ":"";
+    const moved=was!==i;
+    return `<tr class="${moved?"fired":""}"><td>${i}</td><td>${was}</td><td>${moved?`<span class="tag hot">${was<i?"↓":"↑"}${Math.abs(was-i)}</span>`:`<span class="tag mute">—</span>`}</td><td>${esc(d)}<span class="mn">${I.mn}</span> ${esc(ops)}</td><td>${LAT[I.mn]||1}</td></tr>`;
+  }).join("");
+  return `<h3>List scheduling</h3>
+  <p class="note">${r.opts.sched
+    ? `Instructions are ranked by their height in the dependence graph — the longest latency-weighted path to the end of the block — and issued as their operands become ready. A <code>mul</code> occupies EX for 3 cycles and a <code>div</code> for 8, so moving an unrelated instruction in behind one of them fills what would otherwise be a stall. <b>${r.sch.moved}</b> instruction${r.sch.moved===1?"":"s"} changed position here.`
+    : `Scheduling is off, so the block keeps the order instruction selection produced. Switch it on to see the reordering and its effect on the cycle count.`}</p>
+  <p class="note">The argument copies at the top and the return sequence at the bottom are pinned; only the body is reordered. Because the block is still in SSA form there are no anti- or output-dependences to worry about — every edge is a true producer→consumer.</p>
+  <p class="note">Reordering only pays when the pipeline would otherwise sit idle waiting on a dependence. With full forwarding and plenty of registers most single-cycle chains already run back-to-back, so the cycle count may not move at all; turn forwarding off, or squeeze the register count until spill loads appear, and the same reordering starts saving real cycles.</p>
+  <table><thead><tr><th>slot</th><th>was</th><th>move</th><th>instruction</th><th>EX cyc</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function viewRA(r){
+  const n=r.sch.mir.length;
+  const step=Math.max(14,Math.min(34,Math.floor(760/Math.max(n,1))));
+  const rows=r.alloc.intervals.map(v=>{
+    const a=r.alloc.assign.get(v.v), sp=!a.reg;
+    return `<div class="iv"><div class="nmv">${vname(v.v)}</div>
+      <div class="track" style="--step:${step}px;width:${n*step}px">
+        <div class="bar${sp?" spilled":""}" style="left:${v.start*step}px;width:${(v.end-v.start+1)*step}px">${sp?"slot "+a.slot:a.reg}</div>
+      </div></div>`;
+  }).join("");
+  const ticks=Array.from({length:n},(_,i)=>`<span style="width:${step}px">${i%2===0?i:""}</span>`).join("");
+  const tbl=r.alloc.intervals.map(v=>{
+    const a=r.alloc.assign.get(v.v);
+    return `<tr><td>${vname(v.v)}</td><td>[${v.start}, ${v.end}]</td><td>${v.end-v.start+1}</td><td>${a.reg?`<span class="tag blue">${a.reg}</span>`:`<span class="tag hot">slot ${a.slot} on the frame</span>`}</td></tr>`;
+  }).join("");
+  const warn=r.alloc.spills?`<div class="warn-box"><b>${r.alloc.spills}</b> value${r.alloc.spills===1?"":"s"} could not stay in a register. Every access then costs an <code>lw</code> or <code>sw</code> through t3–t5, and a load feeding an ALU operation is the one hazard forwarding cannot cover — look for the load-use bubble in pass 07.</div>`:"";
+  return `<h3>Live intervals over the instruction index</h3>
+  <p class="note">Linear scan over ${r.opts.regs} allocatable registers, taken from ${POOL.slice(0,r.opts.regs).join(", ")}. t3–t5 stay reserved for reloads and sp addresses the frame.</p>
+  ${warn}
+  <div class="chart">${rows||`<span class="cm">no virtual registers are live</span>`}<div class="axis"><div></div><div class="ticks">${ticks}</div></div></div>
+  <div class="legendrow"><span><i style="background:var(--blue)"></i>in a register</span><span><i style="background:var(--hot)"></i>spilled to the frame</span></div>
+  <h3>Assignment</h3>
+  <table><thead><tr><th>vreg</th><th>interval</th><th>length</th><th>location</th></tr></thead><tbody>${tbl}</tbody></table>`;
+}
+
+function viewASM(r){
+  return `<h3>Emitted assembly</h3>
+  <p class="note">Frame ${r.em.frame?`is ${r.em.frame} bytes`:`is empty; nothing needed the stack`}. Pseudo-instructions are printed the way an assembler would accept them — <code>li</code>, <code>mv</code>, <code>neg</code> and <code>ret</code> are all <code>addi</code>, <code>sub</code> or <code>jalr</code> underneath, which pass 06 shows in full.</p>
+  <pre>${asmText(r.em.prog)}</pre>
+  <h3>As written to the .s file</h3>
+  <pre>${esc(asmLines(r.em.prog).join("\n"))}</pre>`;
+}
+
+function viewENC(r){
+  const rows=r.em.prog.map((I,i)=>{
+    const e=encode(I);
+    return `<tr><td>0x${(i*4).toString(16).padStart(4,"0")}</td>
+      <td><span class="mn">${mnOf(I)}</span> ${esc(opStr(I))}</td>
+      <td>${I.disp?`<span class="cm">${esc(I.mn.toLowerCase())}</span>`:""}</td>
+      <td>0x${e.word.toString(16).padStart(8,"0").toUpperCase()}</td>
+      <td><div class="enc">${e.fields.map(f=>`<span class="${f[0]}" title="${f[1]}">${f[2]}</span>`).join("")}</div></td></tr>`;
+  }).join("");
+  const ok=r.sim.result===r.ref;
+  const isa=Object.entries(ISA).map(([m,d])=>
+    `<tr><td><span class="mn">${m.toLowerCase()}</span></td><td>${d.fmt}</td><td>0x${d.op.toString(16).padStart(2,"0")}</td><td>${d.f3!==undefined?"0x"+d.f3.toString(16):"—"}</td><td>${d.f7!==undefined?"0x"+d.f7.toString(16).padStart(2,"0"):"—"}</td><td>${esc(d.doc)}</td><td>${d.ex}</td></tr>`).join("");
+  return `<h3>Machine code</h3>
+  <p class="note">Real RV32IM encodings. The multiply and divide instructions are the M extension: same R-type shape as add and sub, distinguished by funct7 = 0000001.</p>
+  <div style="max-height:340px;overflow:auto"><table><thead><tr><th>addr</th><th>instruction</th><th>real op</th><th>word</th><th>fields</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <h3>Simulation</h3>
+  <div class="${ok?"ok-box":"err"}">${ok
+    ? `a0 = ${r.sim.result} after ${r.sim.steps} instructions — matches the reference evaluation of the source.`
+    : `<b>Mismatch</b>The simulator returned ${r.sim.result} but evaluating the source directly gives ${r.ref}.`}</div>
+  <h3>Instruction set</h3>
+  <table><thead><tr><th>mnemonic</th><th>fmt</th><th>opcode</th><th>funct3</th><th>funct7</th><th>operation</th><th>EX cyc</th></tr></thead><tbody>${isa}</tbody></table>`;
+}
+
+function viewPIPE(r){
+  const p=r.pipe, cap=Math.min(p.total,160);
+  const head=Array.from({length:cap},(_,i)=>`<th class="cyc">${i+1}</th>`).join("");
+  const rows=r.em.prog.map((I,i)=>{
+    const s=p.t[i], cells=[];
+    for(let c=1;c<=cap;c++){
+      let cls="",tx="";
+      if(c>=s.IFs&&c<=s.IFe){cls="s-IF";tx="IF";}
+      else if(c>=s.IDs&&c<=s.IDe){ if(c>s.IDs||s.stall&&c===s.IDs&&false){} cls=(c>s.IDs)?"s-st":"s-ID"; tx=(c>s.IDs)?"•":"ID"; }
+      else if(c>=s.EXs&&c<=s.EXe){cls="s-EX";tx="EX";}
+      else if(c===s.MEM){cls="s-ME";tx="ME";}
+      else if(c===s.WB){cls="s-WB";tx="WB";}
+      cells.push(`<td class="c ${cls}">${tx}</td>`);
+    }
+    const hz=s.stall?(s.why?`${esc(s.why)} · ${s.stall}`:`unit busy · ${s.stall}`):"";
+    return `<tr><td class="ix">${i}</td><td class="asm">${esc(mnOf(I)+" "+opStr(I))}</td>${cells.join("")}<td class="hz">${hz}</td></tr>`;
+  }).join("");
+  const ex=r.em.prog.filter(I=>ISA[I.mn].ex>1).length;
+  return `<h3>Five-stage timing diagram</h3>
+  <p class="note">IF fetch · ID decode and register read · EX execute · MEM data memory · WB write back. The multiplier and divider are not pipelined, so a <code>mul</code> holds EX for 3 cycles and a <code>div</code> for 8, and anything behind them waits. Forwarding is <b>${r.opts.fwd?"on":"off"}</b>${r.opts.fwd?" (EX/MEM and MEM/WB paths into EX)":" — every consumer waits for its producer's write-back"}.</p>
+  <div class="pipewrap"><table class="pipe"><thead><tr><th></th><th></th>${head}<th></th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="legendrow">
+    <span><i style="background:var(--blue-soft)"></i>IF</span>
+    <span><i style="background:#EDF0F3"></i>ID</span>
+    <span><i style="background:var(--hot-soft)"></i>EX</span>
+    <span><i style="background:var(--amber-soft)"></i>MEM</span>
+    <span><i style="background:var(--green-soft)"></i>WB</span>
+    <span><i style="background:#F6DCE7"></i>stall in ID</span>
+    ${p.total>cap?`<span>diagram truncated at cycle ${cap}</span>`:""}
+  </div>
+  <h3>Summary</h3>
+  <table><tbody>
+    <tr><td>instructions retired</td><td><b>${r.em.prog.length}</b></td></tr>
+    <tr><td>total cycles (WB of the last instruction)</td><td><b>${p.total}</b></td></tr>
+    <tr><td>ideal cycles, no stalls, single-cycle EX</td><td>${p.ideal}</td></tr>
+    <tr><td>stall cycles</td><td>${p.stalls}</td></tr>
+    <tr><td>multi-cycle EX instructions</td><td>${ex}</td></tr>
+    <tr><td>CPI</td><td>${p.cpi.toFixed(2)}</td></tr>
+    ${r.base?`<tr><td>same kernel with every pass off</td><td>${r.base.n} instructions, ${r.base.cyc} cycles</td></tr>`:""}
+  </tbody></table>`;
+}
+
+const VIEWS={fe:viewFE,ir:viewIR,sel:viewSel,sch:viewSch,ra:viewRA,asm:viewASM,enc:viewENC,pipe:viewPIPE};
+
+function render(){
+  document.querySelectorAll(".stage").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.id===active)));
+  if(!last) return;
+  if(last.error){
+    $("#metrics").innerHTML=`<div class="metric warn"><span class="k">Status</span><span class="v">error</span></div>`;
+    const e=last.error;
+    const caret=e.pos!==undefined?`<pre>${esc(lineOf($("#src").value,e.pos))}</pre>`:"";
+    $("#view").innerHTML=`<div class="err"><b>${e.stage||"compile"} error</b>${esc(e.message)}${e.hint?`<br><span style="opacity:.8">${esc(e.hint)}</span>`:""}${caret}</div>`;
+    return;
+  }
+  $("#metrics").innerHTML=metrics(last);
+  STAGES.forEach(s=>{ const el=document.querySelector(`[data-ct="${s.id}"]`); if(el) el.textContent=s.ct(last); });
+  $("#view").innerHTML=(VIEWS[active]||viewPIPE)(last);
+}
+
+function lineOf(src,pos){
+  const upto=src.slice(0,pos), ln=upto.split("\n").length, col=pos-upto.lastIndexOf("\n")-1;
+  const line=src.split("\n")[ln-1]||"";
+  return `${String(ln).padStart(3," ")} | ${line}\n    | ${" ".repeat(Math.max(0,col))}^`;
+}
+
+/* ---------- samples ---------- */
+const SAMPLES={
+  "mixed arithmetic":`// all four operations in one block
+p = x * y + z;
+q = p - y * 2;
+return q / z + x;`,
+  "divider stalls":`// div holds EX for 8 cycles — watch what queues behind it
+a = x / y;
+b = z / y;
+c = a + b;
+return c * x;`,
+  "scheduling win":`// two independent chains — turn EX/MEM forwarding off
+// and watch the scheduler interleave them
+a = x + 1;
+b = a + 2;
+c = b + 3;
+d = y + 4;
+e = d + 5;
+f = e + 6;
+return c * f;`,
+  "register pressure":`// six long-lived values: try 3 or fewer registers
+a = x * y + z;
+b = x * z - y;
+c = y * z + x;
+d = a * b - c;
+e = a + b * c;
+f = d / e + a;
+return f - b * c;`,
+  "strength reduction":`// ×2, ×1, ÷1 and −k never need the multiplier
+a = x * 2;
+b = y * 1;
+c = z / 1;
+return a + b - c - 40;`,
+  "unsupported op":`// the lexer stops this one
+return x % y;`
+};
+
+function opts(){ return {fold:$("#o-fold").checked, str:$("#o-str").checked, sched:$("#o-sched").checked, fwd:$("#o-fwd").checked, regs:+$("#o-regs").value}; }
+function argv(){ return [+$("#ax").value||0,+$("#ay").value||0,+$("#az").value||0]; }
+
+/* ---------- real-time editor ---------- */
+let curStats=null, prevStats=null;
+const lineIndex=(src,pos)=>src.slice(0,pos).split("\n").length-1;
+
+function gutter(){
+  const src=$("#src").value;
+  const n=Math.max(1,src.split("\n").length);
+  const bad=last&&last.error&&last.error.pos!==undefined?lineIndex(src,Math.min(last.error.pos,src.length)):-1;
+  let h=""; for(let i=0;i<n;i++) h+=`<b class="${i===bad?"bad":""}">${i+1}</b>`;
+  const g=$("#gutter"); g.innerHTML=h; g.scrollTop=$("#src").scrollTop;
+}
+
+function status(ms){
+  const p=$("#pulse"), s=$("#stat"), d=$("#delta");
+  if(last&&last.error){ p.className="pulse bad"; s.textContent="error — output frozen at the failing pass"; d.textContent=""; d.className="delta"; return; }
+  p.className="pulse"; void p.offsetWidth; p.classList.add("beat");
+  s.textContent=`compiled in ${ms.toFixed(1)} ms · ${last.em.prog.length} instr · ${last.pipe.total} cyc`;
+  if(prevStats){
+    const dc=last.pipe.total-prevStats.cyc, dn=last.em.prog.length-prevStats.n;
+    if(dc||dn){ d.className="delta "+(dc>0?"up":"down"); d.textContent=`${dn>=0?"+":"−"}${Math.abs(dn)} instr  ${dc>=0?"+":"−"}${Math.abs(dc)} cyc`; }
+  }
+}
+
+function go(){
+  const t0=performance.now();
+  try{ last=compile($("#src").value,opts(),argv(),false); }
+  catch(err){ last=(err instanceof CErr)?{error:err}:{error:{message:err.message,stage:"internal"}}; }
+  const ms=performance.now()-t0;
+  if(!last.error){
+    const s={cyc:last.pipe.total,n:last.em.prog.length};
+    if(curStats&&(curStats.cyc!==s.cyc||curStats.n!==s.n)) prevStats=curStats;
+    curStats=s;
+  }
+  render(); gutter(); status(ms);
+  ["#dl-c","#dl-ll","#dl-s","#dl-html"].forEach(s=>{ $(s).disabled=!!last.error; });
+}
+
+let queued=false;
+function live(){ if(queued) return; queued=true; requestAnimationFrame(()=>{ queued=false; go(); }); }
+
+function editorKeys(e){
+  const ta=$("#src");
+  if(e.key==="Tab"){
+    e.preventDefault();
+    const s=ta.selectionStart,t=ta.selectionEnd;
+    ta.value=ta.value.slice(0,s)+"  "+ta.value.slice(t);
+    ta.selectionStart=ta.selectionEnd=s+2; live(); return;
+  }
+  if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){ e.preventDefault(); go(); return; }
+  if(e.key==="Enter"){
+    const s=ta.selectionStart, bol=ta.value.lastIndexOf("\n",s-1)+1;
+    const ind=(ta.value.slice(bol,s).match(/^[ \t]*/)||[""])[0];
+    if(ind){
+      e.preventDefault();
+      ta.value=ta.value.slice(0,s)+"\n"+ind+ta.value.slice(ta.selectionEnd);
+      ta.selectionStart=ta.selectionEnd=s+1+ind.length; live();
+    }
+  }
+}
+
+/* ---------- downloads ---------- */
+function download(name,text,mime){
+  const blob=new Blob([text],{type:mime}), u=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>{ if(URL.revokeObjectURL) URL.revokeObjectURL(u); },1000);
+  const m=$("#dlmsg"); m.textContent="Saved "+name;
+  setTimeout(()=>{ m.textContent="C source, LLVM IR, RISC-V assembly, or the whole run as one page."; },2600);
+}
+const stamp=()=>{ const d=new Date(),p=n=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`; };
+
+function dlC(){ download("kernel.c",toC(last.ast),"text/x-csrc"); }
+function dlLL(){
+  const o=last.opts;
+  const head=[`; kernel.ll — emitted by the RV32IM backend simulator`,
+              `; passes: ${[o.fold&&"constant-folding",o.str&&"strength-reduction",o.sched&&"list-scheduling"].filter(Boolean).join(", ")||"none"}`,
+              `target triple = "riscv32-unknown-elf"`,``];
+  download("kernel.ll",head.concat(irLines(last.ir,last.ret)).join("\n")+"\n","text/plain");
+}
+function dlS(){
+  const o=last.opts;
+  const head=[`# kernel.s — RV32IM, emitted by the backend simulator`,
+              `# ${last.em.prog.length} instructions, ${last.pipe.total} cycles on a 5-stage pipeline`,
+              `# forwarding ${o.fwd?"enabled":"disabled"}, ${o.regs} allocatable registers, ${last.alloc.spills} spills`,
+              `\t.option nopic`,`\t.attribute arch, "rv32i2p0_m2p0"`];
+  download("kernel.s",head.concat(asmLines(last.em.prog)).join("\n")+"\n","text/plain");
+}
+function dlHTML(){
+  const css=document.getElementById("sheet").textContent;
+  const r=last, o=r.opts;
+  const body=STAGES.map(s=>`<section class="panel" style="margin-bottom:20px"><h2>${s.no} — ${s.nm}</h2><div class="view">${VIEWS[s.id](r)}</div></section>`).join("");
+  const html=`<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RV32IM compilation report</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>${css}
+.view{min-height:0}
+</style></head><body><div class="shell">
+<header class="masthead">
+  <div><div class="brand"><h1>RV32IM</h1><span class="rev">report</span></div>
+  <p>One kernel through the RISC-V backend, captured ${esc(new Date().toLocaleString())}.</p></div>
+  <div class="spec">passes <b>${[o.fold&&"fold",o.str&&"strength",o.sched&&"schedule"].filter(Boolean).join(" ")||"none"}</b> · forwarding <b>${o.fwd?"on":"off"}</b><br>
+  allocatable regs <b>${o.regs}</b> · args <b>x=${r.args[0]}, y=${r.args[1]}, z=${r.args[2]}</b><br>
+  result <b>a0 = ${r.sim.result}</b> in <b>${r.pipe.total}</b> cycles</div>
+</header>
+<div class="panel" style="margin:22px 0 20px"><h2>Kernel source</h2><div class="view"><pre>${esc(r.src)}</pre></div></div>
+<div class="panel" style="margin-bottom:20px"><div class="metrics">${metrics(r)}</div></div>
+${body}
+<p class="footer">Produced by the RV32IM backend simulator. Static snapshot — no scripts.</p>
+</div></body></html>`;
+  download(`rv32im-report-${stamp()}.html`,html,"text/html");
+}
+
+function init(){
+  $("#samples").innerHTML=Object.keys(SAMPLES).map(k=>`<button class="chip" data-s="${k}">${k}</button>`).join("");
+  $("#samples").addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(b){ $("#src").value=SAMPLES[b.dataset.s]; $("#src").focus(); go(); } });
+  $("#src").value=SAMPLES["mixed arithmetic"];
+  buildRail();
+  $("#src").addEventListener("input",live);
+  $("#src").addEventListener("keydown",editorKeys);
+  $("#src").addEventListener("scroll",()=>{ $("#gutter").scrollTop=$("#src").scrollTop; });
+  ["#ax","#ay","#az"].forEach(s=>$(s).addEventListener("input",live));
+  ["#o-fold","#o-str","#o-sched","#o-fwd"].forEach(s=>$(s).addEventListener("change",go));
+  $("#o-regs").addEventListener("input",()=>{ $("#o-regs-v").textContent=$("#o-regs").value; live(); });
+  $("#dl-c").addEventListener("click",dlC);
+  $("#dl-ll").addEventListener("click",dlLL);
+  $("#dl-s").addEventListener("click",dlS);
+  $("#dl-html").addEventListener("click",dlHTML);
+  go();
+}
+init();
+</script>
+</body>
+</html>
