@@ -17,59 +17,42 @@ The vision of **Reconfigurable and Intelligent Systems @ Queen's University Belf
 <table>
 <tr>
 <td width="50%" valign="top">
-
-⚡ Approximate Computing
-
-- Error-resilient architectures
-  
-- Quality-energy-performance trade-offs
-  
-- Sustainable computing
-  
-- Fault-tolerant edge systems
-
+<b>⚡ Approximate Computing</b>
+<ul>
+<li>Error-resilient architectures</li>
+<li>Quality-energy-performance trade-offs</li>
+<li>Sustainable computing</li>
+<li>Fault-tolerant edge systems</li>
+</ul>
 </td>
 <td width="50%" valign="top">
-
-🔧 Reconfigurable Computing and FPGA Acceleration
-
-- FPGA-based AI accelerators
-  
-- Automated accelerator generation
-  
-- High-performance embedded architectures
-  
-- Design automation methodologies
-
+<b>🔧 Reconfigurable Computing and FPGA Acceleration</b>
+<ul>
+<li>FPGA-based AI accelerators</li>
+<li>Automated accelerator generation</li>
+<li>High-performance embedded architectures</li>
+<li>Design automation methodologies</li>
+</ul>
 </td>
 </tr>
-
 <tr>
 <td width="50%" valign="top">
-
-🚀 Low SWaP-C Embedded Systems
-
-- Size, Weight, Power and Cost constrained platforms
-  
-- Autonomous vehicles and robotics
-  
-- Edge intelligence
-  
-- Real-time embedded computing
-
+<b>🚀 Low SWaP-C Embedded Systems</b>
+<ul>
+<li>Size, Weight, Power and Cost constrained platforms</li>
+<li>Autonomous vehicles and robotics</li>
+<li>Edge intelligence</li>
+<li>Real-time embedded computing</li>
+</ul>
 </td>
 <td width="50%" valign="top">
-
-🧠 Efficient and Trustworthy AI Systems
-
-- Hardware acceleration for AI and machine learning
-  
-- Energy-efficient AI deployment at the edge
-  
-- Trustworthy and resilient AI systems
-  
-- AI for autonomous platforms
-
+<b>🧠 Efficient and Trustworthy AI Systems</b>
+<ul>
+<li>Hardware acceleration for AI and machine learning</li>
+<li>Energy-efficient AI deployment at the edge</li>
+<li>Trustworthy and resilient AI systems</li>
+<li>AI for autonomous platforms</li>
+</ul>
 </td>
 </tr>
 </table>
