@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Petri Bench — place/transition net simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDEFE9;
+  --paper-2:#F7F8F4;
+  --ink:#14171B;
+  --graphite:#5D646B;
+  --rule:#CBD0C6;
+  --rule-soft:#DFE3DA;
+  --signal:#1240E0;
+  --token:#C61E5C;
+  --fire:#0B7F63;
+  --warn:#B8531B;
+  --rowh:16px;
+  --labelw:104px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+button,select,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+.shell{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100dvh}
+
+.masthead{
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  padding:10px 16px;border-bottom:1px solid var(--ink);background:var(--paper-2);
+}
+.wordmark{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.wordmark h1{margin:0;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.wordmark p{
+  margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:10.5px;letter-spacing:.06em;color:var(--graphite);text-transform:uppercase;
+}
+.transport{display:flex;align-items:center;gap:6px}
+.btn{
+  border:1px solid var(--ink);background:var(--paper-2);border-radius:2px;
+  padding:5px 11px;font-size:12.5px;font-weight:500;cursor:pointer;
+  transition:background .12s ease,color .12s ease;
+}
+.btn:hover{background:var(--ink);color:var(--paper-2)}
+.btn.primary{background:var(--ink);color:var(--paper-2)}
+.btn.primary:hover{background:var(--signal);border-color:var(--signal)}
+.btn.ghost{border-color:var(--rule);color:var(--graphite)}
+.btn.ghost:hover{border-color:var(--ink);background:transparent;color:var(--ink)}
+.rate{display:flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--graphite)}
+.rate input[type=range]{width:96px;accent-color:var(--signal)}
+select.chooser{
+  border:1px solid var(--ink);background:var(--paper-2);border-radius:2px;padding:5px 8px;font-size:12.5px;
+}
+
+.split{display:grid;grid-template-columns:minmax(0,1fr) 288px;min-height:0}
+.stage{position:relative;min-height:0;background:var(--paper)}
+#net{display:block;width:100%;height:100%;touch-action:none;cursor:default}
+.palette{
+  position:absolute;left:12px;top:12px;display:flex;gap:4px;flex-wrap:wrap;
+  background:rgba(247,248,244,.94);border:1px solid var(--rule);border-radius:2px;padding:6px;
+  backdrop-filter:blur(3px);
+}
+.palette span{
+  font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;color:var(--graphite);
+  text-transform:uppercase;align-self:center;padding:0 6px 0 2px;
+}
+.chip{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;padding:3px 7px;border:1px solid var(--rule);
+  background:var(--paper-2);border-radius:2px;cursor:pointer;
+}
+.chip:hover{border-color:var(--ink);background:var(--ink);color:var(--paper-2)}
+.hint{
+  position:absolute;right:12px;bottom:12px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  color:var(--graphite);text-align:right;line-height:1.7;pointer-events:none;
+}
+.hint b{color:var(--ink);font-weight:600}
+
+.rail{
+  border-left:1px solid var(--ink);background:var(--paper-2);
+  display:flex;flex-direction:column;min-height:0;overflow-y:auto;
+}
+.panel{border-bottom:1px solid var(--rule-soft);padding:12px 14px}
+.panel h2{
+  margin:0 0 9px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--graphite);
+}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft)}
+.cell{background:var(--paper-2);padding:6px 8px}
+.cell dt{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--graphite)}
+.cell dd{margin:1px 0 0;font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:500;font-variant-numeric:tabular-nums}
+.state-line{margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:11px;display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--graphite);flex:none}
+.state-run .dot{background:var(--fire)}
+.state-dead .dot{background:var(--warn)}
+.state-run{color:var(--fire)}
+.state-dead{color:var(--warn)}
+
+#marking{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;line-height:1.7;
+  max-height:148px;overflow-y:auto;margin:0;padding:0;list-style:none;
+}
+#marking li{display:flex;gap:8px;align-items:baseline;border-bottom:1px dotted var(--rule-soft);padding:1px 0}
+#marking li b{font-weight:400;color:var(--graphite);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#marking li i{flex:1;border-bottom:1px dotted var(--rule-soft);font-style:normal}
+#marking li em{font-style:normal;font-weight:600;font-variant-numeric:tabular-nums}
+#marking li.hot em{color:var(--token)}
+#marking li.zero em{color:var(--rule)}
+
+.field{display:block;margin-bottom:9px}
+.field span{
+  display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--graphite);margin-bottom:3px;
+}
+.field input,.field select{
+  width:100%;border:1px solid var(--rule);background:var(--paper);border-radius:2px;padding:5px 7px;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;
+}
+.field input:focus,.field select:focus{border-color:var(--signal)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.empty{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--graphite);line-height:1.6}
+.rowbtns{display:flex;gap:6px;margin-top:2px}
+
+#log{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;line-height:1.75;
+  max-height:150px;overflow-y:auto;margin:0;padding:0;list-style:none;
+}
+#log li{display:flex;gap:8px;border-bottom:1px dotted var(--rule-soft);padding:1px 0}
+#log li b{color:var(--graphite);font-weight:400;min-width:38px}
+#log li em{font-style:normal;color:var(--token);font-weight:600;margin-left:auto}
+
+.tape{border-top:1px solid var(--ink);background:var(--paper-2);display:grid;grid-template-rows:auto minmax(0,1fr)}
+.tape-head{display:flex;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid var(--rule-soft)}
+.tape-head h2{
+  margin:0;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--graphite);
+}
+.tape-head p{margin:0;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--graphite)}
+.tape-head .follow{margin-left:auto;display:flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--graphite)}
+.tape-body{display:grid;grid-template-columns:var(--labelw) minmax(0,1fr);min-height:0;max-height:30vh;overflow-y:auto}
+#tapeLabels{display:block;border-right:1px solid var(--rule)}
+.tape-scroll{overflow-x:auto;overflow-y:hidden;min-width:0}
+#tapeTrace{display:block}
+
+@media (max-width:900px){
+  body{overflow:auto}
+  .shell{height:auto;min-height:100dvh}
+  .split{grid-template-columns:1fr}
+  .stage{height:56vh}
+  .rail{border-left:0;border-top:1px solid var(--ink)}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="masthead">
+    <div class="wordmark">
+      <h1>Petri Bench</h1>
+      <p>place/transition net · marking simulator</p>
+    </div>
+
+    <select class="chooser" id="preset" aria-label="Load an example net">
+      <option value="">Load an example…</option>
+      <option value="pc">Producer–consumer, bounded buffer</option>
+      <option value="mutex">Mutual exclusion, two processes</option>
+      <option value="phil">Dining philosophers ×3 (can deadlock)</option>
+      <option value="fj">Fork and join</option>
+      <option value="light">Traffic light cycle</option>
+      <option value="marked">Marked graph: accumulator loop</option>
+      <option value="choice">Free choice (conflicting transitions)</option>
+      <option value="inhib">Inhibitor arc: run only when empty</option>
+      <option value="rw">Readers and writers (weighted arcs)</option>
+      <option value="unbounded">Unbounded net (token growth)</option>
+    </select>
+
+    <select class="chooser" id="mode" aria-label="Firing policy">
+      <option value="single">One transition per step</option>
+      <option value="max">Maximal step</option>
+    </select>
+
+    <div class="transport">
+      <button class="btn primary" id="run">Run</button>
+      <button class="btn" id="step">Step</button>
+      <button class="btn" id="reset">Reset</button>
+      <button class="btn ghost" id="fit">Fit view</button>
+    </div>
+
+    <label class="rate">Step
+      <input type="range" id="speed" min="60" max="1400" step="20" value="520">
+      <output id="speedOut">520 ms</output>
+    </label>
+
+    <div class="transport">
+      <button class="btn ghost" id="save">Save net</button>
+      <button class="btn ghost" id="loadBtn">Open net</button>
+      <input type="file" id="loadFile" accept="application/json" hidden>
+    </div>
+  </header>
+
+  <main class="split">
+    <section class="stage">
+      <canvas id="net"></canvas>
+
+      <div class="palette" id="palette">
+        <span>Add</span>
+        <button class="chip" id="addPlace">place</button>
+        <button class="chip" id="addTrans">transition</button>
+      </div>
+
+      <div class="hint">
+        <div>Drag a node to move it · drag from its <b>right stub</b> onto another node to draw an arc</div>
+        <div>Arcs must alternate place → transition → place</div>
+        <div><b>Double-click</b> an enabled transition to fire it by hand</div>
+        <div>Drag the sheet to pan · scroll to zoom · <b>Del</b> removes the selection</div>
+        <div><b>Space</b> run/pause · <b>S</b> step · <b>R</b> reset</div>
+      </div>
+    </section>
+
+    <aside class="rail">
+      <section class="panel">
+        <h2>Net state</h2>
+        <dl class="readout">
+          <div class="cell"><dt>Step</dt><dd id="mStep">0</dd></div>
+          <div class="cell"><dt>Firings</dt><dd id="mFires">0</dd></div>
+          <div class="cell"><dt>Tokens</dt><dd id="mTokens">0</dd></div>
+          <div class="cell"><dt>Enabled</dt><dd id="mEnabled">0</dd></div>
+          <div class="cell"><dt>Markings seen</dt><dd id="mStates">0</dd></div>
+          <div class="cell"><dt>Peak tokens</dt><dd id="mPeak">0</dd></div>
+        </dl>
+        <div class="state-line" id="mState"><i class="dot"></i><span>Idle — press Run</span></div>
+      </section>
+
+      <section class="panel">
+        <h2>Marking</h2>
+        <ul id="marking"></ul>
+      </section>
+
+      <section class="panel" id="inspector">
+        <h2>Inspector</h2>
+        <p class="empty">Nothing selected. Click a place, a transition or an arc to edit it.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Firing log</h2>
+        <ul id="log"><li class="empty" style="border:0">Nothing has fired yet.</li></ul>
+      </section>
+    </aside>
+  </main>
+
+  <section class="tape">
+    <div class="tape-head">
+      <h2>Firing tape</h2>
+      <p>one column per step · bars are firings, numbers are tokens held</p>
+      <label class="follow"><input type="checkbox" id="follow" checked> follow</label>
+    </div>
+    <div class="tape-body">
+      <canvas id="tapeLabels"></canvas>
+      <div class="tape-scroll" id="tapeScroll"><canvas id="tapeTrace"></canvas></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   Net state.  Nodes are places or transitions; arcs join them.
+   ============================================================ */
+const G = {
+  nodes: [], arcs: [],
+  seq: 1,
+  step: 0, fires: 0, peak: 0,
+  running: false, dead: false,
+  sel: null,                 // {kind:'node'|'arc', id}
+  seen: new Set(),
+  tape: [], log: [], flights: [],
+  view: {x:60, y:40, k:1}
+};
+const uid = p => p + (G.seq++);
+const getNode = id => G.nodes.find(n=>n.id===id);
+const getArc  = id => G.arcs.find(a=>a.id===id);
+const places  = () => G.nodes.filter(n=>n.kind==="place");
+const transes = () => G.nodes.filter(n=>n.kind==="trans");
+const preArcs  = t => G.arcs.filter(a=>a.to===t.id);
+const postArcs = t => G.arcs.filter(a=>a.from===t.id);
+
+function place(name, x, y, init, cap){
+  const n = {id:uid("p"), kind:"place", name, x, y, init:init||0, tok:init||0, cap:cap||0, flash:0};
+  G.nodes.push(n); return n;
+}
+function trans(name, x, y){
+  const n = {id:uid("t"), kind:"trans", name, x, y, flash:0, count:0};
+  G.nodes.push(n); return n;
+}
+function arc(a, b, w, inhibit){
+  if(a.kind === b.kind) return null;                       // the net stays bipartite
+  if(inhibit && a.kind !== "place") inhibit = false;       // inhibitors only run place → transition
+  const e = {id:uid("a"), from:a.id, to:b.id, w:w||1, inhibit:!!inhibit};
+  G.arcs.push(e); return e;
+}
+
+/* ============================================================
+   Semantics
+   ============================================================ */
+function enabled(t, marking){
+  const m = marking || null;
+  const tok = p => m ? m[p.id] : p.tok;
+  for(const a of preArcs(t)){
+    const p = getNode(a.from); if(!p) continue;
+    if(a.inhibit){ if(tok(p) >= a.w) return false; }       // inhibitor: blocks while tokens are present
+    else if(tok(p) < a.w) return false;
+  }
+  for(const a of postArcs(t)){
+    const p = getNode(a.to); if(!p || !p.cap) continue;
+    const back = preArcs(t).filter(x=>x.from===p.id && !x.inhibit).reduce((s,x)=>s+x.w, 0);
+    if(tok(p) - back + a.w > p.cap) return false;          // capacity checked on the successor marking
+  }
+  return preArcs(t).length + postArcs(t).length > 0;
+}
+
+function fire(t, now){
+  let moved = 0;
+  for(const a of preArcs(t)){
+    if(a.inhibit) continue;
+    const p = getNode(a.from);
+    p.tok -= a.w; moved += a.w; p.flash = now;
+    G.flights.push({x0:p.x, y0:p.y, x1:t.x, y1:t.y, born:now, n:a.w});
+  }
+  for(const a of postArcs(t)){
+    const p = getNode(a.to);
+    p.tok += a.w; moved += a.w; p.flash = now;
+    G.flights.push({x0:t.x, y0:t.y, x1:p.x, y1:p.y, born:now, n:a.w});
+  }
+  t.flash = now; t.count++; G.fires++;
+  G.log.push({step:G.step, name:t.name, moved});
+  if(G.log.length > 400) G.log.shift();
+  return moved;
+}
+
+function stepNet(){
+  const now = performance.now();
+  const ready = transes().filter(t=>enabled(t));
+  if(ready.length === 0){
+    G.dead = true; G.running = false; syncTransport(); renderAll(); return 0;
+  }
+  G.dead = false;
+  let fired = [];
+  if(byId("mode").value === "single"){
+    const t = ready[Math.floor(Math.random()*ready.length)];   // conflicts resolved by chance
+    fire(t, now); fired.push(t.id);
+  } else {
+    const order = ready.slice().sort(()=>Math.random()-0.5);
+    for(const t of order){
+      if(enabled(t)){ fire(t, now); fired.push(t.id); }         // greedy maximal step
+    }
+  }
+  G.tape.push({fired, m:places().map(p=>p.tok)});
+  G.step++;
+  G.seen.add(places().map(p=>p.tok).join(","));
+  G.peak = Math.max(G.peak, places().reduce((s,p)=>s+p.tok, 0));
+  renderAll();
+  return fired.length;
+}
+
+function fireByHand(t){
+  if(!enabled(t)) return false;
+  pause();
+  const now = performance.now();
+  fire(t, now);
+  G.tape.push({fired:[t.id], m:places().map(p=>p.tok)});
+  G.step++;
+  G.seen.add(places().map(p=>p.tok).join(","));
+  G.peak = Math.max(G.peak, places().reduce((s,p)=>s+p.tok, 0));
+  G.dead = transes().every(x=>!enabled(x));
+  renderAll();
+  return true;
+}
+
+function resetSim(){
+  G.step = 0; G.fires = 0; G.dead = false; G.tape = []; G.log = []; G.flights = [];
+  G.seen = new Set();
+  for(const n of G.nodes){ if(n.kind==="place") n.tok = n.init; n.flash = 0; n.count = 0; }
+  G.peak = places().reduce((s,p)=>s+p.tok, 0);
+  G.seen.add(places().map(p=>p.tok).join(","));
+  renderAll();
+}
+function renderAll(){ drawTape(); renderLog(); renderMarking(); renderMeters(); }
+
+/* ============================================================
+   Canvas
+   ============================================================ */
+const cv = byIdRaw("net");
+const ctx = cv.getContext("2d");
+const R = 28, TW = 18, TH = 60;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function byIdRaw(id){ return document.getElementById(id); }
+function fitCanvas(c){
+  const r = c.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+  c.width = Math.max(1, Math.round(r.width*dpr));
+  c.height = Math.max(1, Math.round(r.height*dpr));
+  return {w:r.width, h:r.height, dpr};
+}
+const toWorld = (sx, sy) => ({x:(sx - G.view.x)/G.view.k, y:(sy - G.view.y)/G.view.k});
+const stub = n => ({x:n.x + (n.kind==="place" ? R : TW/2) + 9, y:n.y});
+
+function border(n, tx, ty){
+  const dx = tx - n.x, dy = ty - n.y, d = Math.hypot(dx,dy) || 1;
+  if(n.kind === "place") return {x:n.x + dx/d*R, y:n.y + dy/d*R};
+  const hx = TW/2 + 3, hy = TH/2 + 3;
+  const s = Math.min(hx/Math.abs(dx||1e-6), hy/Math.abs(dy||1e-6));
+  return {x:n.x + dx*s, y:n.y + dy*s};
+}
+
+function drawSheet(){
+  const {w,h,dpr} = fitCanvas(cv);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  const V = G.view, g = 26*V.k;
+  if(g > 7){
+    ctx.strokeStyle = "#DFE3DA"; ctx.lineWidth = 1; ctx.beginPath();
+    for(let x = V.x % g; x < w; x += g){ ctx.moveTo(Math.round(x)+.5, 0); ctx.lineTo(Math.round(x)+.5, h); }
+    for(let y = V.y % g; y < h; y += g){ ctx.moveTo(0, Math.round(y)+.5); ctx.lineTo(w, Math.round(y)+.5); }
+    ctx.stroke();
+  }
+  ctx.save();
+  ctx.translate(V.x, V.y); ctx.scale(V.k, V.k);
+  const now = performance.now();
+  for(const a of G.arcs) drawArc(a);
+  if(link.active) drawPending();
+  for(const n of G.nodes) n.kind==="place" ? drawPlace(n, now) : drawTrans(n, now);
+  drawFlights(now);
+  ctx.restore();
+  requestAnimationFrame(drawSheet);
+}
+
+function arcPath(a){
+  const s = getNode(a.from), t = getNode(a.to);
+  if(!s || !t) return null;
+  const twin = G.arcs.some(o=>o.from===a.to && o.to===a.from);
+  const mx = (s.x+t.x)/2, my = (s.y+t.y)/2;
+  const dx = t.x-s.x, dy = t.y-s.y, d = Math.hypot(dx,dy) || 1;
+  const bow = twin ? 26 : 0;
+  const c = {x:mx - dy/d*bow, y:my + dx/d*bow};
+  return {p0:border(s, c.x, c.y), p1:border(t, c.x, c.y), c};
+}
+const qbez = (g,u) => ({x:(1-u)*(1-u)*g.p0.x + 2*(1-u)*u*g.c.x + u*u*g.p1.x,
+                        y:(1-u)*(1-u)*g.p0.y + 2*(1-u)*u*g.c.y + u*u*g.p1.y});
+
+function drawArc(a){
+  const g = arcPath(a); if(!g) return;
+  const sel = G.sel && G.sel.kind==="arc" && G.sel.id===a.id;
+  ctx.lineWidth = sel ? 2.4 : 1.4;
+  ctx.strokeStyle = sel ? "#1240E0" : (a.inhibit ? "#B8531B" : "#8F9791");
+  ctx.beginPath();
+  ctx.moveTo(g.p0.x, g.p0.y);
+  ctx.quadraticCurveTo(g.c.x, g.c.y, g.p1.x, g.p1.y);
+  ctx.stroke();
+
+  const t1 = qbez(g,1), t0 = qbez(g,.9);
+  const ang = Math.atan2(t1.y-t0.y, t1.x-t0.x);
+  ctx.fillStyle = ctx.strokeStyle;
+  if(a.inhibit){
+    ctx.beginPath();
+    ctx.arc(t1.x - 5*Math.cos(ang), t1.y - 5*Math.sin(ang), 5, 0, Math.PI*2);
+    ctx.fillStyle = "#F7F8F4"; ctx.fill(); ctx.lineWidth = 1.5; ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(t1.x, t1.y);
+    ctx.lineTo(t1.x - 8*Math.cos(ang-.4), t1.y - 8*Math.sin(ang-.4));
+    ctx.lineTo(t1.x - 8*Math.cos(ang+.4), t1.y - 8*Math.sin(ang+.4));
+    ctx.closePath(); ctx.fill();
+  }
+  if(a.w > 1){
+    const m = qbez(g,.5);
+    ctx.fillStyle = "#F7F8F4"; ctx.strokeStyle = "#14171B"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.rect(m.x-9, m.y-9, 18, 18); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#14171B";
+    ctx.font = '600 11px "IBM Plex Mono", monospace';
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(a.w, m.x, m.y+.5);
+  }
+}
+function drawPending(){
+  ctx.strokeStyle = "#1240E0"; ctx.lineWidth = 1.6; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(link.x0, link.y0); ctx.lineTo(link.x1, link.y1); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawPlace(p, now){
+  const sel = G.sel && G.sel.kind==="node" && G.sel.id===p.id;
+  const glow = reduced ? 0 : Math.max(0, 1 - (now - p.flash)/420);
+  if(glow > 0){
+    ctx.fillStyle = "rgba(198,30,92," + (glow*0.14) + ")";
+    ctx.beginPath(); ctx.arc(p.x, p.y, R+8, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, Math.PI*2);
+  ctx.fillStyle = "#F7F8F4"; ctx.fill();
+  ctx.lineWidth = sel ? 2.6 : 1.4;
+  ctx.strokeStyle = sel ? "#1240E0" : "#14171B"; ctx.stroke();
+
+  ctx.fillStyle = "#C61E5C";
+  if(p.tok > 0 && p.tok <= 5){
+    const ring = p.tok === 1 ? [[0,0]] :
+      Array.from({length:p.tok}, (_,i)=>{
+        const a = -Math.PI/2 + i*2*Math.PI/p.tok;
+        return [Math.cos(a)*11, Math.sin(a)*11];
+      });
+    ring.forEach(([dx,dy])=>{ ctx.beginPath(); ctx.arc(p.x+dx, p.y+dy, 5, 0, Math.PI*2); ctx.fill(); });
+  } else if(p.tok > 5){
+    ctx.font = '600 17px "IBM Plex Mono", monospace';
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(p.tok, p.x, p.y+.5);
+  }
+
+  ctx.font = '600 10px "IBM Plex Mono", monospace';
+  ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = "#14171B";
+  ctx.fillText(p.name.slice(0,18), p.x, p.y - R - 9);
+  if(p.cap){
+    ctx.font = '400 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = "#5D646B"; ctx.textBaseline = "top";
+    ctx.fillText("cap " + p.cap, p.x, p.y + R + 5);
+  }
+  ctx.beginPath(); ctx.arc(stub(p).x, stub(p).y, 4, 0, Math.PI*2);
+  ctx.fillStyle = "#14171B"; ctx.fill();
+}
+
+function drawTrans(t, now){
+  const sel = G.sel && G.sel.kind==="node" && G.sel.id===t.id;
+  const en = enabled(t);
+  const glow = reduced ? 0 : Math.max(0, 1 - (now - t.flash)/420);
+  if(glow > 0){
+    ctx.fillStyle = "rgba(11,127,99," + (glow*0.18) + ")";
+    ctx.beginPath(); ctx.roundRect(t.x-TW/2-8, t.y-TH/2-8, TW+16, TH+16, 5); ctx.fill();
+  }
+  ctx.beginPath(); ctx.roundRect(t.x-TW/2, t.y-TH/2, TW, TH, 2);
+  ctx.fillStyle = glow>0 ? "#0B7F63" : (en ? "#1240E0" : "#8F9791");
+  ctx.fill();
+  if(sel){ ctx.lineWidth = 2.6; ctx.strokeStyle = "#1240E0"; ctx.stroke(); }
+
+  ctx.font = '600 10px "IBM Plex Mono", monospace';
+  ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = "#14171B";
+  ctx.fillText(t.name.slice(0,18), t.x, t.y - TH/2 - 9);
+  if(t.count){
+    ctx.font = '400 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = "#5D646B"; ctx.textBaseline = "top";
+    ctx.fillText("×" + t.count, t.x, t.y + TH/2 + 5);
+  }
+  ctx.beginPath(); ctx.arc(stub(t).x, stub(t).y, 4, 0, Math.PI*2);
+  ctx.fillStyle = "#14171B"; ctx.fill();
+}
+
+function drawFlights(now){
+  if(reduced){ G.flights.length = 0; return; }
+  G.flights = G.flights.filter(f => now - f.born < 380);
+  for(const f of G.flights){
+    const u = Math.min(1, (now - f.born)/380);
+    const x = f.x0 + (f.x1-f.x0)*u, y = f.y0 + (f.y1-f.y0)*u;
+    ctx.globalAlpha = 1 - u*0.5;
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI*2);
+    ctx.fillStyle = "#C61E5C"; ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+/* ============================================================
+   Pointer interaction
+   ============================================================ */
+const link = {active:false, from:null, x0:0, y0:0, x1:0, y1:0};
+let drag = null;
+
+function hitNode(w){
+  for(let i=G.nodes.length-1;i>=0;i--){
+    const n = G.nodes[i];
+    if(n.kind === "place"){ if(Math.hypot(w.x-n.x, w.y-n.y) <= R) return n; }
+    else if(Math.abs(w.x-n.x) <= TW/2+4 && Math.abs(w.y-n.y) <= TH/2) return n;
+  }
+  return null;
+}
+function hitStub(w){
+  for(let i=G.nodes.length-1;i>=0;i--){
+    const s = stub(G.nodes[i]);
+    if(Math.hypot(w.x-s.x, w.y-s.y) < 11) return G.nodes[i];
+  }
+  return null;
+}
+function hitArc(w){
+  for(const a of G.arcs){
+    const g = arcPath(a); if(!g) continue;
+    for(let u=0;u<=1.0001;u+=0.05){
+      const p = qbez(g,u);
+      if(Math.hypot(w.x-p.x, w.y-p.y) < 8) return a;
+    }
+  }
+  return null;
+}
+
+cv.addEventListener("pointerdown", ev=>{
+  cv.setPointerCapture(ev.pointerId);
+  const r = cv.getBoundingClientRect();
+  const w = toWorld(ev.clientX-r.left, ev.clientY-r.top);
+  const s = hitStub(w);
+  if(s){ const q = stub(s); Object.assign(link, {active:true, from:s, x0:q.x, y0:q.y, x1:w.x, y1:w.y}); return; }
+  const n = hitNode(w);
+  if(n){
+    select("node", n.id);
+    drag = {kind:"node", id:n.id, dx:w.x-n.x, dy:w.y-n.y};
+    G.nodes.push(G.nodes.splice(G.nodes.indexOf(n),1)[0]);
+    return;
+  }
+  const a = hitArc(w);
+  if(a){ select("arc", a.id); return; }
+  select(null);
+  drag = {kind:"pan", sx:ev.clientX, sy:ev.clientY, vx:G.view.x, vy:G.view.y};
+});
+
+cv.addEventListener("pointermove", ev=>{
+  const r = cv.getBoundingClientRect();
+  const w = toWorld(ev.clientX-r.left, ev.clientY-r.top);
+  if(link.active){ link.x1 = w.x; link.y1 = w.y; return; }
+  if(!drag){ cv.style.cursor = hitStub(w) ? "crosshair" : (hitNode(w) ? "grab" : "default"); return; }
+  if(drag.kind === "node"){
+    const n = getNode(drag.id);
+    n.x = Math.round((w.x - drag.dx)/2)*2;
+    n.y = Math.round((w.y - drag.dy)/2)*2;
+  } else {
+    G.view.x = drag.vx + (ev.clientX - drag.sx);
+    G.view.y = drag.vy + (ev.clientY - drag.sy);
+  }
+});
+
+cv.addEventListener("pointerup", ev=>{
+  if(link.active){
+    const r = cv.getBoundingClientRect();
+    const w = toWorld(ev.clientX-r.left, ev.clientY-r.top);
+    const tgt = hitNode(w);
+    if(tgt && tgt.id !== link.from.id){
+      if(tgt.kind === link.from.kind){
+        flash("Arcs run place → transition or transition → place.");
+      } else if(!G.arcs.some(a=>a.from===link.from.id && a.to===tgt.id)){
+        const a = arc(link.from, tgt, 1, false);
+        if(a){ select("arc", a.id); resetSim(); }
+      }
+    }
+    link.active = false;
+  }
+  drag = null;
+});
+cv.addEventListener("pointercancel", ()=>{ drag = null; link.active = false; });
+
+cv.addEventListener("dblclick", ev=>{
+  const r = cv.getBoundingClientRect();
+  const w = toWorld(ev.clientX-r.left, ev.clientY-r.top);
+  const n = hitNode(w);
+  if(n && n.kind === "trans"){
+    if(!fireByHand(n)) flash(n.name + " is not enabled.");
+  }
+});
+
+cv.addEventListener("wheel", ev=>{
+  ev.preventDefault();
+  const r = cv.getBoundingClientRect();
+  const mx = ev.clientX-r.left, my = ev.clientY-r.top;
+  const before = toWorld(mx,my);
+  G.view.k = Math.min(2.2, Math.max(0.3, G.view.k * (ev.deltaY<0 ? 1.1 : 0.9)));
+  G.view.x = mx - before.x*G.view.k;
+  G.view.y = my - before.y*G.view.k;
+}, {passive:false});
+
+addEventListener("keydown", ev=>{
+  if(/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+  if(ev.key === " "){ ev.preventDefault(); toggleRun(); }
+  else if(ev.key === "s" || ev.key === "S"){ pause(); stepNet(); }
+  else if(ev.key === "r" || ev.key === "R"){ pause(); resetSim(); }
+  else if(ev.key === "Delete" || ev.key === "Backspace"){ deleteSelection(); }
+});
+
+/* ============================================================
+   Editing
+   ============================================================ */
+function select(kind, id){ G.sel = kind ? {kind, id} : null; renderInspector(); }
+function deleteSelection(){
+  if(!G.sel) return;
+  if(G.sel.kind === "node"){
+    G.arcs = G.arcs.filter(a=>a.from!==G.sel.id && a.to!==G.sel.id);
+    G.nodes = G.nodes.filter(n=>n.id!==G.sel.id);
+  } else {
+    G.arcs = G.arcs.filter(a=>a.id!==G.sel.id);
+  }
+  select(null); resetSim();
+}
+function addNode(kind){
+  const r = cv.getBoundingClientRect();
+  const c = toWorld(r.width/2 + (Math.random()*80-40), r.height/2 + (Math.random()*80-40));
+  const n = kind === "place"
+    ? place("p" + (places().length+1), Math.round(c.x), Math.round(c.y), 0, 0)
+    : trans("t" + (transes().length+1), Math.round(c.x), Math.round(c.y));
+  select("node", n.id); resetSim();
+}
+byId("addPlace").onclick = ()=>addNode("place");
+byId("addTrans").onclick = ()=>addNode("trans");
+
+/* ============================================================
+   Rail
+   ============================================================ */
+function byId(id){ return document.getElementById(id); }
+const clamp = (v,a,b) => Math.min(b, Math.max(a, Number.isFinite(v)?v:a));
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let note = "";
+function flash(msg){ note = msg; renderInspector(); setTimeout(()=>{ note = ""; renderInspector(); }, 2600); }
+
+function renderInspector(){
+  const head = '<h2>Inspector</h2>' + (note ? `<p class="empty" style="color:var(--warn)">${esc(note)}</p>` : "");
+  if(!G.sel){
+    byId("inspector").innerHTML = head + '<p class="empty">Nothing selected. Click a place, a transition or an arc to edit it.</p>';
+    return;
+  }
+  if(G.sel.kind === "node"){
+    const n = getNode(G.sel.id);
+    if(!n){ select(null); return; }
+    let html = head + `<label class="field"><span>Name</span><input id="fName" value="${esc(n.name)}"></label>`;
+    if(n.kind === "place"){
+      html += `<div class="pair">
+          <label class="field"><span>Initial tokens</span><input id="fInit" type="number" min="0" value="${n.init}"></label>
+          <label class="field"><span>Capacity (0 = ∞)</span><input id="fCap" type="number" min="0" value="${n.cap}"></label>
+        </div>
+        <label class="field"><span>Tokens now</span><input id="fTok" type="number" min="0" value="${n.tok}"></label>`;
+    } else {
+      const en = enabled(n);
+      html += `<p class="empty" style="margin:0 0 9px">${en ? "Enabled — it can fire now." : "Not enabled."} Fired ${n.count}×.</p>
+        <div class="rowbtns"><button class="btn" id="fFire" ${en?"":"disabled"}>Fire once</button></div>`;
+    }
+    html += `<div class="rowbtns"><button class="btn ghost" id="fDel">Delete ${n.kind}</button></div>`;
+    byId("inspector").innerHTML = html;
+    byId("fName").oninput = e => n.name = e.target.value || n.kind[0];
+    if(byId("fInit")) byId("fInit").oninput = e => { n.init = clamp(+e.target.value,0,9999); resetSim(); };
+    if(byId("fCap"))  byId("fCap").oninput  = e => { n.cap  = clamp(+e.target.value,0,9999); resetSim(); };
+    if(byId("fTok"))  byId("fTok").oninput  = e => { n.tok  = clamp(+e.target.value,0,9999); renderAll(); };
+    if(byId("fFire")) byId("fFire").onclick = ()=>{ fireByHand(n); renderInspector(); };
+    byId("fDel").onclick = deleteSelection;
+  } else {
+    const a = getArc(G.sel.id);
+    if(!a){ select(null); return; }
+    const s = getNode(a.from), t = getNode(a.to);
+    const canInhibit = s.kind === "place";
+    byId("inspector").innerHTML = head +
+      `<p class="empty" style="margin:0 0 9px">${esc(s.name)} → ${esc(t.name)}</p>
+       <label class="field"><span>Weight</span><input id="fW" type="number" min="1" max="99" value="${a.w}"></label>
+       ${canInhibit ? `<label class="field"><span><input type="checkbox" id="fInh" ${a.inhibit?"checked":""}> inhibitor arc (fires only while the place holds fewer than the weight)</span></label>` : ""}
+       <div class="rowbtns"><button class="btn ghost" id="fDel">Delete arc</button></div>`;
+    byId("fW").oninput = e => { a.w = clamp(+e.target.value,1,99); renderAll(); };
+    if(byId("fInh")) byId("fInh").onchange = e => { a.inhibit = e.target.checked; resetSim(); };
+    byId("fDel").onclick = deleteSelection;
+  }
+}
+
+function renderMeters(){
+  const total = places().reduce((s,p)=>s+p.tok, 0);
+  const en = transes().filter(t=>enabled(t)).length;
+  byId("mStep").textContent    = G.step;
+  byId("mFires").textContent   = G.fires;
+  byId("mTokens").textContent  = total;
+  byId("mEnabled").textContent = en;
+  byId("mStates").textContent  = G.seen.size;
+  byId("mPeak").textContent    = G.peak;
+  const s = byId("mState");
+  s.className = "state-line" + (G.running ? " state-run" : (en===0 ? " state-dead" : ""));
+  s.lastElementChild.textContent = en === 0 ? "Dead marking — nothing can fire"
+    : G.running ? (byId("mode").value==="single" ? "Running — one firing per step" : "Running — maximal steps")
+    : (G.step ? "Paused" : "Idle — press Run");
+}
+function renderMarking(){
+  const ul = byId("marking"), ps = places();
+  if(!ps.length){ ul.innerHTML = '<li class="empty" style="border:0">No places yet.</li>'; return; }
+  ul.innerHTML = ps.map(p=>
+    `<li class="${p.tok?"hot":"zero"}"><b>${esc(p.name)}</b><i></i><em>${p.tok}${p.cap?"/"+p.cap:""}</em></li>`).join("");
+}
+function renderLog(){
+  const ul = byId("log");
+  if(!G.log.length){ ul.innerHTML = '<li class="empty" style="border:0">Nothing has fired yet.</li>'; return; }
+  ul.innerHTML = G.log.slice(-60).map(r=>
+    `<li><b>s${r.step}</b>${esc(r.name)}<em>${r.moved}</em></li>`).join("");
+  ul.scrollTop = ul.scrollHeight;
+}
+
+/* ============================================================
+   Firing tape
+   ============================================================ */
+const labelsC = byId("tapeLabels"), traceC = byId("tapeTrace"), scroller = byId("tapeScroll");
+const ROW = 16, CELL = 15, HEADH = 18;
+
+function drawTape(){
+  const rows = G.nodes;
+  const h = HEADH + Math.max(1, rows.length)*ROW + 6;
+  const dpr = devicePixelRatio || 1;
+
+  labelsC.style.height = h+"px"; labelsC.style.width = "104px";
+  labelsC.width = Math.round(104*dpr); labelsC.height = Math.round(h*dpr);
+  const lc = labelsC.getContext("2d");
+  lc.setTransform(dpr,0,0,dpr,0,0);
+  lc.fillStyle = "#F7F8F4"; lc.fillRect(0,0,104,h);
+  lc.textBaseline = "middle"; lc.textAlign = "right";
+  rows.forEach((n,i)=>{
+    const y = HEADH + i*ROW + ROW/2;
+    lc.font = n.kind==="trans" ? '600 10px "IBM Plex Mono", monospace' : '400 10px "IBM Plex Mono", monospace';
+    lc.fillStyle = n.kind==="trans" ? "#14171B" : "#5D646B";
+    lc.fillText(n.name.slice(0,13), 96, y);
+  });
+  lc.strokeStyle = "#DFE3DA"; lc.beginPath(); lc.moveTo(0, HEADH+.5); lc.lineTo(104, HEADH+.5); lc.stroke();
+
+  const cycles = Math.max(G.tape.length, Math.floor(scroller.clientWidth/CELL));
+  const w = Math.max(scroller.clientWidth, cycles*CELL + 20);
+  traceC.style.height = h+"px"; traceC.style.width = w+"px";
+  traceC.width = Math.round(w*dpr); traceC.height = Math.round(h*dpr);
+  const tc = traceC.getContext("2d");
+  tc.setTransform(dpr,0,0,dpr,0,0);
+  tc.fillStyle = "#F7F8F4"; tc.fillRect(0,0,w,h);
+
+  tc.font = '400 9px "IBM Plex Mono", monospace';
+  tc.textBaseline = "middle"; tc.textAlign = "center";
+  for(let c=0;c<cycles;c++){
+    const x = c*CELL + 10;
+    if(c % 5 === 0){
+      tc.fillStyle = "#5D646B"; tc.fillText(c, x + CELL/2, HEADH/2);
+      tc.strokeStyle = "#DFE3DA"; tc.beginPath();
+      tc.moveTo(Math.round(x)+.5, HEADH); tc.lineTo(Math.round(x)+.5, h-6); tc.stroke();
+    }
+  }
+  tc.strokeStyle = "#DFE3DA"; tc.beginPath(); tc.moveTo(0, HEADH+.5); tc.lineTo(w, HEADH+.5); tc.stroke();
+  rows.forEach((n,i)=>{
+    const y = HEADH + i*ROW + ROW/2;
+    tc.strokeStyle = "#E7EAE2"; tc.beginPath(); tc.moveTo(10, y+.5); tc.lineTo(w-10, y+.5); tc.stroke();
+  });
+
+  const pIndex = new Map(places().map((p,i)=>[p.id,i]));
+  G.tape.forEach((rec, c)=>{
+    const x = c*CELL + 10;
+    rows.forEach((n,i)=>{
+      const y = HEADH + i*ROW;
+      if(n.kind === "trans"){
+        if(rec.fired.includes(n.id)){ tc.fillStyle = "#0B7F63"; tc.fillRect(x+2, y+2, CELL-4, ROW-5); }
+      } else {
+        const k = rec.m[pIndex.get(n.id)] || 0;
+        if(k > 0){
+          tc.fillStyle = "rgba(198,30,92,." + Math.min(9, 2 + k) + ")";
+          tc.fillRect(x+2, y+2, CELL-4, ROW-5);
+          tc.fillStyle = "#F7F8F4";
+          tc.font = '600 9px "IBM Plex Mono", monospace';
+          tc.fillText(k > 9 ? "+" : k, x + CELL/2, y + ROW/2);
+        }
+      }
+    });
+  });
+
+  if(G.tape.length){
+    const x = G.tape.length*CELL + 10;
+    tc.strokeStyle = "#C61E5C"; tc.lineWidth = 1.5;
+    tc.beginPath(); tc.moveTo(x+.5, HEADH-3); tc.lineTo(x+.5, h-4); tc.stroke();
+    if(byId("follow").checked) scroller.scrollLeft = Math.max(0, x - scroller.clientWidth + 60);
+  }
+}
+
+/* ============================================================
+   Transport
+   ============================================================ */
+let timer = null;
+function toggleRun(){ G.running ? pause() : play(); }
+function play(){
+  if(G.running) return;
+  if(transes().every(t=>!enabled(t))){ renderMeters(); return; }
+  G.running = true; G.dead = false; syncTransport(); renderMeters();
+  const tick = ()=>{
+    if(!G.running) return;
+    stepNet();
+    if(G.running) timer = setTimeout(tick, +byId("speed").value);
+  };
+  tick();
+}
+function pause(){ G.running = false; clearTimeout(timer); syncTransport(); renderMeters(); }
+function syncTransport(){ byId("run").textContent = G.running ? "Pause" : "Run"; }
+
+byId("run").onclick   = toggleRun;
+byId("step").onclick  = ()=>{ pause(); stepNet(); };
+byId("reset").onclick = ()=>{ pause(); resetSim(); };
+byId("fit").onclick   = ()=> fitView();
+byId("mode").onchange = ()=> renderMeters();
+byId("speed").oninput = e => byId("speedOut").textContent = e.target.value + " ms";
+
+/* ============================================================
+   Save / open
+   ============================================================ */
+byId("save").onclick = ()=>{
+  const data = JSON.stringify({
+    nodes: G.nodes.map(({id,kind,name,x,y,init,cap})=>({id,kind,name,x,y,init,cap})),
+    arcs:  G.arcs.map(({id,from,to,w,inhibit})=>({id,from,to,w,inhibit}))
+  }, null, 2);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([data], {type:"application/json"}));
+  a.download = "petri-net.json"; a.click();
+  URL.revokeObjectURL(a.href);
+};
+byId("loadBtn").onclick = ()=> byId("loadFile").click();
+byId("loadFile").onchange = ev=>{
+  const f = ev.target.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    try{
+      const d = JSON.parse(rd.result);
+      G.nodes = d.nodes.map(n=>Object.assign({init:0, cap:0, tok:0, flash:0, count:0}, n));
+      G.arcs  = d.arcs.map(a=>Object.assign({w:1, inhibit:false}, a));
+      G.seq = G.nodes.length + G.arcs.length + 100;
+      pause(); select(null); resetSim(); fitView();
+    }catch(err){
+      flash("That file isn't a net this bench can read. Save one first to see the expected shape.");
+    }
+  };
+  rd.readAsText(f);
+  ev.target.value = "";
+};
+
+/* ============================================================
+   Example nets
+   ============================================================ */
+function clearNet(){ G.nodes = []; G.arcs = []; G.seq = 1; select(null); }
+
+const EXAMPLES = {
+  pc(){
+    clearNet();
+    const idleP = place("producer idle", 80,120, 1);
+    const ready = place("item ready",   320,120, 0);
+    const buf   = place("buffer",       560,220, 0, 3);
+    const slots = place("free slots",   560, 60, 3, 3);
+    const idleC = place("consumer idle",1040,120, 1);
+    const busyC = place("consuming",    800,340, 0);
+    const tProd = trans("produce",      200,120);
+    const tDep  = trans("deposit",      440,120);
+    const tTake = trans("take",         680,220);
+    const tCons = trans("consume",      920,340);
+    arc(idleP,tProd); arc(tProd,ready);
+    arc(ready,tDep); arc(slots,tDep); arc(tDep,buf); arc(tDep,idleP);
+    arc(buf,tTake); arc(idleC,tTake); arc(tTake,busyC); arc(tTake,slots);
+    arc(busyC,tCons); arc(tCons,idleC);
+  },
+  mutex(){
+    clearNet();
+    const ai = place("A idle",   100, 80, 1);
+    const ac = place("A critical",460, 80, 0);
+    const bi = place("B idle",   100,420, 1);
+    const bc = place("B critical",460,420, 0);
+    const mx = place("mutex",    280,250, 1);
+    const ae = trans("A enter",  280, 80);
+    const ax = trans("A exit",   620,180);
+    const be = trans("B enter",  280,420);
+    const bx = trans("B exit",   620,320);
+    arc(ai,ae); arc(mx,ae); arc(ae,ac);
+    arc(ac,ax); arc(ax,ai); arc(ax,mx);
+    arc(bi,be); arc(mx,be); arc(be,bc);
+    arc(bc,bx); arc(bx,bi); arc(bx,mx);
+  },
+  phil(){
+    clearNet();
+    const cx = 520, cy = 380, P = [];
+    const at = (r,deg)=>({x:cx + r*Math.cos(deg*Math.PI/180), y:cy + r*Math.sin(deg*Math.PI/180)});
+    for(let i=0;i<3;i++){
+      const a = -90 + i*120;
+      const th = at(310, a),  h1 = at(180, a),  ea = at(70, a);
+      const tl = at(250, a-9), tr = at(126, a-9), rl = at(200, a+34);
+      const fk = at(280, a+60);
+      P.push({
+        think: place("think "+(i+1),  Math.round(th.x), Math.round(th.y), 1),
+        holds: place("has left "+(i+1),Math.round(h1.x), Math.round(h1.y), 0),
+        eat:   place("eating "+(i+1), Math.round(ea.x), Math.round(ea.y), 0),
+        fork:  place("fork "+(i+1),   Math.round(fk.x), Math.round(fk.y), 1),
+        tL:    trans("take L"+(i+1),  Math.round(tl.x), Math.round(tl.y)),
+        tR:    trans("take R"+(i+1),  Math.round(tr.x), Math.round(tr.y)),
+        rel:   trans("release "+(i+1),Math.round(rl.x), Math.round(rl.y))
+      });
+    }
+    for(let i=0;i<3;i++){
+      const me = P[i], nx = P[(i+1)%3];
+      arc(me.think, me.tL); arc(me.fork, me.tL); arc(me.tL, me.holds);
+      arc(me.holds, me.tR); arc(nx.fork, me.tR); arc(me.tR, me.eat);
+      arc(me.eat, me.rel);  arc(me.rel, me.think); arc(me.rel, me.fork); arc(me.rel, nx.fork);
+    }
+  },
+  fj(){
+    clearNet();
+    const s  = place("start",   80,220, 1);
+    const a1 = place("branch A",340, 90, 0);
+    const b1 = place("branch B",340,350, 0);
+    const a2 = place("A done",  700, 90, 0);
+    const b2 = place("B done",  700,350, 0);
+    const d  = place("joined",  1060,220, 0);
+    const tf = trans("fork",    200,220);
+    const ta = trans("work A",  520, 90);
+    const tb = trans("work B",  520,350);
+    const tj = trans("join",    880,220);
+    const tr = trans("restart", 1060,420);
+    arc(s,tf); arc(tf,a1); arc(tf,b1);
+    arc(a1,ta); arc(ta,a2); arc(b1,tb); arc(tb,b2);
+    arc(a2,tj); arc(b2,tj); arc(tj,d);
+    arc(d,tr); arc(tr,s);
+  },
+  light(){
+    clearNet();
+    const red   = place("red",   120,200, 1);
+    const green = place("green", 520,200, 0);
+    const amber = place("amber", 320,420, 0);
+    const t1 = trans("red → green",   320,200);
+    const t2 = trans("green → amber", 520,420);
+    const t3 = trans("amber → red",   120,420);
+    arc(red,t1); arc(t1,green);
+    arc(green,t2); arc(t2,amber);
+    arc(amber,t3); arc(t3,red);
+  },
+  marked(){
+    clearNet();
+    const src = place("input queue", 100,200, 6);
+    const st  = place("accumulator state", 480, 60, 1);
+    const out = place("results",     640,200, 0);
+    const snk = place("collected",   940,200, 0);
+    const add = trans("add",         320,200);
+    const get = trans("collect",     800,200);
+    arc(src,add); arc(st,add); arc(add,st); arc(add,out);
+    arc(out,get); arc(get,snk);
+  },
+  choice(){
+    clearNet();
+    const p  = place("token pool", 300,220, 1);
+    const a  = place("took path A",700, 80, 0);
+    const b  = place("took path B",700,360, 0);
+    const t1 = trans("path A",     500, 80);
+    const t2 = trans("path B",     500,360);
+    const r1 = trans("return A",   900,180);
+    const r2 = trans("return B",   900,300);
+    arc(p,t1); arc(t1,a); arc(a,r1); arc(r1,p);
+    arc(p,t2); arc(t2,b); arc(b,r2); arc(r2,p);
+  },
+  inhib(){
+    clearNet();
+    const src = place("jobs waiting", 120,140, 4);
+    const q   = place("queue",        460,140, 0);
+    const done= place("served",       820,140, 0);
+    const idle= place("worker free",  460,420, 1);
+    const tin = trans("admit",        290,140);
+    const tsv = trans("serve",        650,140);
+    const tbg = trans("background",   700,420);
+    arc(src,tin); arc(tin,q);
+    arc(q,tsv); arc(tsv,done);
+    arc(idle,tbg); arc(tbg,idle);            // the worker keeps its own token
+    arc(q,tbg,1,true);                       // inhibitor: background waits until the queue is empty
+  },
+  rw(){
+    clearNet();
+    const rIdle = place("readers idle", 120,120, 3);
+    const read  = place("reading",      620,120, 0);
+    const wIdle = place("writer idle",  120,420, 1);
+    const write = place("writing",      620,420, 0);
+    const lock  = place("access slots", 370,270, 3, 3);
+    const sr = trans("start read", 370,120);
+    const er = trans("end read",   860,220);
+    const sw = trans("start write",370,420);
+    const ew = trans("end write",  860,340);
+    arc(rIdle,sr); arc(lock,sr); arc(sr,read);
+    arc(read,er); arc(er,rIdle); arc(er,lock);
+    arc(wIdle,sw); arc(lock,sw,3); arc(sw,write);     // a writer needs all three slots
+    arc(write,ew); arc(ew,wIdle); arc(ew,lock,3);
+  },
+  unbounded(){
+    clearNet();
+    const ctl = place("controller", 200,140, 1);
+    const acc = place("collected",  560,300, 0);
+    const gen = trans("emit",       380,140);
+    const drn = trans("drain",      760,300);
+    arc(ctl,gen); arc(gen,ctl); arc(gen,acc,2);   // two produced per firing, one drained
+    arc(acc,drn);
+  }
+};
+
+function fitView(){
+  if(!G.nodes.length) return;
+  const r = cv.getBoundingClientRect();
+  if(r.width < 40 || r.height < 40) return;
+  const xs = G.nodes.map(n=>n.x), ys = G.nodes.map(n=>n.y);
+  const x0 = Math.min(...xs) - 70, y0 = Math.min(...ys) - 60;
+  const x1 = Math.max(...xs) + 70, y1 = Math.max(...ys) + 60;
+  const k = Math.min(1.15, Math.max(0.3, Math.min(r.width/(x1-x0), r.height/(y1-y0))));
+  G.view = {k, x:(r.width - (x1-x0)*k)/2 - x0*k, y:(r.height - (y1-y0)*k)/2 - y0*k};
+}
+
+byId("preset").onchange = ev=>{
+  const key = ev.target.value; if(!key) return;
+  pause(); EXAMPLES[key](); resetSim(); renderInspector(); fitView();
+};
+
+/* ============================================================
+   Boot
+   ============================================================ */
+EXAMPLES.pc();
+resetSim();
+renderInspector();
+requestAnimationFrame(()=>{ fitView(); drawSheet(); });
+addEventListener("resize", ()=>drawTape());
+new ResizeObserver(()=>drawTape()).observe(scroller);
+</script>
+</body>
+</html>
