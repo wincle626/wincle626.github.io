@@ -110,6 +110,12 @@ Please email your CV, transcripts, and a brief statement of research interests t
 
 <img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**Queen’s University/CSC PhD Scholarships**](https://www.qub.ac.uk/Study/international-students/international-scholarships/china/queens-university-china-scholarship-council-phd-scholarships-2026/how-to-apply-queens-university-csc-phd-scholarships-2026/)
 
+# Other funding opportunities
+
+<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**The Commonwealth Scholarship**](https://cscuk.fcdo.gov.uk/) for students from Commonwealth countries.
+
+<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**Northern Ireland Department for Education (DfE) Scholarship**](https://cscuk.fcdo.gov.uk/) for students with UK and ROI nationals, and EU nationals with settled status. 
+
 # Selcted Publications
 
 1. [Energy Efficient Reconfigurable Accelerator for Monocular Underwater Image Enhancement](https://wincle626.github.io/publication/2026-09-30-SOCC)
