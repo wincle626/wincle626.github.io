@@ -112,9 +112,9 @@ Please email your CV, transcripts, and a brief statement of research interests t
 
 # Other funding opportunities
 
-<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**The Commonwealth Scholarship**](https://cscuk.fcdo.gov.uk/) for students from Commonwealth countries.
+<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**The Commonwealth Scholarship**](https://cscuk.fcdo.gov.uk/) (From Commonwealth countries.)
 
-<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**Northern Ireland Department for Education (DfE) Scholarship**](https://cscuk.fcdo.gov.uk/) for students with UK and ROI nationals, and EU nationals with settled status. 
+<img src="https://github.com/wincle626/wincle626.github.io/blob/master/images/breaking-news-concept-loud-speaker-with-explosion-effect-3d-mobile-application-icon-with-notification-vector.jpg?raw=true" alt="news" width="50"/> [**Northern Ireland Department for Education (DfE) Scholarship**](https://cscuk.fcdo.gov.uk/) (With UK and ROI nationals, and EU nationals with settled status.) 
 
 # Selcted Publications
 
