@@ -70,7 +70,7 @@ The vision of **Reconfigurable and Intelligent Systems @ Queen's University Belf
 
 Accepting Outstanding candidates for [**PhD**](https://www.qub.ac.uk/Study/postgraduate/research-degrees) all year round in topics of [**Approximate Computing**](https://en.wikipedia.org/wiki/Approximate_computing):  
 
-* **Efficient & Resilient Reconfigurable ML/AI Accelerators**
+* **Efficient & Resilient ML/AI Accelerators**
 * **AI-Assisted Electronic Design Automations**
 
 Accepting [**Postdoctoral Fellowships - Marie Skłodowska-Curie Actions**](https://marie-sklodowska-curie-actions.ec.europa.eu/funding/msca-postdoctoral-fellowships-2026) application all year round. It is due by 9th September 2026 this year.
